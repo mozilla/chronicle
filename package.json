@@ -1,32 +1,59 @@
 {
   "name": "mozilla-chronicle",
-  "version": "0.1.0",
   "description": "This storm is what we call progress",
-  "main": "index.js",
-  "engines": {
-    "node": ">=0.10.33"
+  "version": "0.1.0",
+  "author": "Mozilla (https://mozilla.org)",
+  "bugs": {
+    "url": "https://github.com/mozilla/chronicle/issues"
   },
   "dependencies": {
+<<<<<<< HEAD
     "convict": "0.6.0",
+=======
+>>>>>>> c8efc07... git is hard
+    "grunt": "0.4.5",
     "hapi": "8.0.0",
+    "load-grunt-tasks": "1.0.0",
     "mozlog": "1.0.0",
     "mysql": "2.5.3",
     "sequelize": "2.0.0-rc3",
     "uuid": "2.0.1"
   },
-  "devDependencies": {},
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server/index.js"
+  "devDependencies": {
+    "grunt-conventional-changelog": "1.1.0",
+<<<<<<< HEAD
+    "grunt-git-contributors": "0.1.5",
+    "grunt-nsp-shrinkwrap": "0.0.3"
+=======
+    "nsp": "0.5.2"
+>>>>>>> c8efc07... git is hard
   },
+  "engines": {
+    "node": ">=0.10.33"
+  },
+  "homepage": "https://github.com/mozilla/chronicle",
+  "license": "MPL 2.0",
+  "main": "index.js",
   "repository": {
     "type": "git",
     "url": "git://github.com/mozilla/chronicle.git"
   },
-  "author": "Mozilla (https://mozilla.org)",
-  "license": "MPL 2.0",
-  "bugs": {
-    "url": "https://github.com/mozilla/chronicle/issues"
-  },
-  "homepage": "https://github.com/mozilla/chronicle"
+  "scripts": {
+<<<<<<< HEAD
+    "audit-shrinkwrap": "grunt validate-shrinkwrap --force",
+    "authors": "git shortlog -s | cut -c8- | sort -f > AUTHORS",
+    "outdated": "npm outdated --depth 0",
+    "postinstall": "bower update --config.interactive=false -s",
+    "shrinkwrap": "npm shrinkwrap --dev",
+    "start": "node server/index.js",
+    "test": "echo \"Error: no test specified\""
+=======
+    "audit-shrinkwrap": "nsp audit-shrinkwrap",
+    "contributors": "git shortlog -s | cut -c8- | sort -f > CONTRIBUTORS",
+    "oudated": "npm outdated --depth 0",
+    "shrinkwrap": "npm shrinkwrap --dev",
+    "start": "node server/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+>>>>>>> c8efc07... git is hard
+  }
 }
