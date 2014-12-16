@@ -16,6 +16,15 @@ module.exports = function (grunt) {
         path: './AUTHORS',
         branch: true
       }
+    },
+    copyright: {
+      options: {
+        pattern: /This Source Code Form is subject to the terms of the Mozilla Public/
+      },
+      src: [
+        '{,app/**/,grunttasks/**/,server/**/,tests/**/}*.js',
+        '!app/bower_components/**'
+      ]
     }
   });
 };
