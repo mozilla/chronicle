@@ -84,6 +84,11 @@ var conf = convict({
       doc: 'Port for the main api server process.',
       default: 8080,
       env: 'PORT'
+    },
+    staticPath: {
+      doc: 'Path to static files.',
+      default: 'app',
+      env: 'STATIC_PATH'
     }
   }
 });
