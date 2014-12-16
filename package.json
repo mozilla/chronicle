@@ -16,6 +16,7 @@
   },
   "devDependencies": {},
   "scripts": {
+    "postinstall": "bower update --config.interactive=false -s",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server/index.js"
   },
