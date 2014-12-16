@@ -1,10 +1,5 @@
-<<<<<<< HEAD
 app/bower_components
 config/*.json
 dist
 node_modules
 npm-debug.log
-=======
-node_modules
-config/*.json
->>>>>>> c8efc07... git is hard
