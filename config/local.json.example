@@ -15,11 +15,12 @@
       "port": 6379
     }
   },
+  "env": "local",
   "server": {
     "log": {
       "app": "chronicle",
       "debug": true,
-      "fmt: "pretty",
+      "fmt": "pretty",
       "level": "verbose"
     },
     "host": "127.0.0.1",

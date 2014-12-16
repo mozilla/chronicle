@@ -4,7 +4,11 @@
 
 var Hapi = require('hapi');
 var server = new Hapi.Server();
-server.connection({port: 8080});
+var config = require('./config').root();
+server.connection({
+  host: config.server.host,
+  port: config.server.port
+});
 server.route({
   method: 'GET',
   path: '/',
@@ -13,5 +17,5 @@ server.route({
   }
 });
 server.start(function(request, reply) {
-  console.log('chronicle server running on port 8080');
+  console.log('chronicle server running on port ' + config.server.port);
 });
