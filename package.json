@@ -33,7 +33,7 @@
   },
   "scripts": {
     "audit-shrinkwrap": "grunt validate-shrinkwrap --force",
-    "authors": "git shortlog -s | cut -c8- | sort -f > AUTHORS",
+    "authors": "grunt contributors",
     "outdated": "npm outdated --depth 0",
     "postinstall": "bower update --config.interactive=false -s",
     "shrinkwrap": "npm shrinkwrap --dev",
