@@ -8,14 +8,14 @@ module.exports = function (grunt) {
   require('load-grunt-tasks')(grunt);
 
   grunt.initConfig({
-    contributors: {
-      app: {
-        path: '/AUTHORS',
-        branch: 'master'
-      }
-    },
     changelog: {
       dest: 'CHANGELOG.md'
+    },
+    contributors: {
+      app: {
+        path: './AUTHORS',
+        branch: true
+      }
     }
   });
 };
