@@ -11,9 +11,12 @@ server.connection({
 });
 server.route({
   method: 'GET',
-  path: '/',
-  handler: function(request, reply) {
-    reply('hello chronicle world');
+  path: '/{param*}',
+  handler: {
+    directory: {
+      path: config.server.staticPath,
+      listing: true
+    }
   }
 });
 server.start(function(request, reply) {
