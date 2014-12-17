@@ -1,11 +1,12 @@
-chronicle
-=========
+# Chronicle
 
 find everything you've ever found
 
-## installation
+[![Build Status: Travis](https://travis-ci.org/mozilla/chronicle.svg?branch=master)](https://travis-ci.org/mozilla/chronicle)
 
-### large tools
+## Installation
+
+### Large Tools
 
 Chronicle is built using [Node.js](https://nodejs.org/), [ElasticSearch](https://www.elasticsearch.org/), [MySQL](https://www.mysql.com/), and [Redis](http://redis.io/), so you'll want to install the current stable version of all of these.
 
@@ -15,7 +16,7 @@ If you are using Mac OS and have [Homebrew](http://brew.sh/) installed, this inc
 $ brew install nodejs elasticsearch mysql redis
 ```
 
-### code
+### Code
 
 The server-side code dependencies are managed with [npm](https://www.npmjs.com/). The front-end dependencies are managed with [Bower](https://bower.io/); you can install it via `npm install -g bower` if you don't have it on your system.
 
@@ -28,7 +29,7 @@ To fetch dependencies and get cooking:
 5. You're up and running! surf to http://localhost:8080 :surfer:
 
 
-### Available Grunt tasks
+### Available Grunt Tasks
 
 | Name | Description |
 |------|-------------|
@@ -48,7 +49,7 @@ To fetch dependencies and get cooking:
 | `validate-shrinkwrap` | Submits your _npm-shrinkwrap.json_ file to <https://nodesecurity.io> for validation.
 | `watch` | Runs predefined tasks whenever watched files change.
 
-## learn more
+## Learn More
 * Tumblr: http://mozillachronicle.tumblr.com/
 * IRC channel: #chronicle on mozilla IRC
 * Mailing list: chronicle-dev@mozilla.org (https://mail.mozilla.org/listinfo/chronicle-dev)
