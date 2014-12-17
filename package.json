@@ -9,17 +9,33 @@
   "dependencies": {
     "convict": "0.6.0",
     "hapi": "8.0.0",
+    "load-grunt-tasks": "1.0.0",
     "mozlog": "1.0.0",
     "mysql": "2.5.3",
     "sequelize": "2.0.0-rc3",
     "uuid": "2.0.1"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "grunt-contrib-jshint": "0.10.0",
+    "grunt-conventional-changelog": "1.1.0",
+    "grunt-copyright": "0.1.0",
+    "grunt-git-contributors": "0.1.5",
+    "grunt-jscs": "1.0.0",
+    "grunt-jsonlint": "1.0.4",
+    "grunt-nsp-shrinkwrap": "0.0.3",
+    "jshint": "2.5.10",
+    "jshint-stylish": "1.0.0",
+    "precommit-hook": "1.0.7"
+  },
   "scripts": {
+    "authors": "grunt contributors",
+    "lint": "grunt lint",
+    "outdated": "npm outdated --depth 0",
     "postinstall": "bower update --config.interactive=false -s",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "shrinkwrap": "npm shrinkwrap --dev",
     "start": "node server/index.js",
-    "contributors": "git shortlog -s | cut -c8- | sort -f > AUTHORS"
+    "test": "echo \"Error: no test specified\"",
+    "validate": "grunt validate-shrinkwrap --force"
   },
   "repository": {
     "type": "git",

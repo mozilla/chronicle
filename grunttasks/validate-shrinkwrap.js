@@ -2,15 +2,9 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-define([
-  'views/base',
-  'stache!templates/visits/index'
-], function (BaseView, VisitsIndexTemplate) {
+module.exports = function (grunt) {
   'use strict';
 
-  var VisitsIndexView = BaseView.extend({
-    template: VisitsIndexTemplate
+  grunt.config('validate-shrinkwrap', {
   });
-
-  return VisitsIndexView;
-});
+};
