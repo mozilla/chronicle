@@ -11,45 +11,45 @@ var conf = convict({
   env: {
     doc: 'Application environment.',
     format: ['local', 'awsdev', 'prod', 'test'],
-    'default': 'local',
+    default: 'local',
     env: 'NODE_ENV'
   },
   db: {
     elasticsearch: {
       host: {
-        'default': '127.0.0.1',
+        default: '127.0.0.1',
         env: 'ES_HOST'
       },
       port: {
-        'default': 9200,
+        default: 9200,
         env: 'ES_PORT'
       }
     },
     mysql: {
       host: {
-        'default': '127.0.0.1',
+        default: '127.0.0.1',
         env: 'MYSQL_HOST'
       },
       port: {
-        'default': 3306,
+        default: 3306,
         env: 'MYSQL_PORT'
       },
       user: {
-        'default': 'root',
+        default: 'root',
         env: 'MYSQL_USERNAME'
       },
       password: {
-        'default': '',
+        default: '',
         env: 'MYSQL_PASSWORD'
       }
     },
     redis: {
       host: {
-        'default': '127.0.0.1',
+        default: '127.0.0.1',
         env: 'REDIS_HOST'
       },
       port: {
-        'default': 6379,
+        default: 6379,
         env: 'REDIS_PORT'
       }
     }
@@ -59,35 +59,35 @@ var conf = convict({
       doc: 'Mozlog configuration. Defaults currently target dev, not prod.',
       app: {
         doc: 'Top-level app name used in hierarchical logging, for example, "chronicle.db.mysql"',
-        'default': 'chronicle'
+        default: 'chronicle'
       },
       level: {
         doc: 'Log messages with this or greater log level. Levels, in order, are: ' +
              'trace, verbose, debug, info, warn, error, critical.',
-        'default': 'debug'
+        default: 'debug'
       },
       fmt: {
         doc: 'Formatter. Use pretty for local dev, heka for production',
-        'default': 'pretty'
+        default: 'pretty'
       },
       debug: {
         doc: 'Extra checks that logger invocations are correct. Useful when developing',
-        'default': true
+        default: true
       }
     },
     host: {
       doc: 'Host for the main api server process.',
-      'default': '127.0.0.1',
+      default: '127.0.0.1',
       env: 'HOST'
     },
     port: {
       doc: 'Port for the main api server process.',
-      'default': 8080,
+      default: 8080,
       env: 'PORT'
     },
     staticPath: {
       doc: 'Path to static files.',
-      'default': 'app',
+      default: 'app',
       env: 'STATIC_PATH'
     }
   }
