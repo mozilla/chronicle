@@ -5,10 +5,16 @@
 module.exports = function (grunt) {
   'use strict';
 
-  grunt.registerTask('lint', [
-    'jshint',
-    'jscs',
-    'jsonlint',
-    'copyright'
-  ]);
+  grunt.config('sass', {
+    options: {
+      imagePath: '/images',
+      // outputStyle: 'compressed',
+      precision: 3
+    },
+    styles: {
+      files: {
+        'dist/styles/main.css': 'app/styles/main.scss'
+      }
+    }
+  });
 };

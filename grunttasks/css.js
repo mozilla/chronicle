@@ -5,10 +5,5 @@
 module.exports = function (grunt) {
   'use strict';
 
-  grunt.registerTask('lint', [
-    'jshint',
-    'jscs',
-    'jsonlint',
-    'copyright'
-  ]);
+  grunt.registerTask('css', ['sass', 'autoprefixer']);
 };
