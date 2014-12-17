@@ -9,7 +9,7 @@ define([
   'use strict';
 
   var VisitsIndexView = BaseView.extend({
-    template: VisitsIndexTemplate,
+    template: VisitsIndexTemplate
   });
 
   return VisitsIndexView;

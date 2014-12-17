@@ -69,7 +69,7 @@ define(
         var context = this.getContext();
         var self = this;
 
-        context.l = function (text) {
+        context.l = function () {
           return function (text, render) {
             return render(self.localize(text));
           };

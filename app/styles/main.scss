@@ -2,7 +2,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-@import url(http://fonts.googleapis.com/css?family=Fira+Sans:400,700,400italic,700italic);
+@import '../bower_components/normalize-scss/normalize';
+@import 'fonts';
 
 body {
   font-family: 'Fira Sans', sans-serif;
