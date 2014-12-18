@@ -2,10 +2,9 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-@import url(http://fonts.googleapis.com/css?family=Fira+Sans:400,700,400italic,700italic);
+@import 'variables';
+@import 'base';
+@import 'layout';
+@import 'state';
+@import 'modules';
 
-$body-font: 'Fira Sans', sans-serif;
-
-body {
-  font-family: $body-font;
-}

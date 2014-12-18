@@ -1,0 +1,13 @@
+@import url(http://fonts.googleapis.com/css?family=Fira+Sans:400,700,400italic,700italic);
+
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+}
+
+body {
+  background: $body-background;
+  color: $dark-grey;
+  font-family: $body-font;
+}
