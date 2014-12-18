@@ -5,10 +5,14 @@
 module.exports = function (grunt) {
   'use strict';
 
-  grunt.registerTask('lint', [
-    'jshint',
-    'jscs',
-    'jsonlint',
-    'copyright'
-  ]);
+  grunt.config('autoprefixer', {
+    dist: {
+      files: [{
+        expand: true,
+        cwd: 'dist/styles/',
+        src: '{,*/}*.css',
+        dest: 'dist/styles/'
+      }]
+    }
+  });
 };

@@ -5,10 +5,7 @@
 module.exports = function (grunt) {
   'use strict';
 
-  grunt.registerTask('lint', [
-    'jshint',
-    'jscs',
-    'jsonlint',
-    'copyright'
-  ]);
+  grunt.config('clean', {
+    dist: ['dist/']
+  });
 };
