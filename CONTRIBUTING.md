@@ -54,6 +54,28 @@ The body should include the motivation for the change and contrast this with pre
 The footer should contain any information about **Breaking Changes** and is also the place to
 reference GitHub issues that this commit **Closes**.
 
+## Working With Styles
+
+Chronicle's Styles are written in Sass and organized following conventions derived from [SMACSS](https://smacss.com/)
+
+### Sass Files
+
+Files are located in `app/styles/`.
+
+| Name | Description |
+|------|-------------|
+| `modules/*.scss` | Partials for individual modules. All modules should be a single partial.
+| `_base.scss` | Partial for editing global element styles.
+| `_layout.scss` | Partial for laying out id selected elements and classed layout modifiers. Modifiers should be.classes prefixed with `l-`.
+| `_modules.scss` | Partial for combining individual module partials.
+| `_state.scss` | Partial for state modification classes.
+| `_variables.scss` | Partial where Sass variables live.
+| `main.scss` | Where all the partials go to mix and mingle.
+
+### Compiling Sass
+
+Use `grunt css` to compile.
+
 ## Grunt Commands
 
 Coming Soon
