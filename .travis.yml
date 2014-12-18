@@ -5,6 +5,7 @@ node_js:
 before_install:
   - npm config set spin false
   - npm config set loglevel silent
+  - npm i bower grunt-cli -g
 
 install:
   - travis_retry npm install
