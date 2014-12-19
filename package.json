@@ -7,13 +7,16 @@
     "url": "https://github.com/mozilla/chronicle/issues"
   },
   "dependencies": {
+    "bell": "2.0.0",
+    "buf": "0.1.0",
     "convict": "0.6.0",
     "hapi": "8.0.0",
+    "hapi-auth-cookie": "2.0.0",
     "load-grunt-tasks": "1.0.0",
     "mozlog": "1.0.0",
     "mysql": "2.5.3",
-    "sequelize": "2.0.0-rc3",
-    "uuid": "2.0.1"
+    "uuid": "2.0.1",
+    "wreck": "5.1.0"
   },
   "devDependencies": {
     "grunt-autoprefixer": "2.0.0",

@@ -8,7 +8,8 @@
       "host": "127.0.0.1",
       "port": 3306,
       "user": "root",
-      "password": ""
+      "password": "",
+      "database": "chronicle"
     },
     "redis": {
       "host": "127.0.0.1",
@@ -17,13 +18,31 @@
   },
   "env": "local",
   "server": {
+    "host": "127.0.0.1",
+    "port": 8080,
+    "staticPath": "dist",
+    "staticDirListing": true,
     "log": {
       "app": "chronicle",
-      "debug": true,
+      "debug": false,
       "fmt": "pretty",
       "level": "verbose"
     },
-    "host": "127.0.0.1",
-    "port": 8080
+    "session": {
+      "password": "Wh4t3ver.",
+      "isSecure": false,
+      "duration": "7 days"
+    },
+    "oauth": {
+      "clientId": "1f9bbddcb3e160ab",
+      "clientSecret": "24bf8caeaa685e2e42d9a75b48511f83adffaf6fcdd174ce8749358a376be911",
+      "scope": ["chronicle", "profile"],
+      "version": "2.0",
+      "protocol": "oauth2",
+      "redirectEndpoint": "http://localhost:8080/auth/complete",
+      "authEndpoint": "https://oauth-latest.dev.lcip.org/v1/authorization",
+      "tokenEndpoint": "https://oauth-latest.dev.lcip.org/v1/token",
+      "profileEndpoint": "https://latest.dev.lcip.org/profile/v1/profile"
+    }
   }
 }
