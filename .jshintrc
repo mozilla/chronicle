@@ -17,7 +17,6 @@
   "sub": true,
   "trailing": true,
   "undef": true,
-  "unused": true,
   "globals": {
     "define": false,
     "Promise": true
