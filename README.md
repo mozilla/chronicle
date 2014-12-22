@@ -34,13 +34,13 @@ To fetch dependencies and get cooking:
 | Name | Description |
 |------|-------------|
 | `autoprefixer` | Adds vendor prefixes to CSS files based on <http://caniuse.com> statistics.
+| `build` | Alias for "lint", "clean:dist", "copy:dist", "css" tasks.
 | `changelog` | Generate a changelog from git metadata.
 | `clean` | Deletes files and folders.
 | `contributors` | Generates a list of contributors from your project's git history.
 | `copy` | Copies files and folders.
 | `copyright` | Checks for MPL copyright headers in source files.
 | `css` | Alias for "sass", "autoprefixer" tasks.
-| `dist` | Alias for "clean:dist", "copy:dist" tasks.
 | `jscs` | JavaScript Code Style checker.
 | `jshint` | Validates files with JSHint.
 | `jsonlint` | Validates JSON files.
@@ -48,6 +48,21 @@ To fetch dependencies and get cooking:
 | `sass` | Compiles Sass files to vanilla CSS.
 | `validate-shrinkwrap` | Submits your _npm-shrinkwrap.json_ file to <https://nodesecurity.io> for validation.
 | `watch` | Runs predefined tasks whenever watched files change.
+
+
+### npm Scripts
+
+| Name | Description |
+|------|-------------|
+| `authors` | Alias for `grunt contributors` Grunt task.
+| `lint` | Alias for `grunt lint` Grunt task. This task gets run during the [precommit](https://www.npmjs.com/package/precommit-hook) Git hook.
+| `outdated` | Alias for `npm outdated --depth 0` to list top-level outdated modules in your package.json file. For more information, see <https://docs.npmjs.com/cli/outdated>.
+| `postinstall` | Runs after the package is installed, and automatically installs/updates the Bower dependencies.
+| `shrinkwrap` | Alias for `npm shrinkwrap --dev` and `npm run validate` to generate and validate npm-shrinkwrap.json file (including devDependencies).
+| `start` | Starts the Hapi server.
+| `test` | Runs unit and functional tests.
+| `validate` | Alias for `grunt validate-shrinkwrap` task (ignoring any errors which may be reported).
+
 
 ## Learn More
 * Tumblr: http://mozillachronicle.tumblr.com/

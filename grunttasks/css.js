@@ -5,5 +5,9 @@
 module.exports = function (grunt) {
   'use strict';
 
-  grunt.registerTask('css', ['sass', 'autoprefixer', 'copy:css']);
+  grunt.registerTask('css', [
+    'sass',
+    'autoprefixer',
+    'copy:css'
+  ]);
 };
