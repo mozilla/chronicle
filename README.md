@@ -23,10 +23,11 @@ The server-side code dependencies are managed with [npm](https://www.npmjs.com/)
 To fetch dependencies and get cooking:
 
 1. `npm install`
-2. As part of the npm install process, the `postinstall` script will install the bower dependencies for you.
+2. As part of the npm install process, the `postinstall` script will install the Bower dependencies for you.
 3. Copy `config/local.json.example` to `config/local.json`, and put your local info in there.
-4. `npm start`
-5. You're up and running! surf to http://localhost:8080 :surfer:
+4. Run `grunt build` to regenerate the files in the /dist/ directory.
+5. `npm start`
+6. You're up and running! surf to http://localhost:8080 :surfer:
 
 
 ### Available Grunt Tasks

@@ -49,7 +49,7 @@
     "authors": "grunt contributors",
     "lint": "grunt lint",
     "outdated": "npm outdated --depth 0",
-    "postinstall": "bower update --config.interactive=false -s",
+    "postinstall": "bower update --config.interactive=false -s && grunt build",
     "shrinkwrap": "npm shrinkwrap --dev && npm run validate",
     "start": "node server/index.js",
     "test": "echo \"Error: no test specified\"",
