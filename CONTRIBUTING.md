@@ -76,9 +76,6 @@ Files are located in `app/styles/`.
 
 Use `grunt css` to compile.
 
-## Grunt Commands
-
-Coming Soon
 
 ## Test Options
 

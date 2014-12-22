@@ -5,5 +5,10 @@
 module.exports = function (grunt) {
   'use strict';
 
-  grunt.registerTask('dist', ['clean:dist', 'copy:dist']);
+  grunt.registerTask('build', [
+    'lint',
+    'clean:dist',
+    'copy:dist',
+    'css'
+  ]);
 };
