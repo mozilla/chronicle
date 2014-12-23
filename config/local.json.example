@@ -31,7 +31,7 @@
     "session": {
       "password": "Wh4t3ver.",
       "isSecure": false,
-      "duration": "7 days"
+      "duration": 86400000
     },
     "oauth": {
       "clientId": "1f9bbddcb3e160ab",

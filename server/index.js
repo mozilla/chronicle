@@ -62,7 +62,6 @@ server.register([require('hapi-auth-cookie'), require('bell')], function (err) {
       log.warn('server failed to start: ' + err);
       throw err; // TODO: should we fail to start in some other way? AppError?
     }
-    log.info('chronicle server running on ' + config.get('server.host') +
-              ':' + config.get('server.port'));
+    log.info('chronicle server running on ' + server.info.uri);
   });
 });
