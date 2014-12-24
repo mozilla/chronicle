@@ -14,7 +14,6 @@ module.exports = function (grunt) {
           cwd: 'app/',
           src: [
             'bower_components/**',
-            'scripts/**',
             'styles/*.css',
             'index.html'
           ]

@@ -9,6 +9,7 @@ module.exports = function (grunt) {
     'lint',
     'clean:dist',
     'copy:dist',
-    'css'
+    'css',
+    'requirejs'
   ]);
 };
