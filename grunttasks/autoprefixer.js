@@ -7,8 +7,11 @@ module.exports = function (grunt) {
 
   grunt.config('autoprefixer', {
     dist: {
-      src: 'app/styles/main.css',
-      dest: 'app/styles/main.css'
+      src: 'dist/styles/compiled.css',
+      dest: 'dist/styles/compiled.css',
+      options: {
+        map: true
+      }
     }
   });
 };

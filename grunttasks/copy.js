@@ -13,20 +13,8 @@ module.exports = function (grunt) {
           dest: 'dist/',
           cwd: 'app/',
           src: [
-            'bower_components/**',
-            'styles/*.css',
             'index.html'
           ]
-        }
-      ]
-    },
-    css: {
-      files: [
-        {
-          expand: true,
-          dest: 'dist/',
-          cwd: 'app/',
-          src: ['styles/*.css']
         }
       ]
     }

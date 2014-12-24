@@ -21,7 +21,7 @@
   "dependencies": {
     "backbone": "~1.1.2",
     "jquery": "~2.1.1",
-    "normalize-css": "~3.0.2",
+    "normalize-scss": "~3.0.2",
     "requirejs-mustache": "*",
     "requirejs-text": "~2.0.12",
     "requirejs": "~2.1.15",
