@@ -7,13 +7,14 @@ module.exports = function (grunt) {
 
   grunt.config('sass', {
     options: {
-      imagePath: '/images',
-      // outputStyle: 'compressed',
-      precision: 3
+      imagePath: '/assets/images',
+      outputStyle: 'compressed',
+      precision: 3,
+      sourceMap: true
     },
     styles: {
       files: {
-        'app/styles/main.css': 'app/styles/main.scss'
+        'dist/styles/compiled.css': 'app/styles/main.scss'
       }
     }
   });

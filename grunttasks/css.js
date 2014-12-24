@@ -7,7 +7,6 @@ module.exports = function (grunt) {
 
   grunt.registerTask('css', [
     'sass',
-    'autoprefixer',
-    'copy:css'
+    'autoprefixer'
   ]);
 };
