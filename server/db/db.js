@@ -30,7 +30,7 @@ function _getConn(cb) {
 // DB API uses callbacks for the moment; TODO return promises?
 module.exports = {
   createUser: function(fxaId, email, oauthToken, cb) {
-    var query = 'INSERT INTO users (fxa_id, email, oauth_token) ' + 
+    var query = 'INSERT INTO users (fxa_id, email, oauth_token) ' +
                 'VALUES (?, ?, ?)' +
                 'ON DUPLICATE KEY UPDATE ' +
                 'fxa_id = VALUES(fxa_id), ' +

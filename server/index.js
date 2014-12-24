@@ -11,7 +11,7 @@ var routes = require('./routes');
 
 // log extra error info if we're developing locally
 var serverConfig = (config.get('env') === 'local' ? {debug: {request: ['error']}} : {});
-  
+
 var server = new Hapi.Server(serverConfig);
 server.connection({
   host: config.get('server.host'),
@@ -21,11 +21,11 @@ server.connection({
 server.register([require('hapi-auth-cookie'), require('bell')], function (err) {
   if (err) {
     log.warn('failed to load plugin: ' + err);
-    throw err; // TODO: should we use AppError instead?
+    throw err; // TODO should we use AppError instead?
   }
 
   // hapi-auth-cookie init
-  // TODO: when we really have to, move this crap into a config file
+  // TODO when we really have to, move this crap into a config file
   server.auth.strategy('session', 'cookie', {
     password: config.get('server.session.password'),
     cookie: 'sid-chronicle', // TODO what should this be? add to config
@@ -50,7 +50,7 @@ server.register([require('hapi-auth-cookie'), require('bell')], function (err) {
       }
     },
     password: config.get('server.session.password'),
-    clientId: config.get('server.oauth.clientId'), 
+    clientId: config.get('server.oauth.clientId'),
     clientSecret: config.get('server.oauth.clientSecret'),
     isSecure: config.get('server.session.isSecure')
   });
@@ -60,7 +60,7 @@ server.register([require('hapi-auth-cookie'), require('bell')], function (err) {
   server.start(function (err) {
     if (err) {
       log.warn('server failed to start: ' + err);
-      throw err; // TODO: should we fail to start in some other way? AppError?
+      throw err; // TODO should we fail to start in some other way? AppError?
     }
     log.info('chronicle server running on ' + server.info.uri);
   });
