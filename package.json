@@ -30,6 +30,7 @@
     "grunt-jscs": "1.0.0",
     "grunt-jsonlint": "1.0.4",
     "grunt-nsp-shrinkwrap": "0.0.3",
+    "grunt-requirejs": "0.4.2",
     "grunt-sass": "0.17.0",
     "jshint": "2.5.10",
     "jshint-stylish": "1.0.0",
