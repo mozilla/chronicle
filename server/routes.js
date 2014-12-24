@@ -110,7 +110,7 @@ module.exports = [{
 }, {
   // static routes using dist/, yay grunt
   method: 'GET',
-  path: '/dist/{param*}',
+  path: '/assets/{param*}',
   handler: {
     directory: {
       path: path.join(__dirname, '..', config.get('server.staticPath')),
