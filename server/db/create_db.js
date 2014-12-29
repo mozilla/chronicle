@@ -5,7 +5,7 @@
 'use strict';
 
 // TODO extract schema into, you know, a schema file
-// TODO figure out migrations story - mysql-patcher? node-migrate? 
+// TODO figure out migrations story - mysql-patcher? node-migrate?
 
 var mysql = require('mysql');
 var config = require('../config');
@@ -38,7 +38,7 @@ function createDatabase(cb) {
       return cb(err);
     }
     log.info('connected to mysql as id ' + conn.threadId);
-    
+
     // TODO use promises for prettier chaining
     log.info('dropping any existing database');
     conn.query(dropDatabaseQuery, function (err) {

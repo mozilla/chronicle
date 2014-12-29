@@ -206,7 +206,7 @@ var conf = convict({
   }
 });
 
-// TODO: copypasta from fxa-oauth-server. extract into a module? add to convict?
+// TODO copypasta from fxa-oauth-server. extract into a module? add to convict?
 var envConfig = path.join(__dirname, '..', 'config', conf.get('env') + '.json');
 var files = (envConfig + ',' + process.env.CONFIG_FILES)
   .split(',').filter(fs.existsSync);

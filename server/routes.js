@@ -21,7 +21,11 @@ module.exports = [{
       strategy: 'session',
       mode: 'try'
     },
-    plugins: { 'hapi-auth-cookie': { redirectTo: false } },
+    plugins: {
+      'hapi-auth-cookie': {
+        redirectTo: false
+      }
+    },
     handler: function (request, reply) {
       var page = request.auth.isAuthenticated ? 'app.html' : 'index.html';
       // TODO we should set a session cookie here that's visible to the client: #45
@@ -48,9 +52,9 @@ module.exports = [{
       // we need to swap the code for the token,
       // then we need to ask the profile server for the user's profile,
       // then we need to save the session.
-      // TODO: maybe we want this to live inside the server.auth.strategy call for bell?
+      // TODO maybe we want this to live inside the server.auth.strategy call for bell?
       log.info('auth/complete invoked');
-      // HUGE TODO: verify the session cookie matches the 'state' nonce in the query
+      // HUGE TODO verify the session cookie matches the 'state' nonce in the query
       var tokenPayload = {
         client_id: config.get('server.oauth.clientId'),
         client_secret: config.get('server.oauth.clientSecret'),
@@ -69,7 +73,7 @@ module.exports = [{
             log.info('token server returned empty response');
             return reply.redirect('/');
           }
-          // TODO: can Joi ensure JSON.parse doesn't throw? #43
+          // TODO can Joi ensure JSON.parse doesn't throw? #43
           var pay = JSON.parse(payload);
           var accessToken = pay && pay['access_token'];
           log.debug('token server response: ' + payload);
@@ -91,7 +95,7 @@ module.exports = [{
                 return reply.redirect('/');
               }
               log.info('profile server response: ' + payload);
-              // TODO: can Joi ensure JSON.parse doesn't throw? #43
+              // TODO can Joi ensure JSON.parse doesn't throw? #43
               var pay = JSON.parse(payload);
               db.createUser(pay.uid, pay.email, accessToken, function(err) {
                 if (err) {
