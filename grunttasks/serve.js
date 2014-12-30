@@ -5,11 +5,9 @@
 module.exports = function (grunt) {
   'use strict';
 
-  grunt.registerTask('build', [
-    'lint',
-    'clean',
-    'copy',
-    'requirejs',
-    'css'
+  grunt.registerTask('serve', [
+    'hapi',
+    'build',
+    'watch'
   ]);
 };

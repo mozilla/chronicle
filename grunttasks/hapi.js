@@ -5,11 +5,11 @@
 module.exports = function (grunt) {
   'use strict';
 
-  grunt.registerTask('build', [
-    'lint',
-    'clean',
-    'copy',
-    'requirejs',
-    'css'
-  ]);
+  grunt.config('hapi', {
+    custom_options: {
+      options: {
+        server: require('path').resolve('./server/index')
+      }
+    }
+  });
 };
