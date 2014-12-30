@@ -54,14 +54,9 @@ server.register([require('hapi-auth-cookie'), require('bell')], function (err) {
     clientSecret: config.get('server.oauth.clientSecret'),
     isSecure: config.get('server.session.isSecure')
   });
-
-  server.route(routes);
-  // TODO manage SIGTERM and friends
-  server.start(function (err) {
-    if (err) {
-      log.warn('server failed to start: ' + err);
-      throw err; // TODO should we fail to start in some other way? AppError?
-    }
-    log.info('chronicle server running on ' + server.info.uri);
-  });
 });
+
+// register routes
+server.route(routes);
+
+module.exports = server;
