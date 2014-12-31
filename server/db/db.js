@@ -14,15 +14,16 @@ var utils = require('./utils');
 
 var pool = utils.createPool();
 
-function _trace(funcName, funcArgs) {
-  log.trace(funcName + ' called. arguments are: ' + [].join.call(funcArgs, ', '));
+function _verbose(funcName, funcArgs) {
+  var args = funcArgs && [].join.call(funcArgs, ', ');
+  log.verbose(funcName + ' called. arguments are: ' + args);
 }
 
 // DB API uses callbacks for the moment; TODO return promises?
 // TODO validate DB inputs from the API at some point
 module.exports = {
   createUser: function(fxaId, email, oauthToken, cb) {
-    _trace('db.createUser', arguments);
+    _verbose('db.createUser', arguments);
     var query = 'INSERT INTO users (fxaId, email, oauthToken) ' +
                 'VALUES (?, ?, ?)';
     pool.query(query, [fxaId, email, oauthToken], function(err) {
@@ -31,23 +32,35 @@ module.exports = {
         // TODO send the item to a retry queue?
         return cb(err);
       }
-      log.info('created user');
+      _verbose('db.createUser: created user');
       cb(err);
     });
   },
   getUserById: function(fxaId, cb) {
-    _trace('db.getUserById', arguments);
-    var query = 'SELECT email, oauthToken FROM users WHERE fxaId = ?';
-    pool.query(query, fxaId, function(err, result) {
+    _verbose('db.getUserById', arguments);
+    var query = 'SELECT fxaId, email, oauthToken FROM users WHERE fxaId = ?';
+    pool.query(query, fxaId, function(err, r) {
       if (err) {
         log.warn('error retrieving user: ' + err);
       }
-
-      cb(err, result);
+      cb(err, r && r[0]);
+    });
+  },
+  updateUser: function(fxaId, email, oauthToken, cb) {
+    _verbose('db.updateUser', arguments);
+    var query = 'UPDATE users SET email = ?, oauthToken = ? WHERE fxaId = ?';
+    pool.query(query, [email, oauthToken, fxaId], function(err) {
+      if (err) {
+        log.warn('error updating user: ' + err);
+        // TODO send the item to a retry queue?
+        return cb(err);
+      }
+      _verbose('db.updateUser: updated user');
+      cb(err);
     });
   },
   getPaginatedVisits: function(fxaId, visitId, count, cb) {
-    _trace('db.getPaginatedVisits', arguments);
+    _verbose('db.getPaginatedVisits', arguments);
     var query = 'SELECT id, url, urlHash, title, visitedAt ' +
                 'FROM visits WHERE fxaId = ? ' +
                 'AND visitedAt < (SELECT visitedAt FROM visits WHERE id = ?) ' +
@@ -57,7 +70,7 @@ module.exports = {
     });
   },
   getVisits: function(fxaId, count, cb) {
-    _trace('db.getVisits', arguments);
+    _verbose('db.getVisits', arguments);
     var query = 'SELECT id, url, urlHash, title, visitedAt ' +
                 'FROM visits WHERE fxaId=? ORDER BY visitedAt DESC LIMIT ?';
     pool.query(query, [fxaId, count], function(err, results) {
@@ -65,7 +78,7 @@ module.exports = {
     });
   },
   getVisit: function(fxaId, visitId, cb) {
-    _trace('db.getVisit', arguments);
+    _verbose('db.getVisit', arguments);
     // important: MySQL enforces that the user with id `fxaId` is the user with visit `visitId`
     var query = 'SELECT id, url, urlHash, title, visitedAt ' +
                 'FROM visits WHERE id = ? AND fxaId = ?';
@@ -79,7 +92,7 @@ module.exports = {
   // TODO if the url and visitedAt are the same, should we just discard the record?
   // ...maybe just deal with it later
   createVisit: function(fxaId, visitId, visitedAt, url, title, cb) {
-    _trace('db.createVisit', arguments);
+    _verbose('db.createVisit', arguments);
     var urlHash = crypto.createHash('sha1').update(url).digest('hex').toString();
     var query = 'INSERT INTO visits (id, fxaId, rawUrl, url, urlHash, title, visitedAt) ' +
                 'VALUES (?, ?, ?, ?, ?, ?, ?)';
@@ -91,25 +104,25 @@ module.exports = {
     });
   },
   updateVisit: function(fxaId, visitId, visitedAt, url, title, cb) {
-    _trace('db.updateVisit', arguments);
+    _verbose('db.updateVisit', arguments);
     var query = 'UPDATE visits SET visitedAt = ?, url = ?, urlHash = ?, rawUrl = ?, title = ? ' +
                 'WHERE fxaId = ? AND id = ?';
     var urlHash = crypto.createHash('sha1').update(url).digest('hex').toString();
-    pool.query(query, [visitedAt, url, urlHash, url, title, fxaId, visitId], function(err, result) {
+    pool.query(query, [visitedAt, url, urlHash, url, title, fxaId, visitId], function(err, r) {
       if (err) {
         log.warn('error updating visit: ' + err);
       }
-      cb(err, result);
+      cb(err, r && r[0]);
     });
   },
   deleteVisit: function(fxaId, visitId, cb) {
-    _trace('db.updateVisit', arguments);
+    _verbose('db.updateVisit', arguments);
     var query = 'DELETE FROM visits WHERE fxaId = ? AND id = ?';
-    pool.query(query, [fxaId, visitId], function(err, result) {
+    pool.query(query, [fxaId, visitId], function(err) {
       if (err) {
         log.warn('error deleting visit: ' + err);
       }
-      cb(err, result);
+      cb(err);
     });
   }
 };

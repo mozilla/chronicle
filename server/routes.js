@@ -4,14 +4,11 @@
 
 'use strict';
 
-// TODO use reverse proxy instead of making outgoing requests directly
-//      from the webheads :-P
-var wreck = require('wreck');
 var path = require('path');
+var uuid = require('uuid');
 
 var log = require('./logger')('server.routes');
 var config = require('./config');
-var db = require('./db/db');
 
 var STATIC_PATH = path.join(__dirname, '..', config.get('server.staticPath'));
 
@@ -21,28 +18,61 @@ module.exports = [{
   config: {
     auth: {
       strategy: 'session',
+      // 'try': allow users to visit the route with good, bad, or no session
       mode: 'try'
     },
     plugins: {
       'hapi-auth-cookie': {
-        redirectTo: false
+        redirectTo: false // don't redirect users who don't have a session
       }
     },
     handler: function (request, reply) {
       var page = request.auth.isAuthenticated ? 'app.html' : 'index.html';
-      // TODO we should set a session cookie here that's visible to the client: #45
       reply.file(path.join(STATIC_PATH, page));
     }
   }
 }, {
   method: 'GET',
-  path: '/auth/logout',
-  handler: function (request, reply) {
-    request.auth.session.clear();
-    return reply.redirect('/');
+  path: '/auth/login',
+  config: {
+    auth: {
+      strategy: 'session',
+      mode: 'try'
+    },
+    plugins: {
+      'hapi-auth-cookie': {
+        redirectTo: false // don't redirect users who don't have a session
+      }
+    },
+    handler: function(request, reply) {
+      // Bell uses the same endpoint for both the start and redirect
+      // steps in the flow. Let's keep this as the initial endpoint,
+      // so the API is easy to read, and just redirect the user.
+      log.verbose('request.auth.isAuthenticated is ' + request.auth.isAuthenticated);
+      var endpoint = request.auth.isAuthenticated ? '/' : '/auth/complete';
+      reply.redirect(endpoint);
+    }
   }
 }, {
   method: 'GET',
+  path: '/auth/logout',
+  config: {
+    auth: {
+      strategy: 'session',
+      mode: 'try'
+    },
+    handler: function (request, reply) {
+      if (request.auth.isAuthenticated) {
+        request.auth.session.clear();
+      }
+      return reply.redirect('/');
+    }
+  }
+}, {
+  // Bell uses the same endpoint for both the start and redirect
+  // steps in the flow. The front end starts the user here, and
+  // Bell redirects here after we're done.
+  method: ['GET', 'POST'],
   path: '/auth/complete',
   config: {
     auth: {
@@ -50,67 +80,21 @@ module.exports = [{
       mode: 'try'
     },
     handler: function (request, reply) {
-      // at this point, the oauth dance is complete, we have a code but not a token.
-      // we need to swap the code for the token,
-      // then we need to ask the profile server for the user's profile,
-      // then we need to save the session.
-      // TODO maybe we want this to live inside the server.auth.strategy call for bell?
-      log.info('auth/complete invoked');
-      // HUGE TODO verify the session cookie matches the 'state' nonce in the query
-      var tokenPayload = {
-        client_id: config.get('server.oauth.clientId'),
-        client_secret: config.get('server.oauth.clientSecret'),
-        code: request.query.code
+      // Bell has obtained the oauth token, used it to get the profile, and
+      // that profile is available as request.auth.credentials.profile.
+      // Now, use it to set a cookie.
+      log.verbose('inside auth/complete');
+      log.verbose('request.auth.credentials is ' + JSON.stringify(request.auth.credentials));
+
+      var session = {
+        fxaId: request.auth.credentials.profile.fxaId
       };
-      // 1. swap code for token
-      wreck.post(config.get('server.oauth.tokenEndpoint'),
-        { payload: JSON.stringify(tokenPayload) },
-        function(err, res, payload) {
-          if (err) {
-            log.info('token server error: ' + err);
-            // TODO something went wrong, try again? throw AppError?
-            return reply.redirect('/');
-          }
-          if (!payload) {
-            log.info('token server returned empty response');
-            return reply.redirect('/');
-          }
-          // TODO can Joi ensure JSON.parse doesn't throw? #43
-          var pay = JSON.parse(payload);
-          var accessToken = pay && pay['access_token'];
-          log.debug('token server response: ' + payload);
-          log.debug('token server response http code: ' + res.statusCode);
-          if (!accessToken) {
-            log.info('no access token found in token server response');
-            return reply.redirect('/');
-          }
-          // 2. use the token to obtain profile data
-          wreck.get(config.get('server.oauth.profileEndpoint'),
-            { headers: {'authorization': 'Bearer ' + accessToken}},
-            function(err, res, payload) {
-              if (err) {
-                log.info('profile server error: ' + err);
-                return reply.redirect('/');
-              }
-              if (!payload) {
-                log.info('profile server returned empty response');
-                return reply.redirect('/');
-              }
-              log.info('profile server response: ' + payload);
-              // TODO can Joi ensure JSON.parse doesn't throw? #43
-              var pay = JSON.parse(payload);
-              db.createUser(pay.uid, pay.email, accessToken, function(err) {
-                if (err) {
-                  log.info('user creation failed: ' + err);
-                  return reply.redirect('/');
-                }
-                request.auth.session.set({fxaId: payload.uid});
-                reply.redirect('/');
-              });
-            }
-          );
-        }
-      );
+      var duration = config.get('server.session.duration');
+      if (duration > 0) {
+        session.expiresAt = new Date(new Date().getTime() + duration);
+      }
+      request.auth.session.set(session);
+      reply.redirect('/');
     }
   }
 }, {

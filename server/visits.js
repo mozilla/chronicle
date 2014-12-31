@@ -13,19 +13,13 @@ var config = require('./config');
 
 // TODO: add additional metadata fields to the visit datatype
 // TODO: normalize URLs
-// TODO actually create a session for the fake user
 // TODO: visits pagination
 
 var routes = [{
   method: 'GET',
   path: '/v1/visits',
   config: {
-    // TODO allowing unauthenticated access temporarily
-    // auth: 'session',
-    auth: {
-      strategy: 'session',
-      mode: 'try'
-    },
+    auth: 'session',
     validate: {
       query: {
         count: Joi.number().integer().min(1).max(100).default(25),
@@ -39,7 +33,7 @@ var routes = [{
         fxaId = fxaId || config.get('testUser.id');
       }
       var visitId = request.query.visitId;
-      log.trace('fxaId is ' + fxaId);
+      log.verbose('fxaId is ' + fxaId);
 
       function onResults(err, results) {
         if (err) {
@@ -61,12 +55,7 @@ var routes = [{
   method: 'GET',
   path: '/v1/visits/{visitId}',
   config: {
-    // TODO allowing unauthenticated access temporarily
-    // auth: 'session',
-    auth: {
-      strategy: 'session',
-      mode: 'try'
-    },
+    auth: 'session',
     validate: {
       params: {
         visitId: Joi.string().guid().required()
@@ -96,12 +85,7 @@ var routes = [{
   method: 'POST',
   path: '/v1/visits',
   config: {
-    // TODO allowing unauthenticated access temporarily
-    // auth: 'session',
-    auth: {
-      strategy: 'session',
-      mode: 'try'
-    },
+    auth: 'session',
     validate: {
       payload: {
         url: Joi.string().required(),
@@ -135,12 +119,7 @@ var routes = [{
   method: 'PUT',
   path: '/v1/visits/{visitId}',
   config: {
-    // TODO allowing unauthenticated access temporarily
-    // auth: 'session',
-    auth: {
-      strategy: 'session',
-      mode: 'try'
-    },
+    auth: 'session',
     validate: {
       // all fields are required, keep life simple for the DB
       payload: {
@@ -190,12 +169,7 @@ var routes = [{
   method: 'DELETE',
   path: '/v1/visits/{visitId}',
   config: {
-    // TODO allowing unauthenticated access temporarily
-    // auth: 'session',
-    auth: {
-      strategy: 'session',
-      mode: 'try'
-    },
+    auth: 'session',
     validate: {
       params: {
         visitId: Joi.string().guid().required()
