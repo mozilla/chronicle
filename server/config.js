@@ -18,6 +18,26 @@ var conf = convict({
     default: 'local',
     env: 'NODE_ENV'
   },
+  testUser: {
+    enabled: {
+      doc: 'If you want to create some records for a fake user, enable this option.',
+      format: Boolean,
+      default: false,
+      env: 'TEST_USER_ENABLED'
+    },
+    id: {
+      doc: 'fxa id (uuid minus dashes) identifying fake user',
+      default: 'a6c9411418f94710a712ab97e7a3541c',
+      format: String,
+      env: 'TEST_USER_ID'
+    },
+    email: {
+      doc: 'email address identifying fake user',
+      default: 'fake_user@example.com',
+      env: 'TEST_USER_EMAIL',
+      format: String
+    }
+  },
   db: {
     elasticsearch: {
       host: {
@@ -201,6 +221,12 @@ var conf = convict({
         format: 'int',
         default: SEVEN_DAYS_IN_MSEC,
         env: 'SESSION_DURATION'
+      },
+      id: {
+        doc: 'Name of session cookie.',
+        default: 'sid-chronicle',
+        env: 'SESSION_ID',
+        format: String
       }
     }
   }

@@ -8,6 +8,7 @@ var Hapi = require('hapi');
 var config = require('./config');
 var log = require('./logger')('server.index');
 var routes = require('./routes');
+var visits = require('./visits');
 
 // log extra error info if we're developing locally
 var serverConfig = (config.get('env') === 'local' ? {debug: {request: ['error']}} : {});
@@ -25,11 +26,11 @@ server.register([require('hapi-auth-cookie'), require('bell')], function (err) {
   }
 
   // hapi-auth-cookie init
-  // TODO when we really have to, move this crap into a config file
   server.auth.strategy('session', 'cookie', {
     password: config.get('server.session.password'),
-    cookie: 'sid-chronicle', // TODO what should this be? add to config
-    redirectTo: '/',
+    cookie: config.get('server.session.id'),
+    // TODO temporarily allowing unauthenticated access for visits testing
+    // redirectTo: '/',
     isSecure: config.get('server.session.isSecure'),
     ttl: config.get('server.session.duration')
   });
@@ -58,5 +59,6 @@ server.register([require('hapi-auth-cookie'), require('bell')], function (err) {
 
 // register routes
 server.route(routes);
+server.route(visits);
 
 module.exports = server;

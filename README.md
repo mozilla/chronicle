@@ -65,6 +65,17 @@ To fetch dependencies and get cooking:
 | `test` | Runs unit and functional tests.
 | `validate` | Alias for `grunt validate-shrinkwrap` task (ignoring any errors which may be reported).
 
+### Creating Dummy Data
+
+If you just want to test something quickly with a small, known test data set:
+
+1. run `server/db/create_db.js` to drop and re-create the local mysql db
+2. To enable test data, ensure the `testUser.enabled` config option is set in `config/local.json`.
+  - You can use the default id and email (defined in `server/config.js`), or set them yourself.
+    You can set the values via env vars or config values.
+    See `server/config.js` for the defaults and which config values or env vars to use.
+3. run `server/db/create_test_data.js` to create a dummy user and a few dummy visits.
+  - The number of records to create is configurable; invoke it with `--help` for details.
 
 ## Learn More
 * Tumblr: http://mozillachronicle.tumblr.com/
