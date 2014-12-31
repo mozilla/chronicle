@@ -2,29 +2,36 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+var _ = require('underscore');
+
 module.exports = function (grunt) {
   'use strict';
 
+  var DEFAULT_OPTIONS = {
+    almond: true,
+    baseUrl: 'app/scripts',
+    generateSourceMaps: true,
+    mainConfigFile: 'app/scripts/main.js',
+    name: 'main',
+    optimize: 'none',
+    out: 'dist/scripts/compiled.js',
+    preserveLicenseComments: false,
+    removeCombined: true,
+    replaceRequireScript: [{
+      files: ['dist/index.html'],
+      module: 'main',
+      modulePath: '/assets/scripts/compiled'
+    }],
+    stubModules: ['text', 'stache'],
+    useStrict: true
+  };
+
   grunt.config('requirejs', {
-    dist: {
-      options: {
-        almond: true,
-        baseUrl: 'app/scripts',
-        generateSourceMaps: true,
-        mainConfigFile: 'app/scripts/main.js',
-        name: 'main',
-        optimize: 'uglify2',
-        out: 'dist/scripts/compiled.js',
-        preserveLicenseComments: false,
-        removeCombined: true,
-        replaceRequireScript: [{
-          files: ['dist/index.html'],
-          module: 'main',
-          modulePath: '/assets/scripts/compiled'
-        }],
-        stubModules: ['text', 'stache'],
-        useStrict: true
-      }
+    development: {
+      options: DEFAULT_OPTIONS
+    },
+    production: {
+      options: _.extend({}, DEFAULT_OPTIONS, { optimize: 'uglify2' })
     }
   });
 };

@@ -15,6 +15,7 @@
     "load-grunt-tasks": "1.0.0",
     "mozlog": "1.0.0",
     "mysql": "2.5.3",
+    "underscore": "1.7.0",
     "uuid": "2.0.1",
     "wreck": "5.1.0"
   },
@@ -52,7 +53,7 @@
     "authors": "grunt contributors",
     "lint": "grunt lint",
     "outdated": "npm outdated --depth 0",
-    "postinstall": "bower update --config.interactive=false -s && grunt build",
+    "postinstall": "bower update --config.interactive=false -s",
     "shrinkwrap": "npm shrinkwrap --dev && npm run validate",
     "start": "grunt serve",
     "test": "echo \"Error: no test specified\"",

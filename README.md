@@ -34,7 +34,7 @@ To fetch dependencies and get cooking:
 | Name | Description |
 |------|-------------|
 | `autoprefixer` | Adds vendor prefixes to CSS files based on <http://caniuse.com> statistics.
-| `build` | Alias for "lint", "clean:dist", "copy:dist", "css" tasks.
+| `build` | Build front-end assets and copy them to dist.
 | `changelog` | Generate a changelog from git metadata.
 | `clean` | Deletes files and folders.
 | `contributors` | Generates a list of contributors from your project's git history.
