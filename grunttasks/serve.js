@@ -6,8 +6,8 @@ module.exports = function (grunt) {
   'use strict';
 
   grunt.registerTask('serve', [
+    'build:development',
     'hapi',
-    'build',
     'watch'
   ]);
 };

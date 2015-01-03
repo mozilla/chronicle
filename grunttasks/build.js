@@ -5,11 +5,17 @@
 module.exports = function (grunt) {
   'use strict';
 
-  grunt.registerTask('build', [
-    'lint',
-    'clean',
-    'copy',
-    'requirejs',
-    'css'
-  ]);
+  grunt.registerTask('build', 'Build front-end assets and copy them to dist', function (target) {
+    if (!target) {
+      target = 'development';
+    }
+
+    grunt.task.run([
+      'lint',
+      'clean',
+      'copy',
+      'requirejs:' + target,
+      'css'
+    ]);
+  });
 };

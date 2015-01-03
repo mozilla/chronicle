@@ -8,14 +8,10 @@ module.exports = function (grunt) {
   grunt.config('watch', {
     config: {
       files: ['Gruntfile.js', 'grunttasks/*'],
-      tasks: ['build'],
+      tasks: ['build:development'],
       options: {
         reload: true
       }
-    },
-    build: {
-      files: ['app/**/*'],
-      tasks: ['build']
     },
     hapi: {
       files: ['server/**/*'],
@@ -24,12 +20,24 @@ module.exports = function (grunt) {
         spawn: false
       }
     },
+    html: {
+      files: ['app/*.html'],
+      tasks: ['copy']
+    },
     livereload: {
       // Watch for file changes in dist to trigger livereload
       files: ['dist/**/*'],
       options: {
         livereload: true
       }
+    },
+    scripts: {
+      files: ['app/scripts/**/*'],
+      tasks: ['lint', 'requirejs:development']
+    },
+    styles: {
+      files: ['app/styles/**/*'],
+      tasks: ['css']
     }
   });
 };

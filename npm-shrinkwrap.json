@@ -867,7 +867,7 @@
     },
     "grunt-hapi": {
       "version": "0.8.1",
-      "from": "grunt-hapi@*",
+      "from": "https://registry.npmjs.org/grunt-hapi/-/grunt-hapi-0.8.1.tgz",
       "resolved": "https://registry.npmjs.org/grunt-hapi/-/grunt-hapi-0.8.1.tgz"
     },
     "grunt-jscs": {
@@ -1997,58 +1997,58 @@
     },
     "grunt-todo": {
       "version": "0.4.0",
-      "from": "grunt-todo@0.4.0",
+      "from": "https://registry.npmjs.org/grunt-todo/-/grunt-todo-0.4.0.tgz",
       "resolved": "https://registry.npmjs.org/grunt-todo/-/grunt-todo-0.4.0.tgz",
       "dependencies": {
         "chalk": {
           "version": "0.5.1",
-          "from": "chalk@>=0.5.0 <0.6.0",
+          "from": "https://registry.npmjs.org/chalk/-/chalk-0.5.1.tgz",
           "resolved": "https://registry.npmjs.org/chalk/-/chalk-0.5.1.tgz",
           "dependencies": {
             "ansi-styles": {
               "version": "1.1.0",
-              "from": "ansi-styles@>=1.1.0 <2.0.0",
+              "from": "https://registry.npmjs.org/ansi-styles/-/ansi-styles-1.1.0.tgz",
               "resolved": "https://registry.npmjs.org/ansi-styles/-/ansi-styles-1.1.0.tgz"
             },
             "escape-string-regexp": {
               "version": "1.0.2",
-              "from": "escape-string-regexp@>=1.0.0 <2.0.0",
+              "from": "https://registry.npmjs.org/escape-string-regexp/-/escape-string-regexp-1.0.2.tgz",
               "resolved": "https://registry.npmjs.org/escape-string-regexp/-/escape-string-regexp-1.0.2.tgz"
             },
             "has-ansi": {
               "version": "0.1.0",
-              "from": "has-ansi@>=0.1.0 <0.2.0",
+              "from": "https://registry.npmjs.org/has-ansi/-/has-ansi-0.1.0.tgz",
               "resolved": "https://registry.npmjs.org/has-ansi/-/has-ansi-0.1.0.tgz",
               "dependencies": {
                 "ansi-regex": {
                   "version": "0.2.1",
-                  "from": "ansi-regex@>=0.2.0 <0.3.0",
+                  "from": "https://registry.npmjs.org/ansi-regex/-/ansi-regex-0.2.1.tgz",
                   "resolved": "https://registry.npmjs.org/ansi-regex/-/ansi-regex-0.2.1.tgz"
                 }
               }
             },
             "strip-ansi": {
               "version": "0.3.0",
-              "from": "strip-ansi@>=0.3.0 <0.4.0",
+              "from": "https://registry.npmjs.org/strip-ansi/-/strip-ansi-0.3.0.tgz",
               "resolved": "https://registry.npmjs.org/strip-ansi/-/strip-ansi-0.3.0.tgz",
               "dependencies": {
                 "ansi-regex": {
                   "version": "0.2.1",
-                  "from": "ansi-regex@>=0.2.0 <0.3.0",
+                  "from": "https://registry.npmjs.org/ansi-regex/-/ansi-regex-0.2.1.tgz",
                   "resolved": "https://registry.npmjs.org/ansi-regex/-/ansi-regex-0.2.1.tgz"
                 }
               }
             },
             "supports-color": {
               "version": "0.2.0",
-              "from": "supports-color@>=0.2.0 <0.3.0",
+              "from": "https://registry.npmjs.org/supports-color/-/supports-color-0.2.0.tgz",
               "resolved": "https://registry.npmjs.org/supports-color/-/supports-color-0.2.0.tgz"
             }
           }
         },
         "text-table": {
           "version": "0.2.0",
-          "from": "text-table@>=0.2.0 <0.3.0",
+          "from": "https://registry.npmjs.org/text-table/-/text-table-0.2.0.tgz",
           "resolved": "https://registry.npmjs.org/text-table/-/text-table-0.2.0.tgz"
         }
       }
@@ -2733,6 +2733,11 @@
       "version": "1.0.7",
       "from": "https://registry.npmjs.org/precommit-hook/-/precommit-hook-1.0.7.tgz",
       "resolved": "https://registry.npmjs.org/precommit-hook/-/precommit-hook-1.0.7.tgz"
+    },
+    "underscore": {
+      "version": "1.7.0",
+      "from": "underscore@*",
+      "resolved": "https://registry.npmjs.org/underscore/-/underscore-1.7.0.tgz"
     },
     "uuid": {
       "version": "2.0.1",
