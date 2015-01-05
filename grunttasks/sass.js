@@ -5,10 +5,6 @@
 module.exports = function (grunt) {
   'use strict';
 
-  var config = require('../server/config');
-
-  var staticPath = config.get('server.staticPath');
-
   grunt.config('sass', {
     options: {
       imagePath: '/assets/images',
@@ -19,7 +15,7 @@ module.exports = function (grunt) {
     styles: {
       files: [{
         src: ['app/styles/main.scss'],
-        dest: staticPath + '/styles/compiled.css'
+        dest: '<%= staticPath %>/styles/compiled.css'
       }]
     }
   });

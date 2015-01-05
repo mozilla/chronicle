@@ -5,11 +5,7 @@
 module.exports = function (grunt) {
   'use strict';
 
-  var config = require('../server/config');
-
-  var staticPath = config.get('server.staticPath');
-
   grunt.config('clean', {
-    dist: [staticPath]
+    dist: ['<%= staticPath %>']
   });
 };

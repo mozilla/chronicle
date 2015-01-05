@@ -5,10 +5,6 @@
 module.exports = function (grunt) {
   'use strict';
 
-  var config = require('../server/config');
-
-  var staticPath = config.get('server.staticPath');
-
   grunt.config('watch', {
     config: {
       files: ['Gruntfile.js', 'grunttasks/*'],
@@ -18,7 +14,7 @@ module.exports = function (grunt) {
       }
     },
     hapi: {
-      files: ['server/**/*'],
+      files: ['server/**'],
       tasks: ['hapi'],
       options: {
         spawn: false
@@ -30,7 +26,7 @@ module.exports = function (grunt) {
     },
     livereload: {
       // Watch for file changes in dist to trigger livereload
-      files: [staticPath + '/**'],
+      files: ['<%= staticPath %>/**'],
       options: {
         livereload: true
       }

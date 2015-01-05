@@ -5,14 +5,10 @@
 module.exports = function (grunt) {
   'use strict';
 
-  var config = require('../server/config');
-
-  var staticPath = config.get('server.staticPath');
-
   grunt.config('autoprefixer', {
     dist: {
-      src: staticPath + '/styles/compiled.css',
-      dest: staticPath + '/styles/compiled.css',
+      src: '<%= staticPath %>/styles/compiled.css',
+      dest: '<%= staticPath %>/styles/compiled.css',
       options: {
         map: true
       }

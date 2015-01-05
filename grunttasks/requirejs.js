@@ -7,10 +7,6 @@ var _ = require('underscore');
 module.exports = function (grunt) {
   'use strict';
 
-  var config = require('../server/config');
-
-  var staticPath = config.get('server.staticPath');
-
   var DEFAULT_OPTIONS = {
     almond: true,
     baseUrl: 'app/scripts',
@@ -18,11 +14,11 @@ module.exports = function (grunt) {
     mainConfigFile: 'app/scripts/main.js',
     name: 'main',
     optimize: 'none',
-    out: staticPath + '/scripts/compiled.js',
+    out: '<%= staticPath %>/scripts/compiled.js',
     preserveLicenseComments: false,
     removeCombined: true,
     replaceRequireScript: [{
-      files: [staticPath + '/index.html'],
+      files: ['<%= staticPath %>/index.html'],
       module: 'main',
       modulePath: '/assets/scripts/compiled'
     }],
