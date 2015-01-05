@@ -5,6 +5,10 @@
 module.exports = function (grunt) {
   'use strict';
 
+  var config = require('../server/config');
+
+  var staticPath = config.get('server.staticPath');
+
   grunt.config('watch', {
     config: {
       files: ['Gruntfile.js', 'grunttasks/*'],
@@ -26,17 +30,17 @@ module.exports = function (grunt) {
     },
     livereload: {
       // Watch for file changes in dist to trigger livereload
-      files: ['dist/**/*'],
+      files: [staticPath + '/**'],
       options: {
         livereload: true
       }
     },
     scripts: {
-      files: ['app/scripts/**/*'],
+      files: ['app/scripts/**'],
       tasks: ['lint', 'requirejs:development']
     },
     styles: {
-      files: ['app/styles/**/*'],
+      files: ['app/styles/**'],
       tasks: ['css']
     }
   });
