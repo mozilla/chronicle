@@ -6,14 +6,15 @@ module.exports = function (grunt) {
   'use strict';
 
   grunt.config('copy', {
-    dist: {
+    all: {
       files: [
         {
-          expand: true,
-          dest: '<%= staticPath %>',
           cwd: 'app/',
+          dest: '<%= staticPath %>',
+          expand: true,
           src: [
-            'index.html'
+            '*.html',
+            'images/**/*.{gif,jpeg,jpg,png,svg}'
           ]
         }
       ]

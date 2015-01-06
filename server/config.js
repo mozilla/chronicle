@@ -117,7 +117,7 @@ var conf = convict({
     },
     staticPath: {
       doc: 'Path to static files.',
-      default: 'dist',
+      default: 'public',
       format: String,
       env: 'STATIC_PATH'
     },
