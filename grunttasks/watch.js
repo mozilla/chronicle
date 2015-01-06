@@ -24,6 +24,10 @@ module.exports = function (grunt) {
       files: ['app/*.html'],
       tasks: ['copy']
     },
+    images: {
+      files: ['app/images/**/*.{gif,jpeg,jpg,png,svg}'],
+      tasks: ['copy']
+    },
     livereload: {
       // Watch for file changes in dist to trigger livereload
       files: ['<%= staticPath %>/**'],
