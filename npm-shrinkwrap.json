@@ -1995,6 +1995,11 @@
         }
       }
     },
+    "grunt-template": {
+      "version": "0.2.3",
+      "from": "grunt-template@*",
+      "resolved": "https://registry.npmjs.org/grunt-template/-/grunt-template-0.2.3.tgz"
+    },
     "grunt-todo": {
       "version": "0.4.0",
       "from": "https://registry.npmjs.org/grunt-todo/-/grunt-todo-0.4.0.tgz",

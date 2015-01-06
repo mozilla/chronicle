@@ -15,7 +15,8 @@ module.exports = function (grunt) {
       'clean',
       'copy',
       'requirejs:' + target,
-      'css'
+      'css',
+      'template'
     ]);
   });
 };
