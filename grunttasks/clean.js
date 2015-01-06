@@ -7,8 +7,8 @@ module.exports = function (grunt) {
 
   grunt.config('clean', {
     dist: [
-    '!<%= staticPath %>/.gitignore',
-    '<%= staticPath %>/*'
+      '!<%= staticPath %>/.gitignore',
+      '<%= staticPath %>/*'
     ]
   });
 };

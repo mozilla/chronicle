@@ -10,13 +10,29 @@ module.exports = function (grunt) {
       target = 'development';
     }
 
-    grunt.task.run([
-      'lint',
-      'clean',
-      'copy',
-      'requirejs:' + target,
-      'css',
-      'template'
-    ]);
+    var taskArr;
+
+    if (target === 'development') {
+      taskArr = [
+        'lint',
+        'clean',
+        'copy',
+        'css',
+        'requirejs:development'
+      ];
+    } else {
+      taskArr = [
+        'lint',
+        'clean',
+        'copy',
+        'css',
+        'useminPrepare',
+        'requirejs:' + target,
+        'rev',
+        'usemin'
+      ];
+    }
+
+    grunt.task.run(taskArr);
   });
 };
