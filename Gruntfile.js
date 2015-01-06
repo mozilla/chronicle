@@ -7,7 +7,10 @@ module.exports = function (grunt) {
 
   require('load-grunt-tasks')(grunt);
 
+  var config = require('./server/config');
+
   grunt.initConfig({
+    staticPath: config.get('server.staticPath')
   });
 
   grunt.loadTasks('grunttasks/');

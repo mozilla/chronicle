@@ -13,9 +13,10 @@ module.exports = function (grunt) {
       sourceMap: true
     },
     styles: {
-      files: {
-        'dist/styles/compiled.css': 'app/styles/main.scss'
-      }
+      files: [{
+        src: ['app/styles/main.scss'],
+        dest: '<%= staticPath %>/styles/compiled.css'
+      }]
     }
   });
 };

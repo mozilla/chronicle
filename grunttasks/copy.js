@@ -10,7 +10,7 @@ module.exports = function (grunt) {
       files: [
         {
           expand: true,
-          dest: 'dist/',
+          dest: '<%= staticPath %>',
           cwd: 'app/',
           src: [
             'index.html'

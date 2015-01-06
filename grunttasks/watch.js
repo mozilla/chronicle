@@ -14,7 +14,7 @@ module.exports = function (grunt) {
       }
     },
     hapi: {
-      files: ['server/**/*'],
+      files: ['server/**'],
       tasks: ['hapi'],
       options: {
         spawn: false
@@ -26,17 +26,17 @@ module.exports = function (grunt) {
     },
     livereload: {
       // Watch for file changes in dist to trigger livereload
-      files: ['dist/**/*'],
+      files: ['<%= staticPath %>/**'],
       options: {
         livereload: true
       }
     },
     scripts: {
-      files: ['app/scripts/**/*'],
+      files: ['app/scripts/**'],
       tasks: ['lint', 'requirejs:development']
     },
     styles: {
-      files: ['app/styles/**/*'],
+      files: ['app/styles/**'],
       tasks: ['css']
     }
   });

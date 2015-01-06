@@ -14,11 +14,11 @@ module.exports = function (grunt) {
     mainConfigFile: 'app/scripts/main.js',
     name: 'main',
     optimize: 'none',
-    out: 'dist/scripts/compiled.js',
+    out: '<%= staticPath %>/scripts/compiled.js',
     preserveLicenseComments: false,
     removeCombined: true,
     replaceRequireScript: [{
-      files: ['dist/index.html'],
+      files: ['<%= staticPath %>/index.html'],
       module: 'main',
       modulePath: '/assets/scripts/compiled'
     }],

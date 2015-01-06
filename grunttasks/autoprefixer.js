@@ -7,8 +7,8 @@ module.exports = function (grunt) {
 
   grunt.config('autoprefixer', {
     dist: {
-      src: 'dist/styles/compiled.css',
-      dest: 'dist/styles/compiled.css',
+      src: '<%= staticPath %>/styles/compiled.css',
+      dest: '<%= staticPath %>/styles/compiled.css',
       options: {
         map: true
       }
