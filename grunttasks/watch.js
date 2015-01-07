@@ -37,7 +37,7 @@ module.exports = function (grunt) {
     },
     scripts: {
       files: ['app/scripts/**'],
-      tasks: ['lint', 'requirejs:development']
+      tasks: ['lint', 'requirejs:development', 'template']
     },
     styles: {
       files: ['app/styles/**'],
