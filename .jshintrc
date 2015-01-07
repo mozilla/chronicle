@@ -3,6 +3,7 @@
   "curly": true,
   "eqeqeq": true,
   "esnext": true,
+  "expr": true,
   "globalstrict": false,
   "immed": true,
   "indent": 2,

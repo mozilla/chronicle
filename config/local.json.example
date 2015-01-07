@@ -44,5 +44,8 @@
       "tokenEndpoint": "https://oauth-latest.dev.lcip.org/v1/token",
       "profileEndpoint": "https://latest.dev.lcip.org/profile/v1/profile"
     }
+  },
+  "testUser": {
+    "enabled": true
   }
 }

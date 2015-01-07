@@ -4,68 +4,114 @@
 
 'use strict';
 
+var crypto = require('crypto');
 var mysql = require('mysql');
+var uuid = require('uuid');
+
 var config = require('../config');
-var buf = require('buf').hex;
-var log = require('../logger')('server.db');
+var log = require('../logger')('server.db.db');
+var utils = require('./utils');
 
-var pool = mysql.createPool({
-  connectionLimit: config.get('db.mysql.connectionLimit'),
-  host: config.get('db.mysql.host'),
-  user: config.get('db.mysql.user'),
-  password: config.get('db.mysql.password'),
-  database: config.get('db.mysql.database')
-});
+var pool = utils.createPool();
 
-function _getConn(cb) {
-  pool.getConnection(function(err, conn) {
-    if (err) {
-      log.warn('error getting connection from pool: ' + err);
-      return cb(err);
-    }
-    cb(null, conn);
-  });
+function _trace(funcName, funcArgs) {
+  log.trace(funcName + ' called. arguments are: ' + [].join.call(funcArgs, ', '));
 }
 
 // DB API uses callbacks for the moment; TODO return promises?
+// TODO validate DB inputs from the API at some point
 module.exports = {
   createUser: function(fxaId, email, oauthToken, cb) {
-    var query = 'INSERT INTO users (fxa_id, email, oauth_token) ' +
-                'VALUES (?, ?, ?)' +
-                'ON DUPLICATE KEY UPDATE ' +
-                'fxa_id = VALUES(fxa_id), ' +
-                'email = VALUES(email), ' +
-                'oauth_token = VALUES(oauth_token)';
-    _getConn(function(err, conn) {
-      // TODO do we even want to handle pool connection errors here?
+    _trace('db.createUser', arguments);
+    var query = 'INSERT INTO users (fxaId, email, oauthToken) ' +
+                'VALUES (?, ?, ?)';
+    pool.query(query, [fxaId, email, oauthToken], function(err) {
       if (err) {
+        log.warn('error saving user: ' + err);
+        // TODO send the item to a retry queue?
         return cb(err);
       }
-      conn.query(query, [buf(fxaId), email, oauthToken], function(err) {
-        if (err) {
-          log.warn('error saving user: ' + err);
-          // TODO send the item to a retry queue?
-        }
-        conn.release();
-        cb(err);
-      });
+      log.info('created user');
+      cb(err);
     });
   },
   getUserById: function(fxaId, cb) {
-    var query = 'SELECT email, oauth_token FROM users WHERE fxa_id = ?';
-    _getConn(function(err, conn) {
-      // TODO handle conn err?
-      conn.query(query, buf(fxaId), function(err, result) {
-        if (err) {
-          log.warn('error retrieving user: ' + err);
-        }
-        conn.release();
+    _trace('db.getUserById', arguments);
+    var query = 'SELECT email, oauthToken FROM users WHERE fxaId = ?';
+    pool.query(query, fxaId, function(err, result) {
+      if (err) {
+        log.warn('error retrieving user: ' + err);
+      }
 
-        cb(err, result);
-      });
+      cb(err, result);
+    });
+  },
+  getPaginatedVisits: function(fxaId, visitId, count, cb) {
+    _trace('db.getPaginatedVisits', arguments);
+    var query = 'SELECT id, url, urlHash, title, visitedAt ' +
+                'FROM visits WHERE fxaId = ? ' +
+                'AND visitedAt > (SELECT visitedAt FROM visits WHERE id = ?) ' +
+                'ORDER BY visitedAt LIMIT ?';
+    pool.query(query, [fxaId, visitId, count], function(err, results) {
+      cb(err, results);
+    });
+  },
+  getVisits: function(fxaId, count, cb) {
+    _trace('db.getVisits', arguments);
+    var query = 'SELECT id, url, urlHash, title, visitedAt ' +
+                'FROM visits WHERE fxaId=? ORDER BY visitedAt LIMIT ?';
+    pool.query(query, [fxaId, count], function(err, results) {
+      cb(err, results);
+    });
+  },
+  getVisit: function(fxaId, visitId, cb) {
+    _trace('db.getVisit', arguments);
+    // important: MySQL enforces that the user with id `fxaId` is the user with visit `visitId`
+    var query = 'SELECT id, url, urlHash, title, visitedAt ' +
+                'FROM visits WHERE id = ? AND fxaId = ?';
+    pool.query(query, [visitId, fxaId], function(err, r) {
+      if (err) {
+        log.warn('error getting visit: ' + err);
+      }
+      cb(err, r && r[0]);
+    });
+  },
+  // TODO if the url and visitedAt are the same, should we just discard the record?
+  // ...maybe just deal with it later
+  createVisit: function(fxaId, visitId, visitedAt, url, title, cb) {
+    _trace('db.createVisit', arguments);
+    var urlHash = crypto.createHash('sha1').update(url).digest('hex').toString();
+    var query = 'INSERT INTO visits (id, fxaId, rawUrl, url, urlHash, title, visitedAt) ' +
+                'VALUES (?, ?, ?, ?, ?, ?, ?)';
+    pool.query(query, [visitId, fxaId, url, url, urlHash, title, visitedAt], function(err, results) {
+      if (err) {
+        log.warn('error creating visit: ' + err);
+      }
+      cb(err);
+    });
+  },
+  updateVisit: function(fxaId, visitId, visitedAt, url, title, cb) {
+    _trace('db.updateVisit', arguments);
+    var query = 'UPDATE visits SET visitedAt = ?, url = ?, urlHash = ?, rawUrl = ?, title = ? ' +
+                'WHERE fxaId = ? AND id = ?';
+    var urlHash = crypto.createHash('sha1').update(url).digest('hex').toString();
+    pool.query(query, [visitedAt, url, urlHash, url, title, fxaId, visitId], function(err, result) {
+      if (err) {
+        log.warn('error updating visit: ' + err);
+      }
+      cb(err, result);
+    });
+  },
+  deleteVisit: function(fxaId, visitId, cb) {
+    _trace('db.updateVisit', arguments);
+    var query = 'DELETE FROM visits WHERE fxaId = ? AND id = ?';
+    pool.query(query, [fxaId, visitId], function(err, result) {
+      if (err) {
+        log.warn('error deleting visit: ' + err);
+      }
+      cb(err, result);
     });
   }
 };
 
 // TODO attach the pool to the hapi server
-// TODO on hapi shutdown, close the pool
