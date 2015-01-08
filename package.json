@@ -14,8 +14,8 @@
     "hapi": "8.1.0",
     "hapi-auth-cookie": "2.0.0",
     "joi": "5.1.0",
-    "mozlog": "1.0.0",
-    "mysql": "2.5.3",
+    "mozlog": "1.0.1",
+    "mysql": "2.5.4",
     "underscore": "1.7.0",
     "uuid": "2.0.1",
     "wreck": "5.1.0"

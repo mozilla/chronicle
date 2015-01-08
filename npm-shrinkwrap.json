@@ -3067,14 +3067,14 @@
       }
     },
     "mozlog": {
-      "version": "1.0.0",
-      "from": "mozlog@1.0.0",
-      "resolved": "https://registry.npmjs.org/mozlog/-/mozlog-1.0.0.tgz",
+      "version": "1.0.1",
+      "from": "mozlog@1.0.1",
+      "resolved": "https://registry.npmjs.org/mozlog/-/mozlog-1.0.1.tgz",
       "dependencies": {
         "intel": {
-          "version": "1.0.0-b6",
-          "from": "intel@1.0.0-b6",
-          "resolved": "https://registry.npmjs.org/intel/-/intel-1.0.0-b6.tgz",
+          "version": "1.0.0",
+          "from": "intel@^1.0.0",
+          "resolved": "https://registry.npmjs.org/intel/-/intel-1.0.0.tgz",
           "dependencies": {
             "chalk": {
               "version": "0.5.1",
@@ -3098,7 +3098,7 @@
                   "dependencies": {
                     "ansi-regex": {
                       "version": "0.2.1",
-                      "from": "ansi-regex@^0.2.0",
+                      "from": "ansi-regex@^0.2.1",
                       "resolved": "https://registry.npmjs.org/ansi-regex/-/ansi-regex-0.2.1.tgz"
                     }
                   }
@@ -3110,7 +3110,7 @@
                   "dependencies": {
                     "ansi-regex": {
                       "version": "0.2.1",
-                      "from": "ansi-regex@^0.2.0",
+                      "from": "ansi-regex@^0.2.1",
                       "resolved": "https://registry.npmjs.org/ansi-regex/-/ansi-regex-0.2.1.tgz"
                     }
                   }
@@ -3124,13 +3124,8 @@
             },
             "dbug": {
               "version": "0.4.2",
-              "from": "dbug@~0.4.1",
+              "from": "dbug@~0.4.2",
               "resolved": "https://registry.npmjs.org/dbug/-/dbug-0.4.2.tgz"
-            },
-            "depd": {
-              "version": "1.0.0",
-              "from": "depd@~1.0.0",
-              "resolved": "https://registry.npmjs.org/depd/-/depd-1.0.0.tgz"
             },
             "stack-trace": {
               "version": "0.0.9",
@@ -3139,7 +3134,7 @@
             },
             "strftime": {
               "version": "0.8.2",
-              "from": "strftime@~0.8.0",
+              "from": "strftime@~0.8.2",
               "resolved": "https://registry.npmjs.org/strftime/-/strftime-0.8.2.tgz"
             },
             "symbol": {
@@ -3156,15 +3151,15 @@
         },
         "merge": {
           "version": "1.2.0",
-          "from": "merge@1.2.0",
+          "from": "merge@^1.2.0",
           "resolved": "https://registry.npmjs.org/merge/-/merge-1.2.0.tgz"
         }
       }
     },
     "mysql": {
-      "version": "2.5.3",
-      "from": "mysql@2.5.3",
-      "resolved": "https://registry.npmjs.org/mysql/-/mysql-2.5.3.tgz",
+      "version": "2.5.4",
+      "from": "mysql@2.5.4",
+      "resolved": "https://registry.npmjs.org/mysql/-/mysql-2.5.4.tgz",
       "dependencies": {
         "bignumber.js": {
           "version": "1.4.1",
@@ -3193,7 +3188,7 @@
             },
             "inherits": {
               "version": "2.0.1",
-              "from": "inherits@2",
+              "from": "inherits@~2.0.1",
               "resolved": "https://registry.npmjs.org/inherits/-/inherits-2.0.1.tgz"
             }
           }
