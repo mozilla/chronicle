@@ -50,8 +50,8 @@ module.exports = {
     _trace('db.getPaginatedVisits', arguments);
     var query = 'SELECT id, url, urlHash, title, visitedAt ' +
                 'FROM visits WHERE fxaId = ? ' +
-                'AND visitedAt > (SELECT visitedAt FROM visits WHERE id = ?) ' +
-                'ORDER BY visitedAt LIMIT ?';
+                'AND visitedAt < (SELECT visitedAt FROM visits WHERE id = ?) ' +
+                'ORDER BY visitedAt DESC LIMIT ?';
     pool.query(query, [fxaId, visitId, count], function(err, results) {
       cb(err, results);
     });
@@ -59,7 +59,7 @@ module.exports = {
   getVisits: function(fxaId, count, cb) {
     _trace('db.getVisits', arguments);
     var query = 'SELECT id, url, urlHash, title, visitedAt ' +
-                'FROM visits WHERE fxaId=? ORDER BY visitedAt LIMIT ?';
+                'FROM visits WHERE fxaId=? ORDER BY visitedAt DESC LIMIT ?';
     pool.query(query, [fxaId, count], function(err, results) {
       cb(err, results);
     });
