@@ -5,9 +5,15 @@
 module.exports = function (grunt) {
   'use strict';
 
-  grunt.registerTask('serve', [
-    'build:development',
-    'hapi',
-    'watch'
-  ]);
+  grunt.registerTask('serve', 'Builds the dist assets, starts the Hapi server, and watches for changes.', function (target) {
+    if (!target) {
+      target = 'development';
+    }
+
+    grunt.task.run([
+      'build:' + target,
+      'hapi',
+      'watch'
+    ]);
+  });
 };

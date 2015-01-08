@@ -112,12 +112,29 @@ module.exports = [{
     }
   }
 }, {
-  // static routes using dist/, yay grunt
   method: 'GET',
-  path: '/assets/{param*}',
+  path: '/images/{param*}',
   handler: {
     directory: {
-      path: path.join(__dirname, '..', config.get('server.staticPath')),
+      path: path.join(__dirname, '..', config.get('server.staticPath'), 'images'),
+      listing: config.get('server.staticDirListing')
+    }
+  }
+}, {
+  method: 'GET',
+  path: '/scripts/{param*}',
+  handler: {
+    directory: {
+      path: path.join(__dirname, '..', config.get('server.staticPath'), 'scripts'),
+      listing: config.get('server.staticDirListing')
+    }
+  }
+}, {
+  method: 'GET',
+  path: '/styles/{param*}',
+  handler: {
+    directory: {
+      path: path.join(__dirname, '..', config.get('server.staticPath'), 'styles'),
       listing: config.get('server.staticDirListing')
     }
   }
