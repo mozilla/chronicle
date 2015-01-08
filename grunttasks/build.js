@@ -5,7 +5,7 @@
 module.exports = function (grunt) {
   'use strict';
 
-  grunt.registerTask('build', 'Build front-end assets and copy them to dist', function (target) {
+  grunt.registerTask('build', 'Build front-end assets and copy them to `staticPath`', function (target) {
     if (!target) {
       target = 'development';
     }
@@ -18,7 +18,8 @@ module.exports = function (grunt) {
         'clean',
         'copy',
         'css',
-        'requirejs:development'
+        'requirejs:development',
+        'template'
       ];
     } else {
       taskArr = [
@@ -28,6 +29,7 @@ module.exports = function (grunt) {
         'css',
         'useminPrepare',
         'requirejs:' + target,
+        'template',
         'rev',
         'usemin'
       ];
