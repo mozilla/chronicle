@@ -4,12 +4,27 @@
 
 define([
   'views/base',
-  'stache!templates/visits/index'
-], function (BaseView, VisitsIndexTemplate) {
+  'stache!templates/visits/index',
+  'collections/visits',
+  'views/visits/item'
+], function (BaseView, VisitsIndexTemplate, Visits, VisitsItemView) {
   'use strict';
 
   var VisitsIndexView = BaseView.extend({
     template: VisitsIndexTemplate,
+
+    initialize: function () {
+      this.collection = new Visits();
+
+      this.listenTo(this.collection, 'add destroy reset', this.render);
+
+      // Fetch visits from the server
+      this.collection.fetch({ reset: true });
+    },
+
+    afterRender: function () {
+      this.renderCollection(VisitsItemView, '.visits');
+    }
   });
 
   return VisitsIndexView;
