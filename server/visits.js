@@ -39,7 +39,7 @@ var routes = [{
         fxaId = fxaId || config.get('testUser.id');
       }
       var visitId = request.query.visitId;
-      log.info('fxaId is ' + fxaId);
+      log.trace('fxaId is ' + fxaId);
 
       function onResults(err, results) {
         if (err) {

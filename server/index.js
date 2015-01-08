@@ -9,9 +9,12 @@ var config = require('./config');
 var log = require('./logger')('server.index');
 var routes = require('./routes');
 var visits = require('./visits');
+var serverConfig = {};
 
-// log extra error info if we're developing locally
-var serverConfig = (config.get('env') === 'local' ? {debug: {request: ['error']}} : {});
+// log extra error info if we're in ultra-chatty log mode
+if (config.get('server.log.level') === 'trace') {
+  serverConfig = {debug: {request: ['error']}};
+}
 
 var server = new Hapi.Server(serverConfig);
 server.connection({
