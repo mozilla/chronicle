@@ -20,7 +20,7 @@ module.exports = function (grunt) {
     replaceRequireScript: [{
       files: ['<%= staticPath %>/index.html'],
       module: 'main',
-      modulePath: '/assets/scripts/compiled'
+      modulePath: 'scripts/compiled'
     }],
     stubModules: ['text', 'stache'],
     useStrict: true

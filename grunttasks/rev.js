@@ -5,10 +5,15 @@
 module.exports = function (grunt) {
   'use strict';
 
-  grunt.config('clean', {
-    dist: [
-      '!<%= staticPath %>/.gitignore',
-      '<%= staticPath %>/*'
-    ]
+  grunt.config('rev', {
+    app: {
+      files: {
+        src: [
+          '<%= staticPath %>/scripts/*.js',
+          '<%= staticPath %>/styles/*.css',
+          '<%= staticPath %>/images/*.{gif,jpeg,jpg,png,svg}'
+        ]
+      }
+    }
   });
 };

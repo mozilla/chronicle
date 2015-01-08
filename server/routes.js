@@ -13,6 +13,8 @@ var log = require('./logger')('server.routes');
 var config = require('./config');
 var db = require('./db/db');
 
+var STATIC_PATH = path.join(__dirname, '..', config.get('server.staticPath'));
+
 module.exports = [{
   method: 'GET',
   path: '/',
@@ -29,7 +31,7 @@ module.exports = [{
     handler: function (request, reply) {
       var page = request.auth.isAuthenticated ? 'app.html' : 'index.html';
       // TODO we should set a session cookie here that's visible to the client: #45
-      reply.file(path.join(__dirname, '..', config.get('server.staticPath'), page));
+      reply.file(path.join(STATIC_PATH, page));
     }
   }
 }, {
@@ -112,12 +114,11 @@ module.exports = [{
     }
   }
 }, {
-  // static routes using dist/, yay grunt
   method: 'GET',
-  path: '/assets/{param*}',
+  path: '/{param*}',
   handler: {
     directory: {
-      path: path.join(__dirname, '..', config.get('server.staticPath')),
+      path: STATIC_PATH,
       listing: config.get('server.staticDirListing')
     }
   }

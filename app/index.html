@@ -6,7 +6,9 @@
     <title>Chronicle</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width">
-    <link rel="stylesheet" href="assets/styles/compiled.css">
+    <!-- build:css styles/compiled.css -->
+    <link rel="stylesheet" href="styles/compiled.css">
+    <!-- endbuild -->
   </head>
   <body class="l-flexbody">
     <div id="top-bar">
@@ -26,6 +28,10 @@
         <p class="l-text-center">&copy; 2015 &bull; <a href="https://github.com/mozilla/chronicle/" target="_blank">Mozilla</a></p>
       </div>
     </div>
-    <script data-main="assets/scripts/main" src="assets/bower_components/requirejs/require.js"></script>
+
+    <!-- build:js scripts/compiled.js -->
+    <script data-main="scripts/main" src="assets/bower_components/requirejs/require.js"></script>
+    <!-- endbuild -->
+
   </body>
 </html>

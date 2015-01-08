@@ -7,7 +7,7 @@ module.exports = function (grunt) {
 
   grunt.config('sass', {
     options: {
-      imagePath: '/assets/images',
+      imagePath: '/images',
       outputStyle: 'compressed',
       precision: 3,
       sourceMap: true

@@ -5,18 +5,36 @@
 module.exports = function (grunt) {
   'use strict';
 
-  grunt.registerTask('build', 'Build front-end assets and copy them to dist', function (target) {
+  grunt.registerTask('build', 'Build front-end assets and copy them to `staticPath`', function (target) {
     if (!target) {
       target = 'development';
     }
 
-    grunt.task.run([
-      'lint',
-      'clean',
-      'copy',
-      'requirejs:' + target,
-      'css',
-      'template'
-    ]);
+    var taskArr;
+
+    if (target === 'development') {
+      taskArr = [
+        'lint',
+        'clean',
+        'copy',
+        'css',
+        'requirejs:development',
+        'template'
+      ];
+    } else {
+      taskArr = [
+        'lint',
+        'clean',
+        'copy',
+        'css',
+        'requirejs:' + target,
+        'template',
+        'useminPrepare',
+        'rev',
+        'usemin'
+      ];
+    }
+
+    grunt.task.run(taskArr);
   });
 };
