@@ -130,7 +130,7 @@
     },
     "grunt": {
       "version": "0.4.5",
-      "from": "grunt@~0.4.0",
+      "from": "grunt@~0.4.2",
       "resolved": "https://registry.npmjs.org/grunt/-/grunt-0.4.5.tgz",
       "dependencies": {
         "async": {
@@ -401,7 +401,7 @@
               "dependencies": {
                 "ansi-regex": {
                   "version": "0.2.1",
-                  "from": "ansi-regex@^0.2.1",
+                  "from": "ansi-regex@^0.2.0",
                   "resolved": "https://registry.npmjs.org/ansi-regex/-/ansi-regex-0.2.1.tgz"
                 }
               }
@@ -413,7 +413,7 @@
               "dependencies": {
                 "ansi-regex": {
                   "version": "0.2.1",
-                  "from": "ansi-regex@^0.2.1",
+                  "from": "ansi-regex@^0.2.0",
                   "resolved": "https://registry.npmjs.org/ansi-regex/-/ansi-regex-0.2.1.tgz"
                 }
               }
@@ -1304,7 +1304,7 @@
         },
         "grunt": {
           "version": "0.4.5",
-          "from": "grunt@~0.4.2",
+          "from": "grunt@~0.4.5",
           "resolved": "https://registry.npmjs.org/grunt/-/grunt-0.4.5.tgz",
           "dependencies": {
             "async": {
@@ -1692,7 +1692,7 @@
         },
         "text-table": {
           "version": "0.2.0",
-          "from": "text-table@^0.2.0",
+          "from": "text-table@~0.2",
           "resolved": "https://registry.npmjs.org/text-table/-/text-table-0.2.0.tgz"
         }
       }
@@ -1838,7 +1838,7 @@
       "dependencies": {
         "chalk": {
           "version": "0.5.1",
-          "from": "chalk@~0.5.0",
+          "from": "chalk@~0.5.1",
           "resolved": "https://registry.npmjs.org/chalk/-/chalk-0.5.1.tgz",
           "dependencies": {
             "ansi-styles": {
@@ -1858,7 +1858,7 @@
               "dependencies": {
                 "ansi-regex": {
                   "version": "0.2.1",
-                  "from": "ansi-regex@^0.2.1",
+                  "from": "ansi-regex@^0.2.0",
                   "resolved": "https://registry.npmjs.org/ansi-regex/-/ansi-regex-0.2.1.tgz"
                 }
               }
@@ -1870,7 +1870,7 @@
               "dependencies": {
                 "ansi-regex": {
                   "version": "0.2.1",
-                  "from": "ansi-regex@^0.2.1",
+                  "from": "ansi-regex@^0.2.0",
                   "resolved": "https://registry.npmjs.org/ansi-regex/-/ansi-regex-0.2.1.tgz"
                 }
               }
@@ -2378,7 +2378,7 @@
               "dependencies": {
                 "ansi-regex": {
                   "version": "0.2.1",
-                  "from": "ansi-regex@^0.2.1",
+                  "from": "ansi-regex@^0.2.0",
                   "resolved": "https://registry.npmjs.org/ansi-regex/-/ansi-regex-0.2.1.tgz"
                 }
               }
@@ -2390,7 +2390,7 @@
               "dependencies": {
                 "ansi-regex": {
                   "version": "0.2.1",
-                  "from": "ansi-regex@^0.2.1",
+                  "from": "ansi-regex@^0.2.0",
                   "resolved": "https://registry.npmjs.org/ansi-regex/-/ansi-regex-0.2.1.tgz"
                 }
               }
@@ -2436,7 +2436,7 @@
               "dependencies": {
                 "ansi-regex": {
                   "version": "0.2.1",
-                  "from": "ansi-regex@^0.2.1",
+                  "from": "ansi-regex@^0.2.0",
                   "resolved": "https://registry.npmjs.org/ansi-regex/-/ansi-regex-0.2.1.tgz"
                 }
               }
@@ -2448,7 +2448,7 @@
               "dependencies": {
                 "ansi-regex": {
                   "version": "0.2.1",
-                  "from": "ansi-regex@^0.2.1",
+                  "from": "ansi-regex@^0.2.0",
                   "resolved": "https://registry.npmjs.org/ansi-regex/-/ansi-regex-0.2.1.tgz"
                 }
               }
@@ -2869,7 +2869,7 @@
       "dependencies": {
         "chalk": {
           "version": "0.5.1",
-          "from": "chalk@~0.5.0",
+          "from": "chalk@~0.5.1",
           "resolved": "https://registry.npmjs.org/chalk/-/chalk-0.5.1.tgz",
           "dependencies": {
             "ansi-styles": {
@@ -3098,7 +3098,7 @@
                   "dependencies": {
                     "ansi-regex": {
                       "version": "0.2.1",
-                      "from": "ansi-regex@^0.2.1",
+                      "from": "ansi-regex@^0.2.0",
                       "resolved": "https://registry.npmjs.org/ansi-regex/-/ansi-regex-0.2.1.tgz"
                     }
                   }
@@ -3110,7 +3110,7 @@
                   "dependencies": {
                     "ansi-regex": {
                       "version": "0.2.1",
-                      "from": "ansi-regex@^0.2.1",
+                      "from": "ansi-regex@^0.2.0",
                       "resolved": "https://registry.npmjs.org/ansi-regex/-/ansi-regex-0.2.1.tgz"
                     }
                   }

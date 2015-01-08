@@ -27,9 +27,9 @@ module.exports = function (grunt) {
         'clean',
         'copy',
         'css',
-        'useminPrepare',
         'requirejs:' + target,
         'template',
+        'useminPrepare',
         'rev',
         'usemin'
       ];

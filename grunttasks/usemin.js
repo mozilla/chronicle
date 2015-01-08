@@ -21,9 +21,6 @@ module.exports = function (grunt) {
         '<%= staticPath %>'
       ]
     },
-    css: [
-      '<%= staticPath %>/styles/*.css'
-    ],
     html: [
       '<%= staticPath %>/*.html'
     ]

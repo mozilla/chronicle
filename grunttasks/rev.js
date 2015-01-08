@@ -9,7 +9,6 @@ module.exports = function (grunt) {
     app: {
       files: {
         src: [
-          '<%= staticPath %>/bower_components/**/*.js',
           '<%= staticPath %>/scripts/*.js',
           '<%= staticPath %>/styles/*.css',
           '<%= staticPath %>/images/*.{gif,jpeg,jpg,png,svg}'
