@@ -13,6 +13,8 @@ var log = require('./logger')('server.routes');
 var config = require('./config');
 var db = require('./db/db');
 
+var STATIC_PATH = path.join(__dirname, '..', config.get('server.staticPath'));
+
 module.exports = [{
   method: 'GET',
   path: '/',
@@ -29,7 +31,7 @@ module.exports = [{
     handler: function (request, reply) {
       var page = request.auth.isAuthenticated ? 'app.html' : 'index.html';
       // TODO we should set a session cookie here that's visible to the client: #45
-      reply.file(path.join(__dirname, '..', config.get('server.staticPath'), page));
+      reply.file(path.join(STATIC_PATH, page));
     }
   }
 }, {
@@ -113,28 +115,10 @@ module.exports = [{
   }
 }, {
   method: 'GET',
-  path: '/images/{param*}',
+  path: '/{param*}',
   handler: {
     directory: {
-      path: path.join(__dirname, '..', config.get('server.staticPath'), 'images'),
-      listing: config.get('server.staticDirListing')
-    }
-  }
-}, {
-  method: 'GET',
-  path: '/scripts/{param*}',
-  handler: {
-    directory: {
-      path: path.join(__dirname, '..', config.get('server.staticPath'), 'scripts'),
-      listing: config.get('server.staticDirListing')
-    }
-  }
-}, {
-  method: 'GET',
-  path: '/styles/{param*}',
-  handler: {
-    directory: {
-      path: path.join(__dirname, '..', config.get('server.staticPath'), 'styles'),
+      path: STATIC_PATH,
       listing: config.get('server.staticDirListing')
     }
   }

@@ -8,7 +8,8 @@ module.exports = function (grunt) {
   grunt.config('hapi', {
     custom_options: {
       options: {
-        server: require('path').resolve('./server/index')
+        server: require('path').resolve('./server/index'),
+        bases: {}
       }
     }
   });
