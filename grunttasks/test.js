@@ -5,13 +5,5 @@
 module.exports = function (grunt) {
   'use strict';
 
-  require('load-grunt-tasks')(grunt, { pattern: ['grunt-*', 'intern'] });
-
-  var config = require('./server/config');
-
-  grunt.initConfig({
-    staticPath: config.get('server.staticPath')
-  });
-
-  grunt.loadTasks('grunttasks/');
+  grunt.registerTask('test', ['build', 'hapi', 'intern']);
 };

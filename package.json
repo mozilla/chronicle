@@ -39,6 +39,7 @@
     "grunt-template": "0.2.3",
     "grunt-todo": "0.4.0",
     "grunt-usemin": "3.0.0",
+    "intern": "2.2.2",
     "jshint-stylish": "1.0.0",
     "load-grunt-tasks": "2.0.0",
     "precommit-hook": "1.0.7"

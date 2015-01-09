@@ -31,6 +31,21 @@ To fetch dependencies and get cooking:
 6. `npm start`
 7. You're up and running! surf to <http://localhost:8080> :surfer:
 
+## Tests
+
+Right now the test suite consists entirely of functional tests that require Selenium Server 2.44.0.
+
+### Prerequisites
+
+  * Java JDK or JRE (http://www.oracle.com/technetwork/java/javase/downloads/index.html)
+  * Selenium Server (http://docs.seleniumhq.org/download/)
+
+### Run the tests
+
+Run the following in separate terminal windows/tabs:
+
+  * `java -jar path/to/selenium-server-standalone-2.44.0.jar`
+  * `grunt test`
 
 ### Available Grunt Tasks
 
