@@ -28,7 +28,7 @@ module.exports = {
     // otherwise time debugging will be hilariously jumbled
     if (config.get('env') === 'local') {
       pool.on('connection', function onConnection(connection) {
-        log.trace('pool "connection" event fired, setting timezone');
+        log.verbose('pool "connection" event fired, setting timezone');
         connection.query('SET time_zone=?', '+00:00');
       });
     }
@@ -36,7 +36,7 @@ module.exports = {
     // TODO is this the right way to ensure pool shutdown?
     // shutdown the pool on process shutdown
     process.on('exit', function onExit() {
-      log.trace('received exit signal, closing pool');
+      log.verbose('received exit signal, closing pool');
       pool.end();
     });
 

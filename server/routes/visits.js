@@ -7,25 +7,18 @@
 var Joi = require('joi');
 var Boom = require('boom');
 var uuid = require('uuid');
-var db = require('./db/db');
-var log = require('./logger')('server.visits');
-var config = require('./config');
+var db = require('../db/db');
+var log = require('../logger')('server.routes.visits');
+var config = require('../config');
 
 // TODO: add additional metadata fields to the visit datatype
 // TODO: normalize URLs
-// TODO actually create a session for the fake user
-// TODO: visits pagination
 
-var routes = [{
+module.exports = [{
   method: 'GET',
   path: '/v1/visits',
   config: {
-    // TODO allowing unauthenticated access temporarily
-    // auth: 'session',
-    auth: {
-      strategy: 'session',
-      mode: 'try'
-    },
+    auth: 'session',
     validate: {
       query: {
         count: Joi.number().integer().min(1).max(100).default(25),
@@ -33,13 +26,8 @@ var routes = [{
       }
     },
     handler: function (request, reply) {
-      var fxaId = (request.auth.session.get && request.auth.session.get('fxaId'));
-      // TODO remove once we have auth working with fake user
-      if (config.get('testUser.enabled')) {
-        fxaId = fxaId || config.get('testUser.id');
-      }
+      var fxaId = request.auth.credentials;
       var visitId = request.query.visitId;
-      log.trace('fxaId is ' + fxaId);
 
       function onResults(err, results) {
         if (err) {
@@ -61,24 +49,14 @@ var routes = [{
   method: 'GET',
   path: '/v1/visits/{visitId}',
   config: {
-    // TODO allowing unauthenticated access temporarily
-    // auth: 'session',
-    auth: {
-      strategy: 'session',
-      mode: 'try'
-    },
+    auth: 'session',
     validate: {
       params: {
         visitId: Joi.string().guid().required()
       }
     },
     handler: function (request, reply) {
-      // TODO check fxaId
-      var fxaId = (request.auth.session.get && request.auth.session.get('fxaId'));
-      // TODO remove once we have auth working with fake user
-      if (config.get('testUser.enabled')) {
-        fxaId = fxaId || config.get('testUser.id');
-      }
+      var fxaId = request.auth.credentials;
       db.getVisit(fxaId, request.params.visitId, function(err, result) {
         if (err) {
           log.warn(err);
@@ -96,12 +74,7 @@ var routes = [{
   method: 'POST',
   path: '/v1/visits',
   config: {
-    // TODO allowing unauthenticated access temporarily
-    // auth: 'session',
-    auth: {
-      strategy: 'session',
-      mode: 'try'
-    },
+    auth: 'session',
     validate: {
       payload: {
         url: Joi.string().required(),
@@ -112,14 +85,8 @@ var routes = [{
       }
     },
     handler: function(request, reply) {
-      // get fxa id from the cookie
-      // TODO verify that user exists
       var p = request.payload;
-      var fxaId = (request.auth.session.get && request.auth.session.get('fxaId'));
-      // TODO remove this next line once we have auth working with fake user
-      if (config.get('testUser.enabled')) {
-        fxaId = fxaId || config.get('testUser.id');
-      }
+      var fxaId = request.auth.credentials;
       var visitId = p.visitId || uuid.v4();
       db.createVisit(fxaId, visitId, p.visitedAt, p.url, p.title, function (err, visit) {
         if (err) {
@@ -135,12 +102,7 @@ var routes = [{
   method: 'PUT',
   path: '/v1/visits/{visitId}',
   config: {
-    // TODO allowing unauthenticated access temporarily
-    // auth: 'session',
-    auth: {
-      strategy: 'session',
-      mode: 'try'
-    },
+    auth: 'session',
     validate: {
       // all fields are required, keep life simple for the DB
       payload: {
@@ -153,14 +115,7 @@ var routes = [{
       }
     },
     handler: function(request, reply) {
-      // le sigh, such handler boilerplate. refactor someday.
-      // get fxa id from the cookie
-      // TODO verify that user exists
-      var fxaId = (request.auth.session.get && request.auth.session.get('fxaId'));
-      // TODO remove this next line once we have auth working with fake user
-      if (config.get('testUser.enabled')) {
-        fxaId = fxaId || config.get('testUser.id');
-      }
+      var fxaId = request.auth.credentials;
       var visitId = request.params.visitId;
       var p = request.payload;
       db.updateVisit(fxaId, visitId, p.visitedAt, p.url, p.title, function(err, result) {
@@ -179,7 +134,7 @@ var routes = [{
             log.warn(err);
             return reply(Boom.create(500));
           }
-          // unlike GET visit above, we assume 500 would have hit before you 
+          // unlike GET visit above, we assume 500 would have hit before you
           // discover there's actually no record with that ID
           reply(result);
         });
@@ -190,24 +145,14 @@ var routes = [{
   method: 'DELETE',
   path: '/v1/visits/{visitId}',
   config: {
-    // TODO allowing unauthenticated access temporarily
-    // auth: 'session',
-    auth: {
-      strategy: 'session',
-      mode: 'try'
-    },
+    auth: 'session',
     validate: {
       params: {
         visitId: Joi.string().guid().required()
       }
     },
     handler: function (request, reply) {
-      // TODO check fxaId
-      var fxaId = (request.auth.session.get && request.auth.session.get('fxaId'));
-      // TODO remove once we have auth working with fake user
-      if (config.get('testUser.enabled')) {
-        fxaId = fxaId || config.get('testUser.id');
-      }
+      var fxaId = request.auth.credentials;
       db.deleteVisit(fxaId, request.params.visitId, function(err) {
         if (err) {
           log.warn(err);
@@ -218,5 +163,3 @@ var routes = [{
     }
   }
 }];
-
-module.exports = routes;

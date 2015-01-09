@@ -2,6 +2,21 @@
 
 TODO: formally document supported HTTP status codes, format of error and success responses, HTTPS cookie requirements, and which requirements are relaxed when developing locally.
 
+### Auth API
+
+Chronicle uses Firefox Accounts to log users in, but manages its own session duration.
+
+The session cookie is encrypted server-side, so it is not accessible to the client-side code.
+
+The Firefox Accounts OAuth flow is handled by the server; the front-end just needs to redirect logged-out users to the `/auth/login` endpoint.
+
+Note, if the `testUser` config option is set, the cookie will be created directly by visiting `/auth/login`, ignoring the OAuth step.
+
+### Auth API Methods
+
+- Start the login flow: `GET /auth/login`
+- Logout: `GET /auth/logout`
+
 ### Visits API
 
 A `Visit` is a representation of a user's visit to a website at a particular time. Endpoints that return multiple `Visits` return them as simple lists (arrays) of `Visit` objects.
@@ -35,7 +50,7 @@ Note that the `Visit` object returned to a given user never contains that user's
   - This is the format returned by `Date.toJSON()` in modern browsers.
   - See notes section below for a discussion of our choice of timestamp format.
 
-### API Methods
+### Visits API Methods
 
 Note: Partial updates via `PATCH` are not currently supported, but we can add support later to optimize network traffic.
 

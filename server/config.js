@@ -9,8 +9,6 @@ var path = require('path');
 
 var convict = require('convict');
 
-var SEVEN_DAYS_IN_MSEC = 1000 * 60 * 60 * 24 * 7; // 7 days
-
 var conf = convict({
   env: {
     doc: 'Application environment.',
@@ -217,16 +215,22 @@ var conf = convict({
         env: 'SESSION_ALLOW_INSECURE_COOKIES'
       },
       duration: {
-        doc: 'Default session TTL for authenticated users.',
+        doc: 'Session duration in milliseconds. Zero, the default, means session cookie.',
         format: 'int',
-        default: SEVEN_DAYS_IN_MSEC,
+        default: 0,
         env: 'SESSION_DURATION'
       },
-      id: {
+      cookieName: {
         doc: 'Name of session cookie.',
-        default: 'sid-chronicle',
-        env: 'SESSION_ID',
-        format: String
+        default: 'sid',
+        format: String,
+        env: 'SESSION_COOKIE_NAME'
+      },
+      clearInvalid: {
+        doc: 'Whether to expire cookies that fail validation.',
+        default: true,
+        format: Boolean,
+        env: 'SESSION_COOKIE_CLEAR_INVALID'
       }
     }
   }
