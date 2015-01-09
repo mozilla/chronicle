@@ -48,11 +48,6 @@ server.register([
       log.verbose('inside hapi-auth-cookie validateFunc.');
       log.verbose('session is ' + JSON.stringify(session));
 
-      // special case the situation where test user is enabled
-      if (config.get('testUser.enabled')) {
-        return cb(null, true, config.get('testUser.id'));
-      }
-
       var ttl = config.get('server.session.duration');
       if (ttl > 0 && new Date() > new Date(session.expiresAt)) {
         log.verbose('cookie is expired.');

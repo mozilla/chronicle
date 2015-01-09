@@ -27,7 +27,9 @@ module.exports = [{
       }
     },
     handler: function (request, reply) {
-      var page = request.auth.isAuthenticated ? 'app.html' : 'index.html';
+      // TODO: have a separate logged-in view :-)
+      // var page = request.auth.isAuthenticated ? 'app.html' : 'index.html';
+      var page = 'index.html';
       reply.file(path.join(STATIC_PATH, page));
     }
   }
@@ -45,6 +47,12 @@ module.exports = [{
       }
     },
     handler: function(request, reply) {
+      // If we are in testUser mode, just set the cookie and skip the oauth part
+      if (config.get('testUser.enabled')) {
+        request.auth.session.set({fxaId: config.get('testUser.id')});
+        return reply.redirect('/');
+      }
+
       // Bell uses the same endpoint for both the start and redirect
       // steps in the flow. Let's keep this as the initial endpoint,
       // so the API is easy to read, and just redirect the user.
