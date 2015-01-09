@@ -7,15 +7,14 @@
 var Joi = require('joi');
 var Boom = require('boom');
 var uuid = require('uuid');
-var db = require('./db/db');
-var log = require('./logger')('server.visits');
-var config = require('./config');
+var db = require('../db/db');
+var log = require('../logger')('server.routes.visits');
+var config = require('../config');
 
 // TODO: add additional metadata fields to the visit datatype
 // TODO: normalize URLs
-// TODO: visits pagination
 
-var routes = [{
+module.exports = [{
   method: 'GET',
   path: '/v1/visits',
   config: {
@@ -135,7 +134,7 @@ var routes = [{
             log.warn(err);
             return reply(Boom.create(500));
           }
-          // unlike GET visit above, we assume 500 would have hit before you 
+          // unlike GET visit above, we assume 500 would have hit before you
           // discover there's actually no record with that ID
           reply(result);
         });
@@ -164,5 +163,3 @@ var routes = [{
     }
   }
 }];
-
-module.exports = routes;

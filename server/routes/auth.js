@@ -4,36 +4,10 @@
 
 'use strict';
 
-var path = require('path');
-var uuid = require('uuid');
-
-var log = require('./logger')('server.routes');
-var config = require('./config');
-
-var STATIC_PATH = path.join(__dirname, '..', config.get('server.staticPath'));
+var log = require('../logger')('server.routes.auth');
+var config = require('../config');
 
 module.exports = [{
-  method: 'GET',
-  path: '/',
-  config: {
-    auth: {
-      strategy: 'session',
-      // 'try': allow users to visit the route with good, bad, or no session
-      mode: 'try'
-    },
-    plugins: {
-      'hapi-auth-cookie': {
-        redirectTo: false // don't redirect users who don't have a session
-      }
-    },
-    handler: function (request, reply) {
-      // TODO: have a separate logged-in view :-)
-      // var page = request.auth.isAuthenticated ? 'app.html' : 'index.html';
-      var page = 'index.html';
-      reply.file(path.join(STATIC_PATH, page));
-    }
-  }
-}, {
   method: 'GET',
   path: '/auth/login',
   config: {
@@ -103,15 +77,6 @@ module.exports = [{
       }
       request.auth.session.set(session);
       reply.redirect('/');
-    }
-  }
-}, {
-  method: 'GET',
-  path: '/{param*}',
-  handler: {
-    directory: {
-      path: STATIC_PATH,
-      listing: config.get('server.staticDirListing')
     }
   }
 }];

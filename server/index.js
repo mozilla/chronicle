@@ -11,7 +11,6 @@ var config = require('./config');
 var log = require('./logger')('server.index');
 var authProfileCb = require('./bell_oauth_profile');
 var routes = require('./routes');
-var visits = require('./visits');
 var serverConfig = {};
 var db = require('./db/db');
 
@@ -85,6 +84,5 @@ server.register([
 
 // register routes
 server.route(routes);
-server.route(visits);
 
 module.exports = server;
