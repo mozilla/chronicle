@@ -11,6 +11,6 @@ install:
   - travis_retry npm install
 
 script:
-  - npm run validate # check for vulnerable modules via nodesecurity.io
+  - npm run validate-shrinkwrap # check for vulnerable modules via nodesecurity.io
   - npm run outdated
   - npm run lint

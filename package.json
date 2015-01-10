@@ -58,9 +58,9 @@
     "lint": "grunt lint",
     "outdated": "npm outdated --depth 0",
     "postinstall": "bower update --config.interactive=false -s",
-    "shrinkwrap": "npm shrinkwrap --dev && npm run validate",
+    "shrinkwrap": "npm shrinkwrap --dev && npm run validate-shrinkwrap",
     "start": "grunt serve",
     "test": "echo \"Error: no test specified\"",
-    "validate": "grunt validate-shrinkwrap --force"
+    "validate-shrinkwrap": "grunt validate-shrinkwrap --force"
   }
 }
