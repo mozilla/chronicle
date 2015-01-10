@@ -130,7 +130,7 @@
     },
     "grunt": {
       "version": "0.4.5",
-      "from": "grunt@>=0.4.4 <0.5.0",
+      "from": "grunt@>=0.4.0 <0.5.0",
       "resolved": "https://registry.npmjs.org/grunt/-/grunt-0.4.5.tgz",
       "dependencies": {
         "async": {
@@ -803,6 +803,23 @@
           "version": "1.2.0",
           "from": "merge@>=1.2.0 <2.0.0",
           "resolved": "https://registry.npmjs.org/merge/-/merge-1.2.0.tgz"
+        }
+      }
+    },
+    "node-resque": {
+      "version": "0.11.5",
+      "from": "node-resque@0.11.5",
+      "resolved": "https://registry.npmjs.org/node-resque/-/node-resque-0.11.5.tgz",
+      "dependencies": {
+        "redis": {
+          "version": "0.12.1",
+          "from": "redis@>=0.12.1 <0.13.0",
+          "resolved": "https://registry.npmjs.org/redis/-/redis-0.12.1.tgz"
+        },
+        "async": {
+          "version": "0.9.0",
+          "from": "async@>=0.9.0 <0.10.0",
+          "resolved": "https://registry.npmjs.org/async/-/async-0.9.0.tgz"
         }
       }
     },
