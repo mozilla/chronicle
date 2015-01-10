@@ -5,9 +5,8 @@
 'use strict';
 
 var path = require('path');
-var log = require('../logger')('server.routes.base');
 var config = require('../config');
-var STATIC_PATH = path.join(__dirname, '../..', config.get('server.staticPath'));
+var STATIC_PATH = path.join(__dirname, '..', '..', config.get('server.staticPath'));
 
 module.exports = [{
   method: 'GET',

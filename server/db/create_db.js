@@ -10,8 +10,8 @@
 // TODO add to visits when addon supports it: referrer, searchTerms, engagementTime
 
 var program = require('commander');
+
 var utils = require('./utils');
-var config = require('../config');
 var log = require('../logger')('server.db');
 
 var pool = utils.createPool(true);
@@ -42,6 +42,10 @@ function createDatabase(cb) {
     ') ENGINE=InnoDB CHARACTER SET utf8 COLLATE utf8_unicode_ci;';
 
   pool.getConnection(function(err, conn) {
+    if (err) {
+      log.warn('unable to connect to database');
+      return cb(err);
+    }
     // TODO use promises for prettier chaining
     log.verbose('dropping any existing database');
     conn.query(dropDatabaseQuery, function (err) {

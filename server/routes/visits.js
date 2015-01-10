@@ -9,7 +9,6 @@ var Boom = require('boom');
 var uuid = require('uuid');
 var db = require('../db/db');
 var log = require('../logger')('server.routes.visits');
-var config = require('../config');
 
 // TODO: add additional metadata fields to the visit datatype
 // TODO: normalize URLs
