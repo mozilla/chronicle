@@ -23,7 +23,7 @@ function createDatabase(cb) {
   var useDatabaseQuery = 'USE chronicle';
   var createUsersTableQuery = 'CREATE TABLE IF NOT EXISTS users (' +
     'fxaId CHAR(32) NOT NULL PRIMARY KEY,' +
-    'email VARCHAR(256) NOT NULL,' +
+    'email VARCHAR(255) NOT NULL,' +
     'oauthToken VARCHAR(256),' +
     'createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,' +
     'updatedAt TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,' +
