@@ -18,7 +18,7 @@ $ brew install nodejs elasticsearch mysql redis
 
 ### Code
 
-The server-side code dependencies are managed with [npm](https://www.npmjs.com/). The front-end dependencies are managed with [Bower](https://bower.io/); you can install it via `npm install -g bower` if you don't have it on your system.
+The server-side code dependencies are managed with [npm](https://www.npmjs.com/) and requires that [Grunt](http://gruntjs.com/) is globally installed (`npm install -g grunt-cli`). The front-end dependencies are managed with [Bower](https://bower.io/); you can install it via `npm install -g bower` if you don't have it on your system.
 
 To fetch dependencies and get cooking:
 
