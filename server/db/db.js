@@ -116,7 +116,7 @@ module.exports = {
     });
   },
   deleteVisit: function(fxaId, visitId, cb) {
-    _verbose('db.updateVisit', arguments);
+    _verbose('db.deleteVisit', arguments);
     var query = 'DELETE FROM visits WHERE fxaId = ? AND id = ?';
     pool.query(query, [fxaId, visitId], function(err) {
       if (err) {
