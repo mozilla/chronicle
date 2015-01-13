@@ -6,14 +6,15 @@
 
 'use strict';
 
-var crypto = require('crypto');
 var uuid = require('uuid');
 var program = require('commander');
 
+var createHash = require('crypto').createHash;
 var config = require('../config');
-var pool = require('./utils').createPool();
 var db = require('./db');
 var log = require('../logger')('db.createTestUser');
+
+var pool = require('./utils').createPool();
 
 var defaultCount = 25;
 
@@ -44,7 +45,7 @@ function createTestUser(recordCount, cb) {
     var visitedAt = new Date(historyDate.getTime() + (1000 * n)).toJSON();
     var title = 'Title for Page Number ' + n;
     var url = 'https://www.record' + n + '.com/whatever';
-    var urlHash = crypto.createHash('sha1').update(url).digest('hex').toString();
+    var urlHash = createHash('sha1').update(url).digest('hex').toString();
     // in order: visitId, visitedAt, fxaId, rawUrl, url, urlHash, title
     var output = [uuid.v4(), visitedAt, fakeUser.id, url, url, urlHash, title];
     log.trace('generateTestRecord output is: ' + JSON.stringify(output));
@@ -115,6 +116,9 @@ program
   .parse(process.argv);
 
 var count = program.count || defaultCount;
-truncateTables(function() {
+truncateTables(function(err) {
+  if (err) {
+    throw err;
+  }
   createTestUser.call(null, count, done);
 });

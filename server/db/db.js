@@ -4,11 +4,7 @@
 
 'use strict';
 
-var crypto = require('crypto');
-var mysql = require('mysql');
-var uuid = require('uuid');
-
-var config = require('../config');
+var createHash = require('crypto').createHash;
 var log = require('../logger')('server.db.db');
 var utils = require('./utils');
 
@@ -72,7 +68,7 @@ module.exports = {
   getVisits: function(fxaId, count, cb) {
     _verbose('db.getVisits', arguments);
     var query = 'SELECT id, url, urlHash, title, visitedAt ' +
-                'FROM visits WHERE fxaId=? ORDER BY visitedAt DESC LIMIT ?';
+                'FROM visits WHERE fxaId = ? ORDER BY visitedAt DESC LIMIT ?';
     pool.query(query, [fxaId, count], function(err, results) {
       cb(err, results);
     });
@@ -93,7 +89,7 @@ module.exports = {
   // ...maybe just deal with it later
   createVisit: function(fxaId, visitId, visitedAt, url, title, cb) {
     _verbose('db.createVisit', arguments);
-    var urlHash = crypto.createHash('sha1').update(url).digest('hex').toString();
+    var urlHash = createHash('sha1').update(url).digest('hex').toString();
     var query = 'INSERT INTO visits (id, fxaId, rawUrl, url, urlHash, title, visitedAt) ' +
                 'VALUES (?, ?, ?, ?, ?, ?, ?)';
     pool.query(query, [visitId, fxaId, url, url, urlHash, title, visitedAt], function(err, results) {
@@ -107,7 +103,7 @@ module.exports = {
     _verbose('db.updateVisit', arguments);
     var query = 'UPDATE visits SET visitedAt = ?, url = ?, urlHash = ?, rawUrl = ?, title = ? ' +
                 'WHERE fxaId = ? AND id = ?';
-    var urlHash = crypto.createHash('sha1').update(url).digest('hex').toString();
+    var urlHash = createHash('sha1').update(url).digest('hex').toString();
     pool.query(query, [visitedAt, url, urlHash, url, title, fxaId, visitId], function(err, r) {
       if (err) {
         log.warn('error updating visit: ' + err);
