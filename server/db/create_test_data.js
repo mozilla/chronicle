@@ -8,17 +8,26 @@
 
 var uuid = require('uuid');
 var program = require('commander');
+var pg = require('pg');
 
 var createHash = require('crypto').createHash;
 var config = require('../config');
-var db = require('./db');
-var log = require('../logger')('db.createTestUser');
-
-var pool = require('./utils').createPool();
+var models = require('./db');
+var user = models.user;
+var log = require('../logger')('server.db.createTestData');
 
 var defaultCount = 25;
 
 // see bottom for initialization
+
+var dbParams = {
+  user: config.get('db.postgres.user'),
+  password: config.get('db.postgres.password'),
+  host: config.get('db.postgres.host'),
+  port: config.get('db.postgres.port'),
+  database: config.get('db.postgres.database'),
+  ssl: config.get('db.postgres.ssl')
+};
 
 function done() {
   log.verbose('should now exit; done invoked');
@@ -58,45 +67,37 @@ function createTestUser(recordCount, cb) {
     bulkData.push(generateTestRecord(j));
   }
 
-  db.createUser(fakeUser.id, fakeUser.email, fakeUser.oauthToken, function(err) {
-    if (err) { throw err; }
-    log.verbose('inserted fake user into db');
-
-    // instead of db.createVisit, we'll just issue a bulk insert query directly
-    var query = 'INSERT INTO visits (id, visitedAt, fxaId, rawUrl, url, urlHash, title) ' +
-                'VALUES ?';
-    log.trace('about to insert bulk data');
-    log.trace('query is: ' + query);
-    log.trace('bulkData.length is ' + bulkData.length);
-    pool.query(query, [bulkData], function(err) {
-      if (err) { throw err; }
-      log.verbose('inserted ' + bulkData.length + ' user visits into db');
-      cb && cb(err);
-    });
-  });
-}
-
-// TODO replace this with a create_db call, since it drops the old DB along the way
-function truncateTables(cb) {
-  pool.getConnection(function(err, c) {
+  user.create(fakeUser.id, fakeUser.email, fakeUser.oauthToken, function(err) {
     if (err) {
-      log.verbose('error getting connection: ' + err);
-      return cb(err);
-    }
-    c.query('TRUNCATE visits', function(err) {
-      if (err) {
-        log.verbose('error truncating table: ' + err);
-      } else {
-        log.verbose('truncated visits table');
-      }
-      c.query('TRUNCATE users', function(err) {
-        if (err) {
-          log.verbose('error truncating tables: ' + err);
-        } else {
-          log.verbose('truncated users table');
-        }
-        c.release();
+      return cb && cb(err);
+    } 
+    pg.connect(dbParams, function(err, client, done) {
+      function donezo(str, err) {
+        if (str) { log.warn(str); }
+        if (err) { log.trace(err); }
+        done();
+        pg.end();
         cb && cb(err);
+      }
+
+      if (err) {
+        return donezo('failed to connect to database', err);
+      }
+
+      // instead of db.createVisit, we'll just issue a bulk insert query directly
+      var query = 'INSERT INTO visits (id, visitedAt, fxaId, rawUrl, url, urlHash, title) VALUES ';
+      // a micro query builder. turns arrays into quoted items enclosed in parens, comma-separated.
+      // for example, [foo, 1], [bar, 2] => "('foo', '1'), ('bar', '2')"
+      while (bulkData.length) {
+        var next = bulkData.shift();
+        query += '(' + next.map(function(item) { return '\'' + item + '\''; }).join(', ') + ')';
+        if (bulkData.length) { query += ', '; }
+      }
+      log.trace('query is: ' + query);
+      client.query(query, function(err) {
+        var msg = err ? 'failed to create test data' :
+          'inserted ' + recordCount + ' user visits into db';
+        donezo(msg, err);
       });
     });
   });
@@ -115,10 +116,4 @@ program
   .option('-c, --count <n>', 'Number of fake records to generate. Defaults to ' + defaultCount + '.')
   .parse(process.argv);
 
-var count = program.count || defaultCount;
-truncateTables(function(err) {
-  if (err) {
-    throw err;
-  }
-  createTestUser.call(null, count, done);
-});
+createTestUser(program.count, done);

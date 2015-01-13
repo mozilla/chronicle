@@ -8,12 +8,12 @@ find everything you've ever found
 
 ### Large Tools
 
-Chronicle is built using [Node.js](https://nodejs.org/), [ElasticSearch](https://www.elasticsearch.org/), [MySQL](https://www.mysql.com/), and [Redis](http://redis.io/), so you'll want to install the current stable version of all of these.
+Chronicle is built using [Node.js](https://nodejs.org/), [ElasticSearch](https://www.elasticsearch.org/), [PostgreSQL](http://www.postgresql.org/), and [Redis](http://redis.io/), so you'll want to install the current stable version of all of these.
 
 If you are using Mac OS and have [Homebrew](http://brew.sh/) installed, this incantation should work:
 
 ```sh
-$ brew install nodejs elasticsearch mysql redis
+$ brew install nodejs elasticsearch postgresql redis
 ```
 
 ### Code
@@ -25,8 +25,11 @@ To fetch dependencies and get cooking:
 1. `npm install`
 2. As part of the npm install process, the `postinstall` script will install the Bower dependencies for you.
 3. Copy `config/local.json.example` to `config/local.json`, and put your local info in there.
-4. `npm start`
-5. You're up and running! surf to <http://localhost:8080> :surfer:
+4. Run `./server/db/create_db.sh` to create the database, tables, and indexes
+  - this script currently hard-codes the db user, password, and dbname to 'chronicle' (issue #112)
+5. Run `node /server/db/create_test_data.js` to create test data (pass that script `--help` for options)
+6. `npm start`
+7. You're up and running! surf to <http://localhost:8080> :surfer:
 
 
 ### Available Grunt Tasks

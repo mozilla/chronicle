@@ -5,11 +5,13 @@
 'use strict';
 
 var log = require('./logger')('server.bell.profile');
-var db = require('./db/db');
+var user = require('./db/db').user;
 var config = require('./config');
 
 // this is the custom provider profile function used by Bell to allow us
 // to convert oauth tokens into profile information.
+// TODO `profileCb`, as defined by Bell, doesn't seem to take errors in the
+// callback. So we will just throw errors from here :-\
 function profile (credentials, params, get, profileCb) {
   log.verbose('obtained oauth tokens: ' + JSON.stringify(credentials));
   var headers = { headers: {'authorization': 'Bearer ' + params.access_token} };
@@ -17,33 +19,33 @@ function profile (credentials, params, get, profileCb) {
     // Bell returns the parsed data and handles errors internally
     log.verbose('exchanged tokens for profile data:' + JSON.stringify(data));
     // TODO use Joi to validate `data` before sending to DB
-    db.getUserById(data.uid, function (err, user) {
+    user.get(data.uid, function (err, user) {
       if (err) {
-        log.warn('getUserById failed: ' + err);
-        return profileCb('getUserById failed: ' + err);
+        log.warn('user.get failed: ' + err);
+        throw err;
       }
       if (user) {
         log.verbose('user exists! updating oauth token and setting session cookie...');
-        db.updateUser(data.uid, data.email, params.access_token, function(err) {
+        user.update(data.uid, data.email, params.access_token, function(err) {
           if (err) {
-            log.warn('updateUser failed: ' + err);
-            return profileCb('logging in user failed: ' + err);
+            log.warn('user.update failed: ' + err);
+            throw err;
           }
           // finally, set the cookie and redirect.
           log.verbose('logged in existing user ' + data.email);
           credentials.profile = {fxaId: data.uid};
-          return profileCb(null, credentials);
+          return profileCb(credentials);
         });
       } else {
         log.verbose('new user! creating record and setting session cookie...');
-        db.createUser(data.uid, data.email, params.access_token, function(err) {
+        user.create(data.uid, data.email, params.access_token, function(err) {
           if (err) {
-            log.warn('user creation failed: ' + err);
-            return profileCb('creating new user failed: ' + err);
+            log.warn('user.create failed: ' + err);
+            throw err;
           }
           log.verbose('created new user ' + data.email);
           credentials.profile = {fxaId: data.uid, isNewUser: true};
-          return profileCb(null, credentials);
+          return profileCb(credentials);
         });
       }
     });

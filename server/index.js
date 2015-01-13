@@ -7,11 +7,13 @@
 var Hapi = require('hapi');
 var HapiAuthCookie = require('hapi-auth-cookie');
 var Bell = require('bell');
+var pg = require('pg');
+
 var config = require('./config');
 var log = require('./logger')('server.index');
 var authProfileCb = require('./bell_oauth_profile');
 var routes = require('./routes');
-var db = require('./db/db');
+var user = require('./db/db').user;
 
 var serverConfig = {};
 
@@ -39,7 +41,7 @@ server.register([
 ], function (err) {
   if (err) {
     log.warn('failed to load plugin: ' + err);
-    throw err; // TODO should we use AppError instead?
+    throw err;
   }
 
   // hapi-auth-cookie init
@@ -63,9 +65,9 @@ server.register([
       log.verbose('cookie is not expired.');
 
       var fxaId = session.fxaId;
-      db.getUserById(fxaId, function(err, result) {
-        log.verbose('does user exist? result is ' + JSON.stringify(result));
+      user.get(fxaId, function(err, result) {
         if (err) {
+          log.warn('unable to get user to validate user session: ' + err);
           return cb(err, false);
         }
         cb(null, !!result, fxaId);
@@ -89,6 +91,14 @@ server.register([
     isSecure: config.get('server.session.isSecure')
   });
 });
+
+// shutdown the pg pool on process.exit, so that we don't have to
+// call pg.end anywhere else in the app
+process.on('exit', function onExit() {
+  log.verbose('received exit signal, closing pool');
+  pg.end();
+});
+
 
 // register routes
 server.route(routes);
