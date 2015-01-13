@@ -24,9 +24,7 @@ module.exports = [{
       }
     },
     handler: function (request, reply) {
-      // TODO: have a separate logged-in view :-)
-      // var page = request.auth.isAuthenticated ? 'app.html' : 'index.html';
-      var page = 'index.html';
+      var page = request.auth.isAuthenticated ? 'app.html' : 'index.html';
       reply.file(path.join(STATIC_PATH, page));
     }
   }
