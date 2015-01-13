@@ -9,12 +9,12 @@
 var uuid = require('uuid');
 var program = require('commander');
 
+var createHash = require('crypto').createHash;
 var config = require('../config');
-var utils = require('./utils');
 var db = require('./db');
 var log = require('../logger')('db.createTestUser');
 
-var pool = utils.createPool();
+var pool = require('./utils').createPool();
 
 var defaultCount = 25;
 
@@ -45,7 +45,7 @@ function createTestUser(recordCount, cb) {
     var visitedAt = new Date(historyDate.getTime() + (1000 * n)).toJSON();
     var title = 'Title for Page Number ' + n;
     var url = 'https://www.record' + n + '.com/whatever';
-    var urlHash = utils.createUrlHash(url);
+    var urlHash = createHash('sha1').update(url).digest('hex').toString();
     // in order: visitId, visitedAt, fxaId, rawUrl, url, urlHash, title
     var output = [uuid.v4(), visitedAt, fakeUser.id, url, url, urlHash, title];
     log.trace('generateTestRecord output is: ' + JSON.stringify(output));

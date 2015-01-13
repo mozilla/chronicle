@@ -4,16 +4,11 @@
 
 'use strict';
 
-var createHash = require('crypto').createHash;
-
 var mysql = require('mysql');
 var config = require('../config');
 var log = require('../logger')('server.db.utils');
 
 module.exports = {
-  createUrlHash: function (url) {
-    return createHash('sha1').update(url).digest('hex').toString();
-  },
   createPool: function(unsetDatabaseName) {
     var params = {
       connectionLimit: config.get('db.mysql.connectionLimit'),
