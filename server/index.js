@@ -11,18 +11,26 @@ var config = require('./config');
 var log = require('./logger')('server.index');
 var authProfileCb = require('./bell_oauth_profile');
 var routes = require('./routes');
-var serverConfig = {};
 var db = require('./db/db');
+
+var serverConfig = {};
 
 // log extra error info if we're in ultra-chatty log mode
 if (config.get('server.log.level') === 'trace') {
-  serverConfig = {debug: {request: ['error']}};
+  serverConfig = {
+    debug: {
+      request: ['error']
+    }
+  };
 }
 
 var server = new Hapi.Server(serverConfig);
 server.connection({
   host: config.get('server.host'),
-  port: config.get('server.port')
+  port: config.get('server.port'),
+  router: {
+    stripTrailingSlash: true
+  }
 });
 
 server.register([
