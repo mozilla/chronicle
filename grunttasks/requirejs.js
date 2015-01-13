@@ -18,7 +18,7 @@ module.exports = function (grunt) {
     preserveLicenseComments: false,
     removeCombined: true,
     replaceRequireScript: [{
-      files: ['<%= staticPath %>/index.html'],
+      files: ['<%= staticPath %>/app.html'],
       module: 'main',
       modulePath: 'scripts/compiled'
     }],
