@@ -96,6 +96,17 @@ var conf = convict({
       }
     }
   },
+  scraper: {
+    endpoint: {
+      doc: 'Scraper endpoint',
+      default: 'https://api.embed.ly/1/extract'
+    },
+    apiKey: {
+      doc: 'Scraper API key',
+      default: '',
+      format: String
+    }
+  },
   server: {
     log: {
       doc: 'Mozlog configuration. Defaults currently target dev, not prod.',
