@@ -93,6 +93,16 @@ var conf = convict({
         default: 6379,
         env: 'REDIS_PORT',
         format: 'port'
+      },
+      password: {
+        default: '',
+        env: 'REDIS_PASSWORD',
+        format: String
+      },
+      database: {
+        default: 0,
+        env: 'REDIS_DATABASE',
+        format: 'int'
       }
     }
   },
