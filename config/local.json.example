@@ -33,6 +33,9 @@
       "isSecure": false,
       "duration": 86400000
     },
+    "embedly": {
+      "key": "YOUR KEY HERE"
+    },
     "oauth": {
       "clientId": "1f9bbddcb3e160ab",
       "clientSecret": "24bf8caeaa685e2e42d9a75b48511f83adffaf6fcdd174ce8749358a376be911",
