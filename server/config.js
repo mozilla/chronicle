@@ -49,38 +49,38 @@ var conf = convict({
         format: 'port'
       }
     },
-    mysql: {
+    postgres: {
+      doc: 'NOTE: the username, password, and database name are all hard-coded in create_db.sh',
       host: {
-        default: '127.0.0.1',
-        env: 'MYSQL_HOST',
-        format: 'url'
+        doc: 'Name of host to connect to. Could be a socket or a URL.',
+        default: 'localhost',
+        env: 'PGHOST',
+        format: String
       },
       port: {
-        default: 3306,
-        env: 'MYSQL_PORT',
+        default: 5432,
+        env: 'PGPORT',
         format: 'port'
       },
       user: {
-        default: 'root',
-        env: 'MYSQL_USERNAME',
-        format: String
-      },
-      password: {
-        default: '',
-        env: 'MYSQL_PASSWORD',
+        default: 'chronicle',
+        env: 'PGUSER',
         format: String
       },
       database: {
-        doc: 'Name of the database.',
         default: 'chronicle',
-        env: 'MYSQL_DATABASE',
+        env: 'PGDATABASE',
         format: String
       },
-      connectionLimit: {
-        doc: 'Max number of MySQL workers in the pool.',
-        default: 25,
-        env: 'MYSQL_CONN_LIMIT',
-        format: 'int'
+      password: {
+        default: 'chronicle',
+        env: 'PGPASSWORD',
+        format: String
+      },
+      ssl: {
+        doc: 'Require SSL for postgres connections.',
+        default: false,
+        format: Boolean
       }
     },
     redis: {

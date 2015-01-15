@@ -7,8 +7,10 @@
 var Joi = require('joi');
 var Boom = require('boom');
 var uuid = require('uuid');
-var db = require('../db/db');
 var log = require('../logger')('server.routes.visits');
+var models = require('../db/db');
+var visit = models.visit;
+var visits = models.visits;
 
 // TODO: add additional metadata fields to the visit datatype
 // TODO: normalize URLs
@@ -38,9 +40,9 @@ module.exports = [{
 
       // if there's a visitId provided, then we want a specific page
       if (visitId) {
-        db.getPaginatedVisits(fxaId, visitId, request.query.count, onResults);
+        visits.getPaginated(fxaId, visitId, request.query.count, onResults);
       } else {
-        db.getVisits(fxaId, request.query.count, onResults);
+        visits.get(fxaId, request.query.count, onResults);
       }
     }
   }
@@ -56,7 +58,7 @@ module.exports = [{
     },
     handler: function (request, reply) {
       var fxaId = request.auth.credentials;
-      db.getVisit(fxaId, request.params.visitId, function(err, result) {
+      visit.get(fxaId, request.params.visitId, function(err, result) {
         if (err) {
           log.warn(err);
           return reply(Boom.create(500));
@@ -87,13 +89,13 @@ module.exports = [{
       var p = request.payload;
       var fxaId = request.auth.credentials;
       var visitId = p.visitId || uuid.v4();
-      db.createVisit(fxaId, visitId, p.visitedAt, p.url, p.title, function (err, visit) {
+      visit.create(fxaId, visitId, p.visitedAt, p.url, p.title, function (err, result) {
         if (err) {
           log.warn(err);
           return reply(Boom.create(500)); // whatever, generic error for now
         }
-        // response should be the visit with the id inserted
-        reply({id: visitId, visitedAt: p.visitedAt, url: p.url, title: p.title});
+        // return the visit so backbone can update the model
+        reply(result);
       });
     }
   }
@@ -117,26 +119,13 @@ module.exports = [{
       var fxaId = request.auth.credentials;
       var visitId = request.params.visitId;
       var p = request.payload;
-      db.updateVisit(fxaId, visitId, p.visitedAt, p.url, p.title, function(err, result) {
+      visit.update(fxaId, visitId, p.visitedAt, p.url, p.title, function(err, result) {
         if (err) {
           log.warn(err);
           return reply(Boom.create(500));
         }
-        if (result.affectedRows !== 1) {
-          // yikes, record not found?
-          log.warn('db.updateVisit returned zero changed rows');
-          return reply(Boom.create(404));
-        }
         // return the visit so backbone can update the model
-        db.getVisit(fxaId, visitId, function(err, result) {
-          if (err) {
-            log.warn(err);
-            return reply(Boom.create(500));
-          }
-          // unlike GET visit above, we assume 500 would have hit before you
-          // discover there's actually no record with that ID
-          reply(result);
-        });
+        reply(result);
       });
     }
   }
@@ -152,7 +141,7 @@ module.exports = [{
     },
     handler: function (request, reply) {
       var fxaId = request.auth.credentials;
-      db.deleteVisit(fxaId, request.params.visitId, function(err) {
+      visit.delete(fxaId, request.params.visitId, function(err) {
         if (err) {
           log.warn(err);
           return reply(Boom.create(500));

@@ -4,12 +4,12 @@
       "host": "127.0.0.1",
       "port": 9200
     },
-    "mysql": {
-      "host": "127.0.0.1",
-      "port": 3306,
-      "user": "root",
-      "password": "",
-      "database": "chronicle"
+    "postgres": {
+      "host": "localhost",
+      "port": 5432,
+      "user": "chronicle",
+      "database": "chronicle",
+      "password": "chronicle"
     },
     "redis": {
       "host": "127.0.0.1",
