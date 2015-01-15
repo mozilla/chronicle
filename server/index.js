@@ -48,7 +48,6 @@ server.register([
   server.auth.strategy('session', 'cookie', {
     password: config.get('server.session.password'),
     cookie: config.get('server.session.cookieName'),
-    redirectTo: '/',
     isSecure: config.get('server.session.isSecure'),
     ttl: config.get('server.session.duration'),
     clearInvalid: config.get('server.session.clearInvalid'),
