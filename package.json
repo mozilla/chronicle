@@ -11,6 +11,7 @@
     "boom": "2.6.1",
     "commander": "2.6.0",
     "convict": "0.6.0",
+    "embedly": "1.0.2",
     "hapi": "8.1.0",
     "hapi-auth-cookie": "2.0.0",
     "joi": "5.1.0",

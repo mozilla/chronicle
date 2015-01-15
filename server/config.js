@@ -155,6 +155,13 @@ var conf = convict({
       format: Boolean,
       env: 'STATIC_DIR_LISTING'
     },
+    embedly: {
+      key: {
+        default: '',
+        format: String,
+        env: 'EMBEDLY_KEY'
+      }
+    },
     oauth: {
       clientId: {
         doc: 'Firefox Accounts client_id.',
