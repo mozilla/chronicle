@@ -180,9 +180,9 @@ var visit = {
 
 var visits = {
   _normalize: function _normalize(r) {
-    var output;
+    var output = [];
     r.forEach(function(item) {
-      output.push(visit._normalize(r));
+      output.push(visit._normalize(item));
     });
     return output;
   },
