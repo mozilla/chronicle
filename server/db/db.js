@@ -4,13 +4,11 @@
 
 'use strict';
 
-var crypto = require('crypto');
-
 var pg = require('pg');
-var uuid = require('uuid');
 
 var config = require('../config');
 var log = require('../logger')('server.db.db');
+
 var dbParams = {
   user: config.get('db.postgres.user'),
   password: config.get('db.postgres.password'),
@@ -19,6 +17,7 @@ var dbParams = {
   database: config.get('db.postgres.database'),
   ssl: config.get('db.postgres.ssl')
 };
+
 var _verbose = function() {
   var logline = [].join.call(arguments, ', ');
   log.verbose(logline);
@@ -37,6 +36,12 @@ function onConnectionError(str, err, cb) {
 //
 // NOTE: we'll keep the DB dumb; if retry logic is needed, it can happen at app level
 var user = {
+  _normalize: function _normalize(r) {
+    return {
+      fxaId: r.fxaid,
+      email: r.email
+    };
+  },
   create: function(fxaId, email, oauthToken, cb) {
     _verbose('db.user.create', fxaId, email, oauthToken);
     var query = 'INSERT INTO users (fxaId, email, oauthToken, createdAt) ' +
@@ -66,7 +71,7 @@ var user = {
           _verbose('db.user.get succeeded');
         }
         done();
-        cb(err, r && r.rows[0]);
+        cb(err, r && user._normalize(r.rows[0]));
       });
     });
   },
@@ -83,52 +88,22 @@ var user = {
           _verbose('db.user.update succeeded');
         }
         done();
-        return cb(err, r && r[0]);
-      });
-    });
-  }
-};
-
-var visits = {
-  getPaginated: function(fxaId, visitId, count, cb) {
-    _verbose('db.visits.getPaginated', fxaId, visitId, count);
-    var query = 'SELECT id, url, urlHash, title, visitedAt ' +
-                'FROM visits WHERE fxaId = $1 ' +
-                'AND visitedAt < (SELECT visitedAt FROM visits WHERE id = $2) ' +
-                'ORDER BY visitedAt DESC LIMIT $3';
-    pg.connect(dbParams, function(err, client, done) {
-      if (err) { return onConnectionError(err, cb); }
-      client.query(query, [fxaId, visitId, count], function(err, results) {
-        if (err) {
-          log.warn('error getting paginated visits: ' + err);
-        } else {
-          _verbose('db.visits.getPaginated succeeded');
-        }
-        done();
-        cb(err, results && results.rows);
-      });
-    });
-  },
-  get: function(fxaId, count, cb) {
-    _verbose('db.visits.get', fxaId, count);
-    var query = 'SELECT id, url, urlHash, title, visitedAt ' +
-                'FROM visits WHERE fxaId = $1 ORDER BY visitedAt DESC LIMIT $2';
-    pg.connect(dbParams, function(err, client, done) {
-      if (err) { return onConnectionError(err, cb); }
-      client.query(query, [fxaId, count], function(err, results) {
-        if (err) {
-          log.warn('error getting visits: ' + err);
-        } else {
-          _verbose('db.visits.get succeeded');
-        }
-        done();
-        cb(err, results && results.rows);
+        cb(err, r && user._normalize(r.rows[0]));
       });
     });
   }
 };
 
 var visit = {
+  _normalize: function _normalize(r) {
+    return {
+      id: r.id,
+      url: r.url,
+      urlHash: r.urlhash,
+      title: r.title,
+      visitedAt: r.visitedat
+    };
+  },
   get: function(fxaId, visitId, cb) {
     _verbose('db.visit.get', fxaId, visitId);
     // important: postgres enforces that the user with id `fxaId` is the user with visit `visitId`
@@ -143,37 +118,34 @@ var visit = {
           _verbose('db.visit.get succeeded');
         }
         done();
-        cb(err, r && r.rows[0]);
+        cb(err, r && visit._normalize(r.rows[0]));
       });
     });
   },
   // TODO if the url and visitedAt are the same, should we just discard the record?
   // ...maybe just deal with it later
-  create: function(fxaId, visitId, visitedAt, url, title, cb) {
+  create: function(fxaId, visitId, visitedAt, url, urlHash, title, cb) {
     _verbose('db.visit.create', fxaId, visitId, visitedAt, url, title);
-    var _visitId = visitId || uuid.v4();
-    var urlHash = crypto.createHash('sha1').update(url).digest('hex').toString();
     var query = 'INSERT INTO visits (id, fxaId, rawUrl, url, urlHash, title, visitedAt) ' +
                 'VALUES ($1, $2, $3, $4, $5, $6, $7)';
     pg.connect(dbParams, function(err, client, done) {
       if (err) { return onConnectionError(err, cb); }
-      client.query(query, [_visitId, fxaId, url, url, urlHash, title, visitedAt], function(err, r) {
+      client.query(query, [visitId, fxaId, url, url, urlHash, title, visitedAt], function(err, r) {
         if (err) {
           log.warn('error creating visit: ' + err);
         } else {
           _verbose('db.visit.create succeeded');
         }
         done();
-        cb(err, r && r.rows[0]);
+        cb(err);
       });
     });
   },
-  update: function(fxaId, visitId, visitedAt, url, title, cb) {
+  update: function(fxaId, visitId, visitedAt, url, urlHash, title, cb) {
     _verbose('db.visit.update', fxaId, visitId, visitedAt, url, title);
     var query = 'UPDATE visits SET visitedAt = $1, updatedAt = $2, url = $3, ' +
                 'urlHash = $4, rawUrl = $5, title = $6 ' +
                 'WHERE fxaId = $7 AND id = $8 RETURNING id, fxaId, visitedAt, url, urlHash, title';
-    var urlHash = crypto.createHash('sha1').update(url).digest('hex').toString();
     pg.connect(dbParams, function(err, client, done) {
       if (err) { return onConnectionError(err, cb); }
       client.query(query, [visitedAt, new Date().toJSON(), url, urlHash, url, title, fxaId, visitId],
@@ -184,7 +156,7 @@ var visit = {
           _verbose('db.visit.update succeeded');
         }
         done();
-        cb(err, r && r.rows[0]);
+        cb(err, r && visit._normalize(r.rows[0]));
       });
     });
   },
@@ -201,6 +173,52 @@ var visit = {
         }
         done();
         cb(err);
+      });
+    });
+  }
+};
+
+var visits = {
+  _normalize: function _normalize(r) {
+    var output;
+    r.forEach(function(item) {
+      output.push(visit._normalize(r));
+    });
+    return output;
+  },
+  getPaginated: function(fxaId, visitId, count, cb) {
+    _verbose('db.visits.getPaginated', fxaId, visitId, count);
+    var query = 'SELECT id, url, urlHash, title, visitedAt ' +
+                'FROM visits WHERE fxaId = $1 ' +
+                'AND visitedAt < (SELECT visitedAt FROM visits WHERE id = $2) ' +
+                'ORDER BY visitedAt DESC LIMIT $3';
+    pg.connect(dbParams, function(err, client, done) {
+      if (err) { return onConnectionError(err, cb); }
+      client.query(query, [fxaId, visitId, count], function(err, results) {
+        if (err) {
+          log.warn('error getting paginated visits: ' + err);
+        } else {
+          _verbose('db.visits.getPaginated succeeded');
+        }
+        done();
+        cb(err, results && visits._normalize(results.rows));
+      });
+    });
+  },
+  get: function(fxaId, count, cb) {
+    _verbose('db.visits.get', fxaId, count);
+    var query = 'SELECT id, url, urlHash, title, visitedAt ' +
+                'FROM visits WHERE fxaId = $1 ORDER BY visitedAt DESC LIMIT $2';
+    pg.connect(dbParams, function(err, client, done) {
+      if (err) { return onConnectionError(err, cb); }
+      client.query(query, [fxaId, count], function(err, results) {
+        if (err) {
+          log.warn('error getting visits: ' + err);
+        } else {
+          _verbose('db.visits.get succeeded');
+        }
+        done();
+        cb(err, results && visits._normalize(results.rows));
       });
     });
   }
