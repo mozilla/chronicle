@@ -2,3 +2,4 @@ node_modules
 config/*.json
 app/bower_components
 app/styles/*.css
+server/db/create_db.sh

@@ -21,6 +21,21 @@ module.exports = function (grunt) {
       files: {
         '<%= staticPath %>/scripts/compiled.js': ['<%= staticPath %>/scripts/compiled.js']
       }
+    },
+    database: {
+      options: {
+        data: {
+          PGDATABASE: config.get('db.postgres.database'),
+          PGPASSWORD: config.get('db.postgres.password'),
+          PGPORT: config.get('db.postgres.port'),
+          PGUSER: config.get('db.postgres.user'),
+          USER: process.env.USER
+        },
+        delimiters: 'js-config-delimiters'
+      },
+      files: {
+        'server/db/create_db.sh': ['server/db/create_db.sht']
+      }
     }
   });
 };
