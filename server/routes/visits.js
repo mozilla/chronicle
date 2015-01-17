@@ -4,6 +4,7 @@
 
 'use strict';
 
+var crypto = require('crypto');
 var Joi = require('joi');
 var Boom = require('boom');
 var uuid = require('uuid');
@@ -89,13 +90,22 @@ module.exports = [{
       var p = request.payload;
       var fxaId = request.auth.credentials;
       var visitId = p.visitId || uuid.v4();
-      visit.create(fxaId, visitId, p.visitedAt, p.url, p.title, function (err, result) {
-        if (err) {
-          log.warn(err);
-          return reply(Boom.create(500)); // whatever, generic error for now
-        }
-        // return the visit so backbone can update the model
-        reply(result);
+      var urlHash = crypto.createHash('sha1').update(p.url).digest('hex').toString();
+      var o = {
+        fxaId: fxaId,
+        visitId: visitId,
+        url: p.url,
+        urlHash: urlHash,
+        title: p.title,
+        visitedAt: p.visitedAt
+      };
+      request.server.methods.queue.createVisit(o);
+      reply({
+        id: visitId,
+        url: p.url,
+        urlHash: urlHash,
+        title: p.title,
+        visitedAt: p.visitedAt
       });
     }
   }
