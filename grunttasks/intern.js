@@ -5,13 +5,12 @@
 module.exports = function (grunt) {
   'use strict';
 
-  require('load-grunt-tasks')(grunt, { pattern: ['grunt-*', 'intern'] });
-
-  var config = require('./server/config');
-
-  grunt.initConfig({
-    staticPath: config.get('server.staticPath')
+  grunt.config('intern', {
+    all: {
+      options: {
+        runType: 'runner',
+        config: 'tests/intern'
+      }
+    }
   });
-
-  grunt.loadTasks('grunttasks/');
 };

@@ -1,16 +1,39 @@
+sudo: false
+
 language: node_js
 node_js:
   - "0.10"
 
+cache:
+  directories:
+    - node_modules
+    - app/bower_components
+
+addons:
+  firefox: "34.0"
+
 before_install:
+  # Configure npm
   - npm config set spin false
   - npm config set loglevel silent
+  # Install grunt globally
   - npm i bower grunt-cli -g
+  # Download Selenium
+  - wget http://selenium-release.storage.googleapis.com/2.44/selenium-server-standalone-2.44.0.jar
 
 install:
   - travis_retry npm install
 
+before_script:
+  # Copy configuration
+  - cp config/local.json.travis config/local.json
+  # Setup database
+  - server/db/create_db.sh
+  - node server/db/create_test_data.js
+  # Configure and start xvfb
+  - export DISPLAY=:99.0
+  - sh -e /etc/init.d/xvfb start
+  # Start selenium and ignore the output
+  - java -jar selenium-server-standalone-2.44.0.jar &> /dev/null &
 script:
-  - npm run validate-shrinkwrap # check for vulnerable modules via nodesecurity.io
-  - npm run outdated
-  - npm run lint
+  - grunt test
