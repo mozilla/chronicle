@@ -12,6 +12,9 @@ cache:
 addons:
   firefox: "34.0"
 
+services:
+  - redis-server
+
 before_install:
   # Configure npm
   - npm config set spin false
