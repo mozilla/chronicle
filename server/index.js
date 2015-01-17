@@ -14,6 +14,8 @@ var log = require('./logger')('server.index');
 var authProfileCb = require('./bell_oauth_profile');
 var routes = require('./routes');
 var user = require('./db/db').user;
+var queue = require('./work-queue/queue');
+var createVisit = queue.createVisit;
 
 var serverConfig = {};
 
@@ -34,6 +36,9 @@ server.connection({
     stripTrailingSlash: true
   }
 });
+
+// TODO clean this up, but at least the method is exposed
+server.method('queue.createVisit', createVisit);
 
 server.register([
   HapiAuthCookie,

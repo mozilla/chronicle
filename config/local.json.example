@@ -26,7 +26,7 @@
       "app": "chronicle",
       "debug": false,
       "fmt": "pretty",
-      "level": "verbose"
+      "level": "info"
     },
     "session": {
       "password": "Wh4t3ver.",
