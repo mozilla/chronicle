@@ -7,7 +7,7 @@
 var pg = require('pg');
 
 var config = require('../config');
-var log = require('../logger')('server.db.db');
+var log = require('../logger')('server.models');
 
 var dbParams = {
   user: config.get('db.postgres.user'),
@@ -43,7 +43,7 @@ var user = {
     };
   },
   create: function(fxaId, email, oauthToken, cb) {
-    _verbose('db.user.create', fxaId, email, oauthToken);
+    _verbose('models.user.create', fxaId, email, oauthToken);
     var query = 'INSERT INTO users (fxaId, email, oauthToken, createdAt) ' +
                 'VALUES ($1, $2, $3, $4)';
     pg.connect(dbParams, function(err, client, done) {
@@ -52,7 +52,7 @@ var user = {
         if (err) {
           log.warn('error saving user: ' + err);
         } else {
-          _verbose('db.user.create succeeded');
+          _verbose('models.user.create succeeded');
         }
         done();
         cb(err);
@@ -60,7 +60,7 @@ var user = {
     });
   },
   get: function(fxaId, cb) {
-    _verbose('db.user.get called', fxaId);
+    _verbose('models.user.get called', fxaId);
     var query = 'SELECT fxaId, email FROM users WHERE fxaId = $1';
     pg.connect(dbParams, function(err, client, done) {
       if (err) { return onConnectionError(err, cb); }
@@ -68,7 +68,7 @@ var user = {
         if (err) {
           log.warn('error retrieving user: ' + err);
         } else {
-          _verbose('db.user.get succeeded');
+          _verbose('models.user.get succeeded');
         }
         done();
         cb(err, r && user._normalize(r.rows[0]));
@@ -76,7 +76,7 @@ var user = {
     });
   },
   update: function(fxaId, email, oauthToken, cb) {
-    _verbose('db.user.update', fxaId, email, oauthToken);
+    _verbose('models.user.update', fxaId, email, oauthToken);
     var query = 'UPDATE users SET email = $1, oauthToken = $2, updatedAt = $3 ' +
                 'WHERE fxaId = $4 RETURNING email, fxaId';
     pg.connect(dbParams, function(err, client, done) {
@@ -85,7 +85,7 @@ var user = {
         if (err) {
           log.warn('error updating user: ' + err);
         } else {
-          _verbose('db.user.update succeeded');
+          _verbose('models.user.update succeeded');
         }
         done();
         cb(err, r && user._normalize(r.rows[0]));
@@ -105,7 +105,7 @@ var visit = {
     };
   },
   get: function(fxaId, visitId, cb) {
-    _verbose('db.visit.get', fxaId, visitId);
+    _verbose('models.visit.get', fxaId, visitId);
     // important: postgres enforces that the user with id `fxaId` is the user with visit `visitId`
     var query = 'SELECT id, url, urlHash, title, visitedAt ' +
                 'FROM visits WHERE id = $1 AND fxaId = $2';
@@ -115,7 +115,7 @@ var visit = {
         if (err) {
           log.warn('error getting visit: ' + err);
         } else {
-          _verbose('db.visit.get succeeded');
+          _verbose('models.visit.get succeeded');
         }
         done();
         cb(err, r && visit._normalize(r.rows[0]));
@@ -125,7 +125,7 @@ var visit = {
   // TODO if the url and visitedAt are the same, should we just discard the record?
   // ...maybe just deal with it later
   create: function(fxaId, visitId, visitedAt, url, urlHash, title, cb) {
-    _verbose('db.visit.create', fxaId, visitId, visitedAt, url, title);
+    _verbose('models.visit.create', fxaId, visitId, visitedAt, url, title);
     var query = 'INSERT INTO visits (id, fxaId, rawUrl, url, urlHash, title, visitedAt) ' +
                 'VALUES ($1, $2, $3, $4, $5, $6, $7)';
     pg.connect(dbParams, function(err, client, done) {
@@ -134,7 +134,7 @@ var visit = {
         if (err) {
           log.warn('error creating visit: ' + err);
         } else {
-          _verbose('db.visit.create succeeded');
+          _verbose('models.visit.create succeeded');
         }
         done();
         cb(err);
@@ -142,7 +142,7 @@ var visit = {
     });
   },
   update: function(fxaId, visitId, visitedAt, url, urlHash, title, cb) {
-    _verbose('db.visit.update', fxaId, visitId, visitedAt, url, title);
+    _verbose('models.visit.update', fxaId, visitId, visitedAt, url, title);
     var query = 'UPDATE visits SET visitedAt = $1, updatedAt = $2, url = $3, ' +
                 'urlHash = $4, rawUrl = $5, title = $6 ' +
                 'WHERE fxaId = $7 AND id = $8 RETURNING id, fxaId, visitedAt, url, urlHash, title';
@@ -153,7 +153,7 @@ var visit = {
         if (err) {
           log.warn('error updating visit: ' + err);
         } else {
-          _verbose('db.visit.update succeeded');
+          _verbose('models.visit.update succeeded');
         }
         done();
         cb(err, r && visit._normalize(r.rows[0]));
@@ -161,7 +161,7 @@ var visit = {
     });
   },
   delete: function(fxaId, visitId, cb) {
-    _verbose('db.visit.delete', fxaId, visitId);
+    _verbose('models.visit.delete', fxaId, visitId);
     var query = 'DELETE FROM visits WHERE fxaId = $1 AND id = $2';
     pg.connect(dbParams, function(err, client, done) {
       if (err) { return onConnectionError(err, cb); }
@@ -169,7 +169,7 @@ var visit = {
         if (err) {
           log.warn('error deleting visit: ' + err);
         } else {
-          _verbose('db.visit.delete succeeded');
+          _verbose('models.visit.delete succeeded');
         }
         done();
         cb(err);
@@ -187,7 +187,7 @@ var visits = {
     return output;
   },
   getPaginated: function(fxaId, visitId, count, cb) {
-    _verbose('db.visits.getPaginated', fxaId, visitId, count);
+    _verbose('models.visits.getPaginated', fxaId, visitId, count);
     var query = 'SELECT id, url, urlHash, title, visitedAt ' +
                 'FROM visits WHERE fxaId = $1 ' +
                 'AND visitedAt < (SELECT visitedAt FROM visits WHERE id = $2) ' +
@@ -198,7 +198,7 @@ var visits = {
         if (err) {
           log.warn('error getting paginated visits: ' + err);
         } else {
-          _verbose('db.visits.getPaginated succeeded');
+          _verbose('models.visits.getPaginated succeeded');
         }
         done();
         cb(err, results && visits._normalize(results.rows));
@@ -206,7 +206,7 @@ var visits = {
     });
   },
   get: function(fxaId, count, cb) {
-    _verbose('db.visits.get', fxaId, count);
+    _verbose('models.visits.get', fxaId, count);
     var query = 'SELECT id, url, urlHash, title, visitedAt ' +
                 'FROM visits WHERE fxaId = $1 ORDER BY visitedAt DESC LIMIT $2';
     pg.connect(dbParams, function(err, client, done) {
@@ -215,7 +215,7 @@ var visits = {
         if (err) {
           log.warn('error getting visits: ' + err);
         } else {
-          _verbose('db.visits.get succeeded');
+          _verbose('models.visits.get succeeded');
         }
         done();
         cb(err, results && visits._normalize(results.rows));

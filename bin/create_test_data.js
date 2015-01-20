@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
@@ -11,10 +13,10 @@ var program = require('commander');
 var pg = require('pg');
 
 var createHash = require('crypto').createHash;
-var config = require('../config');
-var models = require('./db');
+var config = require('../server/config');
+var models = require('../server/models');
 var user = models.user;
-var log = require('../logger')('server.db.createTestData');
+var log = require('../server/logger')('bin.createTestData');
 
 var defaultCount = 25;
 
@@ -70,7 +72,7 @@ function createTestUser(recordCount, cb) {
   user.create(fakeUser.id, fakeUser.email, fakeUser.oauthToken, function(err) {
     if (err) {
       return cb && cb(err);
-    } 
+    }
     pg.connect(dbParams, function(err, client, done) {
       function donezo(str, err) {
         if (str) { log.warn(str); }

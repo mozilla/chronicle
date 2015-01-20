@@ -13,7 +13,7 @@ var config = require('./config');
 var log = require('./logger')('server.index');
 var authProfileCb = require('./bell_oauth_profile');
 var routes = require('./routes');
-var user = require('./db/db').user;
+var user = require('./models').user;
 var queue = require('./work-queue/queue');
 var createVisit = queue.createVisit;
 
