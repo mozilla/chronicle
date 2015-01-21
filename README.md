@@ -27,7 +27,7 @@ To fetch dependencies and get cooking:
 3. Copy `config/local.json.example` to `config/local.json`, and put your local info in there.
 4. Run `./bin/create_db.sh` to create the database, tables, and indexes
   - this script currently hard-codes the db user, password, and dbname to 'chronicle' (issue #112)
-5. Run `./bin/create_test_data.js` to create test data (pass that script `--help` for options)
+5. Run `node bin/create_test_data.js` to create test data (pass that script `--help` for options)
 
 6. `npm start`
 7. You're up and running! surf to <http://localhost:8080> :surfer:

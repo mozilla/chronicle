@@ -5,9 +5,22 @@
 'use strict';
 
 var pg = require('pg');
+var es = require('elasticsearch');
 
 var config = require('../config');
 var log = require('../logger')('server.models');
+
+// >:-(
+// https://github.com/elasticsearch/elasticsearch-js/issues/33
+var esParamsFactory = function() {
+  return {
+    host: {
+      host: config.get('db.elasticsearch.host'),
+      post: config.get('db.elasticsearch.port'),
+      log: 'verbose'
+    }
+  };
+};
 
 var dbParams = {
   user: config.get('db.postgres.user'),
@@ -71,6 +84,7 @@ var user = {
           _verbose('models.user.get succeeded');
         }
         done();
+
         cb(err, r && user._normalize(r.rows[0]));
       });
     });
@@ -122,8 +136,6 @@ var visit = {
       });
     });
   },
-  // TODO if the url and visitedAt are the same, should we just discard the record?
-  // ...maybe just deal with it later
   create: function(fxaId, visitId, visitedAt, url, urlHash, title, cb) {
     _verbose('models.visit.create', fxaId, visitId, visitedAt, url, title);
     var query = 'INSERT INTO visits (id, fxaId, rawUrl, url, urlHash, title, visitedAt) ' +
@@ -133,11 +145,31 @@ var visit = {
       client.query(query, [visitId, fxaId, url, url, urlHash, title, visitedAt], function(err, r) {
         if (err) {
           log.warn('error creating visit: ' + err);
-        } else {
-          _verbose('models.visit.create succeeded');
+          done();
+          return cb(err);
         }
-        done();
-        cb(err);
+        // postgres succeeded, now insert into elasticsearch
+        var esClient = new es.Client(esParamsFactory());
+        esClient.create({
+          index: 'chronicle',
+          type: 'visits',
+          id: visitId,
+          body: {
+            id: visitId,
+            fxaId: fxaId,
+            url: url,
+            urlHash: urlHash,
+            title: title,
+            visitedAt: visitedAt
+          }
+        }).then(function() {
+          _verbose('models.visit.create succeeded');
+          done();
+          cb();
+        }, function (err) {
+          log.warn('error adding visit to elasticsearch: ' + err);
+          cb(err);
+        });
       });
     });
   },
@@ -146,17 +178,42 @@ var visit = {
     var query = 'UPDATE visits SET visitedAt = $1, updatedAt = $2, url = $3, ' +
                 'urlHash = $4, rawUrl = $5, title = $6 ' +
                 'WHERE fxaId = $7 AND id = $8 RETURNING id, fxaId, visitedAt, url, urlHash, title';
+    var updatedAt = new Date().toJSON();
     pg.connect(dbParams, function(err, client, done) {
       if (err) { return onConnectionError(err, cb); }
-      client.query(query, [visitedAt, new Date().toJSON(), url, urlHash, url, title, fxaId, visitId],
+      client.query(query, [visitedAt, updatedAt, url, urlHash, url, title, fxaId, visitId],
         function(err, r) {
         if (err) {
           log.warn('error updating visit: ' + err);
-        } else {
-          _verbose('models.visit.update succeeded');
+          done();
+          return cb(err);
         }
-        done();
-        cb(err, r && visit._normalize(r.rows[0]));
+        // postgres succeeded, now update in elasticsearch
+        // NOTE! we don't verify that user owns visit in ES, but postgres
+        // should already have failed in that case
+        var esClient = new es.Client(esParamsFactory());
+        esClient.update({
+          index: 'chronicle',
+          type: 'visits',
+          id: visitId,
+          body: {
+            id: visitId,
+            fxaId: fxaId,
+            rawUrl: url,
+            url: url,
+            urlHash: urlHash,
+            title: title,
+            visitedAt: visitedAt,
+            updatedAt: updatedAt
+          }
+        }).then(function() {
+          _verbose('models.visit.update succeeded');
+          done();
+          cb(err, r && visit._normalize(r.rows[0]));
+        }, function (err) {
+          log.warn('error updating visit in elasticsearch: ' + err);
+          cb(err);
+        });
       });
     });
   },
@@ -168,11 +225,26 @@ var visit = {
       client.query(query, [fxaId, visitId], function(err) {
         if (err) {
           log.warn('error deleting visit: ' + err);
-        } else {
-          _verbose('models.visit.delete succeeded');
+          done();
+          return cb(err);
         }
-        done();
-        cb(err);
+        // postgres succeeded, now delete from elasticsearch
+        var esClient = new es.Client(esParamsFactory());
+        // NOTE! we don't verify that user owns visit in ES, but postgres
+        // should already have failed in that case
+        esClient.delete({
+          index: 'chronicle',
+          type: 'visits',
+          id: visitId
+        }).then(function() {
+          _verbose('models.visit.delete succeeded');
+          done();
+          cb();
+        }, function(err) {
+          log.warn('error deleting visit in elasticsearch: ' + err);
+          cb(err);
+          done();
+        });
       });
     });
   }
@@ -220,6 +292,51 @@ var visits = {
         done();
         cb(err, results && visits._normalize(results.rows));
       });
+    });
+  },
+  search: function(fxaId, searchTerm, count, cb) {
+    _verbose('models.visits.search', fxaId, count);
+    var esClient = new es.Client(esParamsFactory());
+    esClient.search({
+      index: 'chronicle',
+      type: 'visits',
+      size: count,
+      body: {
+        query: {
+          bool: {
+            must: {term: {fxaId: fxaId}},
+            should: {term: {title: searchTerm}}
+          }
+        }
+      }
+    })
+    .then(function(resp) {
+      var output = {};
+      output.resultCount = resp.hits.total;
+      if (!!resp.hits.total) {
+        output.results = resp.hits.hits.map(function(item) {
+          // TODO: this is quite similar to the visit._normalize function,
+          // except for downcasing. what's the cleanest way to formalize the
+          // contract between API layers and these 2 databases? it should lead
+          // naturally to API docs, I'd think.
+          // TODO we might also want to return relevance scores or other special
+          // elasticsearch bits as part of this API
+          var s = item._source;
+          return {
+            id: s.id,
+            fxaId: s.fxaId,
+            title: s.title,
+            url: s.url,
+            urlHash: s.urlHash,
+            visitedAt: s.visitedAt
+          };
+        });
+      }
+      _verbose('models.visits.search succeeded');
+      cb(null, output);
+    }, function failed(err) {
+      log.warn(err);
+      cb(err);
     });
   }
 };

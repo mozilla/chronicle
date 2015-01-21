@@ -68,3 +68,21 @@ Note: Partial updates via `PATCH` are not currently supported, but we can add su
 - Retrieve `count` visits older than `visitId`: `GET /v1/visits?count=:count&visitId=:visitId`
   - `count` is optional, defaults to 25, max is 100
   - currently we only sort from newest to oldest, so there's not (yet) a way to insert newer visits at the top of a view. we can easily add this when we need it.
+
+### Search API
+
+Visits are indexed in elasticsearch for full-text search. Currently terms are only matched against the `title` field.
+
+#### Request
+
+- Search for visits containing 'gif': `GET /v1/search?q=gif`
+  - `q` is a required field, containing the search term
+    - for the moment, it's only one term per search
+  - `count` is an optional field: max number of records to return
+    - defaults to 25
+
+#### Response
+
+- JSON object with two keys:
+  - `resultCount`, the number of search results
+  - `results`, an array of `Visit` objects

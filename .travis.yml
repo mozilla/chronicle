@@ -14,6 +14,7 @@ addons:
 
 services:
   - redis-server
+  - elasticsearch
 
 before_install:
   # Configure npm

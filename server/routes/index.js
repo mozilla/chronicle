@@ -4,4 +4,4 @@
 
 'use strict';
 
-module.exports = [].concat(require('./base'), require('./auth'), require('./visits'));
+module.exports = [].concat(require('./base'), require('./auth'), require('./search'), require('./visits'));
