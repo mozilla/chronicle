@@ -50,7 +50,7 @@ var conf = convict({
       }
     },
     postgres: {
-      doc: 'NOTE: the username, password, and database name are all hard-coded in create_db.sh',
+      doc: 'NOTE: the username, password, and database name are all hard-coded in server/db/create_db.sh',
       host: {
         doc: 'Name of host to connect to. Could be a socket or a URL.',
         default: 'localhost',
@@ -110,7 +110,7 @@ var conf = convict({
     log: {
       doc: 'Mozlog configuration. Defaults currently target dev, not prod.',
       app: {
-        doc: 'Top-level app name used in hierarchical logging, for example, "chronicle.db.mysql"',
+        doc: 'Top-level app name used in hierarchical logging, for example, "chronicle.db.postgres"',
         default: 'chronicle',
         format: String
       },

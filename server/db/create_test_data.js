@@ -112,7 +112,7 @@ if (!config.get('testUser.enabled')) {
 program
   .description('This script wipes the user and visit tables, generates a fake user\n' +
                '  based on the `testUser` config value, generates N fake visits for\n' +
-               '  that user, and saves it all in MySQL.')
+               '  that user, and saves it all in Postgres.')
   .option('-c, --count <n>', 'Number of fake records to generate. Defaults to ' + defaultCount + '.')
   .parse(process.argv);
 
