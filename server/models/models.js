@@ -341,4 +341,16 @@ var visits = {
   }
 };
 
-module.exports = {user: user, visit: visit, visits: visits};
+var userPages = {
+  get: function() {},
+  create: function() {},
+  update: function() {},
+  delete: function() {}
+};
+
+module.exports = {
+  user: user,
+  visit: visit,
+  visits: visits,
+  userPages: userPages
+};

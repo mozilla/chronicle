@@ -131,6 +131,12 @@ var conf = convict({
         format: Boolean
       }
     },
+    embedlyKey: {
+      doc: 'Embedly API key',
+      format: String,
+      default: '',
+      env: 'EMBEDLY_KEY'
+    },
     host: {
       doc: 'Host for the main api server process.',
       default: '127.0.0.1',
