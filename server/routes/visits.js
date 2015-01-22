@@ -9,7 +9,7 @@ var Joi = require('joi');
 var Boom = require('boom');
 var uuid = require('uuid');
 var log = require('../logger')('server.routes.visits');
-var models = require('../db/db');
+var models = require('../models');
 var visit = models.visit;
 var visits = models.visits;
 
