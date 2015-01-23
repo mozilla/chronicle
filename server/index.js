@@ -11,11 +11,9 @@ var pg = require('pg');
 
 var config = require('./config');
 var log = require('./logger')('server.index');
-var authProfileCb = require('./bell_oauth_profile');
+var authProfileCb = require('./bell-oauth-profile');
 var routes = require('./routes');
-var user = require('./models').user;
-var queue = require('./work-queue/queue');
-var createVisit = queue.createVisit;
+var user = require('./models/user');
 
 var serverConfig = {};
 
@@ -36,9 +34,6 @@ server.connection({
     stripTrailingSlash: true
   }
 });
-
-// TODO clean this up, but at least the method is exposed
-server.method('queue.createVisit', createVisit);
 
 server.register([
   HapiAuthCookie,
@@ -68,13 +63,13 @@ server.register([
       }
       log.verbose('cookie is not expired.');
 
-      var fxaId = session.fxaId;
-      user.get(fxaId, function(err, result) {
+      var userId = session.userId;
+      user.get(userId, function(err, result) {
         if (err) {
           log.warn('unable to get user to validate user session: ' + err);
           return cb(err, false);
         }
-        cb(null, !!result, fxaId);
+        cb(null, !!result, userId);
       });
     }
   });

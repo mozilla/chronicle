@@ -8,114 +8,82 @@
 
 'use strict';
 
-var uuid = require('uuid');
-var program = require('commander');
-var pg = require('pg');
-
-var createHash = require('crypto').createHash;
 var config = require('../server/config');
-var models = require('../server/models');
-var user = models.user;
 var log = require('../server/logger')('bin.createTestData');
+var user = require('../server/models/user');
+var visitsController = require('../server/controllers/visits');
+var testUrls = require('../config/test-urls');
 
-var defaultCount = 25;
-
-// see bottom for initialization
-
-var dbParams = {
-  user: config.get('db.postgres.user'),
-  password: config.get('db.postgres.password'),
-  host: config.get('db.postgres.host'),
-  port: config.get('db.postgres.port'),
-  database: config.get('db.postgres.database'),
-  ssl: config.get('db.postgres.ssl')
-};
-
-function done() {
-  log.verbose('should now exit; done invoked');
-  process.exit();
+if (!config.get('testUser.enabled')) {
+  throw new Error('To create test data, you must set testUser.enabled in the config.');
 }
 
-function createTestUser(recordCount, cb) {
-  recordCount = recordCount || defaultCount;
-
-  var bulkData = [];
-
-  // we'll use this date as a starting point for generating records. Each successive
-  // record will be a number of seconds in the future.
-  var historyDate = new Date('2015-01-01T21:26:23.795Z');
-
+function createTestUser(cb) {
   var fakeUser = {
     id: config.get('testUser.id'),
     email: config.get('testUser.email'),
     oauthToken: 'fakeOauthToken'
   };
   log.verbose('fakeUser is ' + JSON.stringify(fakeUser));
-
-  function generateTestRecord(n) {
-    var visitedAt = new Date(historyDate.getTime() + (1000 * n)).toJSON();
-    var title = 'Title for Page Number ' + n;
-    var url = 'https://www.record' + n + '.com/whatever';
-    var urlHash = createHash('sha1').update(url).digest('hex').toString();
-    // in order: visitId, visitedAt, fxaId, rawUrl, url, urlHash, title
-    var output = [uuid.v4(), visitedAt, fakeUser.id, url, url, urlHash, title];
-    log.trace('generateTestRecord output is: ' + JSON.stringify(output));
-    return output;
-  }
-
-  // TODO when we start generating large test data sets, stream it in
-  for (var j = 0; j < recordCount; j++) {
-    log.trace('pushing a record onto bulkData');
-    bulkData.push(generateTestRecord(j));
-  }
-
   user.create(fakeUser.id, fakeUser.email, fakeUser.oauthToken, function(err) {
-    if (err) {
-      return cb && cb(err);
-    }
-    pg.connect(dbParams, function(err, client, done) {
-      function donezo(str, err) {
-        if (str) { log.warn(str); }
-        if (err) { log.trace(err); }
-        done();
-        pg.end();
-        cb && cb(err);
-      }
-
-      if (err) {
-        return donezo('failed to connect to database', err);
-      }
-
-      // instead of db.createVisit, we'll just issue a bulk insert query directly
-      var query = 'INSERT INTO visits (id, visitedAt, fxaId, rawUrl, url, urlHash, title) VALUES ';
-      // a micro query builder. turns arrays into quoted items enclosed in parens, comma-separated.
-      // for example, [foo, 1], [bar, 2] => "('foo', '1'), ('bar', '2')"
-      while (bulkData.length) {
-        var next = bulkData.shift();
-        query += '(' + next.map(function(item) { return '\'' + item + '\''; }).join(', ') + ')';
-        if (bulkData.length) { query += ', '; }
-      }
-      log.trace('query is: ' + query);
-      client.query(query, function(err) {
-        var msg = err ? 'failed to create test data' :
-          'inserted ' + recordCount + ' user visits into db';
-        donezo(msg, err);
-      });
-    });
+    return cb && cb(err);
   });
 }
 
-// initialization: check we have configs, handle argv
+function createTestData(cb) {
+  var userId = config.get('testUser.id');
+  // we'll use this date as a starting point for generating records. Each successive
+  // record will be a number of seconds in the future.
+  var historyDate = new Date('2015-01-01T21:26:23.795Z');
 
-if (!config.get('testUser.enabled')) {
-  throw new Error('To create test data, you must set testUser.enabled in the config.');
+  function generateTestRequest(item, n) {
+    return {
+      auth: {
+        credentials: userId
+      },
+      payload: {
+        url: item.url,
+        title: item.title,
+        visitedAt: new Date(historyDate.getTime() + (1000 * 60 * n)).toJSON()
+      }
+    };
+  }
+
+  testUrls.forEach(function(item, i) {
+    log.verbose(i, item);
+    visitsController.post(generateTestRequest(item, i), function(resp) {
+      if (resp instanceof Error) {
+        log.warn('visit creation failed: ' + JSON.stringify(resp));
+      } else {
+        log.verbose('visit creation success: ' + JSON.stringify(resp));
+      }
+    });
+  });
+
+  // for now, just wait 60 seconds, then fire the callback blindly
+  setTimeout(function() {
+    cb(null, '60 seconds is up, hopefully the scraper jobs are all done!');
+    process.exit();
+  }, 1000 * 60);
 }
 
-program
-  .description('This script wipes the user and visit tables, generates a fake user\n' +
-               '  based on the `testUser` config value, generates N fake visits for\n' +
-               '  that user, and saves it all in Postgres.')
-  .option('-c, --count <n>', 'Number of fake records to generate. Defaults to ' + defaultCount + '.')
-  .parse(process.argv);
-
-createTestUser(program.count, done);
+log.verbose('about to call createTestUser');
+createTestUser(function (err) {
+  log.verbose('inside createTestUser callback');
+  if (err) {
+    log.warn(err);
+    log.warn('createTestUser failed, quitting');
+    return process.exit();
+  }
+  log.verbose('about to call createTestData');
+  createTestData(function(err) {
+    log.verbose('inside createTestData callback');
+    if (err) {
+      log.warn(err);
+      log.warn('createTestData failed');
+    } else {
+      log.verbose('should now exit; done invoked');
+    }
+    process.exit();
+  });
+});

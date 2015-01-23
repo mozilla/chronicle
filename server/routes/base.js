@@ -6,12 +6,14 @@
 
 var path = require('path');
 var config = require('../config');
+var baseController = require('../controllers/base');
 var STATIC_PATH = path.join(__dirname, '..', '..', config.get('server.staticPath'));
 
-module.exports = [{
+var baseRoutes = [{
   method: 'GET',
   path: '/',
   config: {
+    handler: baseController.get,
     auth: {
       strategy: 'session',
       // 'try': allow users to visit the route with good, bad, or no session
@@ -22,10 +24,6 @@ module.exports = [{
         redirectTo: false // don't redirect users who don't have a session
       }
     },
-    handler: function (request, reply) {
-      var page = request.auth.isAuthenticated ? 'app.html' : 'index.html';
-      reply.file(path.join(STATIC_PATH, page));
-    }
   }
 }, {
   method: 'GET',
@@ -37,3 +35,5 @@ module.exports = [{
     }
   }
 }];
+
+module.exports = baseRoutes;

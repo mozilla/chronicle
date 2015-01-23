@@ -5,5 +5,6 @@
 'use strict';
 
 module.exports = {
-  createVisit: require('./create-visit')
+  createVisit: require('./create-visit'),
+  extractPage: require('./extract-page')
 };

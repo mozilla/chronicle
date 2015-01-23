@@ -2,14 +2,16 @@
   "db": {
     "elasticsearch": {
       "host": "127.0.0.1",
-      "port": 9200
+      "port": 9200,
+      "queryTimeout": 15000
     },
     "postgres": {
       "host": "localhost",
       "port": 5432,
       "user": "chronicle",
       "database": "chronicle",
-      "password": "chronicle"
+      "password": "chronicle",
+      "queryTimeout": 15000
     },
     "redis": {
       "host": "127.0.0.1",
@@ -17,6 +19,10 @@
     }
   },
   "env": "local",
+  "embedly": {
+    "apiKey": "",
+    "enabled": true
+  },
   "server": {
     "host": "127.0.0.1",
     "port": 8080,

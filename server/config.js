@@ -47,6 +47,12 @@ var conf = convict({
         default: 9200,
         env: 'ES_PORT',
         format: 'port'
+      },
+      queryTimeout: {
+        doc: 'Milliseconds before app-level queries will bail',
+        default: 15000,
+        env: 'ES_TIMEOUT',
+        format: 'int'
       }
     },
     postgres: {
@@ -81,6 +87,12 @@ var conf = convict({
         doc: 'Require SSL for postgres connections.',
         default: false,
         format: Boolean
+      },
+      queryTimeout: {
+        doc: 'Milliseconds before app-level queries will bail',
+        default: 15000,
+        env: 'PGTIMEOUT',
+        format: 'int'
       }
     },
     redis: {
@@ -104,6 +116,20 @@ var conf = convict({
         env: 'REDIS_DATABASE',
         format: 'int'
       }
+    }
+  },
+  embedly: {
+    enabled: {
+      doc: 'Disable embedly for running on travis.',
+      format: Boolean,
+      default: true,
+      env: 'EMBEDLY_ENABLED'
+    },
+    apiKey: {
+      doc: 'Embedly API key',
+      format: String,
+      default: 'your_key_here',
+      env: 'EMBEDLY_KEY'
     }
   },
   server: {
@@ -205,7 +231,7 @@ var conf = convict({
         env: 'FXA_OAUTH_TOKEN_ENDPOINT'
       },
       profileEndpoint: {
-        doc: 'Firefox Accounts profile server endpoint, used to fetch email, fxa_id.',
+        doc: 'Firefox Accounts profile server endpoint, used to fetch email, user_id.',
         default: 'https://latest.dev.lcip.org/profile/v1/profile',
         format: 'url',
         env: 'FXA_PROFILE_ENDPOINT'
