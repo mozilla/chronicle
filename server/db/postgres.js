@@ -6,6 +6,8 @@
 
 var pg = require('pg');
 var Q = require('q');
+var camelize = require('underscore.string').camelize;
+var underscored = require('underscore.string').underscored;
 
 var config = require('../config');
 var log = require('../logger')('server.db.postgres');
@@ -22,12 +24,28 @@ var dbParams = {
 // primitive DB object
 var postgres = {
   timeout: config.get('db.postgres.queryTimeout'),
+  // postgres is case-insensitive, so we store keys as underscored there,
+  // and transform back to camelCase when returning results here.
+  // individual queries must be sure to use the underscored versions.
+  camelize: function(rows) {
+    var outputRows = [];
+    var output, k;
+    rows.forEach(function(row) {
+      output = {};
+      for (var k in row) {
+        output[camelize(k)] = row[k];
+      }
+      outputRows.push(output);
+    });
+    return outputRows;
+  },
   // query postgres; returns a promise
   //
   // query := a prepared query string
   // params := an array of the query params in correct order
   query: function query(query, params) {
     var _defer = Q.defer();
+    var formatted;
     // force promises to eventually resolve
     _defer.promise = _defer.promise.timeout(postgres.timeout, 'postgres query timed out');
     pg.connect(dbParams, function onConnect(err, client, done) {
@@ -43,9 +61,11 @@ var postgres = {
           return _defer.reject(err);
         }
         done();
-        // individual models know how to normalize / transform the result.
-        // in general, we seem to be safe to always just return rows.
-        _defer.resolve(results && results.rows);
+        // transform the underscored keys to camelcased before returning.
+        if (results && results.rows.length) {
+          formatted = postgres.camelize(results.rows);
+        }
+        _defer.resolve(formatted);
       });
     });
     return _defer.promise;

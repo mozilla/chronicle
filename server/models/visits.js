@@ -18,15 +18,6 @@ var _verbose = function() {
 };
 
 var visits = {
-  // TODO switch to underscores in postgres + camelCase elsewhere.
-  // move the translation bit into the postgres DBO.
-  _normalize: function _normalize(r) {
-    var output = [];
-    r.forEach(function(item) {
-      output.push(visit._normalize(item));
-    });
-    return output;
-  },
   _onFulfilled: function _onFulfilled(msg, callback, results) {
     _verbose(msg);
     callback(null, results && visits._normalize(results.rows));
@@ -38,10 +29,10 @@ var visits = {
   getPaginated: function(fxaId, visitId, count, cb) {
     var name = 'models.visits.getPaginated';
     _verbose(name + ' invoked', fxaId, visitId, count);
-    var query = 'SELECT id, url, urlHash, title, visitedAt ' +
-                'FROM visits WHERE fxaId = $1 ' +
-                'AND visitedAt < (SELECT visitedAt FROM visits WHERE id = $2) ' +
-                'ORDER BY visitedAt DESC LIMIT $3';
+    var query = 'SELECT id, url, url_hash, title, visited_at ' +
+                'FROM visits WHERE fxa_id = $1 ' +
+                'AND visited_at < (SELECT visited_at FROM visits WHERE id = $2) ' +
+                'ORDER BY visited_at DESC LIMIT $3';
     var params = [fxaId, visitId, count];
     postgres.query(query, params)
       .done(visits._onFulfilled.bind(visits, name + ' succeeded', cb),
@@ -50,8 +41,8 @@ var visits = {
   get: function(fxaId, count, cb) {
     var name = 'models.visits.get';
     _verbose(name + ' invoked', fxaId, count);
-    var query = 'SELECT id, url, urlHash, title, visitedAt ' +
-                'FROM visits WHERE fxaId = $1 ORDER BY visitedAt DESC LIMIT $2';
+    var query = 'SELECT id, url, url_hash, title, visited_at ' +
+                'FROM visits WHERE fxa_id = $1 ORDER BY visited_at DESC LIMIT $2';
     var params = [fxaId, count];
     postgres.query(query, params)
       .done(visits._onFulfilled.bind(visits, name + ' succeeded', cb),

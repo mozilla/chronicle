@@ -18,15 +18,9 @@ var _verbose = function() {
 var user = {
   // TODO switch to underscores in postgres + camelCase elsewhere.
   // move the translation bit into the postgres DBO.
-  _normalize: function _normalize(r) {
-    return {
-      fxaId: r.fxaid,
-      email: r.email
-    };
-  },
   _onFulfilled: function _onFulfilled(msg, callback, results) {
     _verbose(msg);
-    callback(null, results && user._normalize(results.rows[0]));
+    callback(null, results && results.rows[0]);
   },
   _onRejected: function _onRejected(msg, callback, err) {
     log.warn(msg);
@@ -35,17 +29,25 @@ var user = {
   create: function(fxaId, email, oauthToken, cb) {
     var name = 'models.user.create'; // RIP `arguments.callee` *snif*
     _verbose(name + ' called', fxaId, email, oauthToken);
-    var query = 'INSERT INTO users (fxaId, email, oauthToken, createdAt) ' +
+    var query = 'INSERT INTO users (fxa_id, email, oauth_token, created_at) ' +
                 'VALUES ($1, $2, $3, $4)';
     var params = [fxaId, email, oauthToken, new Date().toJSON()];
     postgres.query(query, params)
       .done(user._onFulfilled.bind(user, name + ' succeeded', cb),
             user._onRejected.bind(user, name + ' failed', cb));
   },
+  // TODO TODO use this! :-)
+  exists: function(fxaId, cb) {
+    var name = 'models.user.exists';
+    var query = 'SELECT exists(SELECT 1 FROM users WHERE id = $1)';
+    postgres.query(query, [fxaId])
+      .done(user._onFulfilled.bind(user, name + ' succeeded', cb),
+            user._onRejected.bind(user, name + ' failed', cb));
+  },
   get: function(fxaId, cb) {
     var name = 'models.user.get';
     _verbose(name + ' called', fxaId);
-    var query = 'SELECT fxaId, email FROM users WHERE fxaId = $1';
+    var query = 'SELECT fxa_id, email FROM users WHERE fxa_id = $1';
     postgres.query(query, [fxaId])
       .done(user._onFulfilled.bind(user, name + ' succeeded', cb),
             user._onRejected.bind(user, name + ' failed', cb));
@@ -53,8 +55,8 @@ var user = {
   update: function(fxaId, email, oauthToken, cb) {
     var name = 'models.user.update';
     _verbose(name + ' called', fxaId, email, oauthToken);
-    var query = 'UPDATE users SET email = $1, oauthToken = $2, updatedAt = $3 ' +
-                'WHERE fxaId = $4 RETURNING email, fxaId';
+    var query = 'UPDATE users SET email = $1, oauth_token = $2, updated_at = $3 ' +
+                'WHERE fxa_id = $4 RETURNING email, fxa_id';
     postgres.query(query, [email, oauthToken, new Date().toJSON(), fxaId])
       .done(user._onFulfilled.bind(user, name + ' succeeded', cb),
             user._onRejected.bind(user, name + ' failed', cb));

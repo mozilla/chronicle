@@ -19,22 +19,22 @@ psql -c "CREATE DATABASE chronicle ENCODING 'UTF-8' LC_COLLATE = 'en_US.UTF-8' L
 psql -c 'GRANT ALL PRIVILEGES ON DATABASE chronicle to chronicle;' -U $PSQLUSER
 psql -c 'ALTER SCHEMA public OWNER TO chronicle;' -U $PSQLUSER
 psql -c "CREATE TABLE IF NOT EXISTS users (
-  fxaId CHAR(32) PRIMARY KEY,
+  fxa_id CHAR(32) PRIMARY KEY,
   email VARCHAR(255) NOT NULL,
-  oauthToken TEXT,
-  createdAt TIMESTAMPTZ(3) NOT NULL,
-  updatedAt TIMESTAMPTZ(3)
+  oauth_token TEXT,
+  created_at TIMESTAMPTZ(3) NOT NULL,
+  updated_at TIMESTAMPTZ(3)
 );" -d chronicle -U chronicle
 psql -c "CREATE TABLE IF NOT EXISTS visits (
   id UUID PRIMARY KEY,
-  fxaId CHAR(32) REFERENCES users,
+  fxa_id CHAR(32) REFERENCES users,
   user_page_id UUID REFERENCES user_pages(id),
   url TEXT NOT NULL,
-  rawUrl TEXT NOT NULL,
-  urlHash CHAR(40) NOT NULL,
+  raw_url TEXT NOT NULL,
+  url_hash CHAR(40) NOT NULL,
   title TEXT NOT NULL,
-  visitedAt TIMESTAMPTZ(3) NOT NULL,
-  updatedAt TIMESTAMPTZ(3)
+  visited_at TIMESTAMPTZ(3) NOT NULL,
+  updated_at TIMESTAMPTZ(3)
 );" -d chronicle -U chronicle
 psql -c "CREATE UNIQUE INDEX CONCURRENTLY fxaId_visitedAt_id
   ON visits (fxaId, visitedAt, id);" -d chronicle -U chronicle
