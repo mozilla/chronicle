@@ -11,7 +11,7 @@ var pg = require('pg');
 
 var config = require('./config');
 var log = require('./logger')('server.index');
-var authProfileCb = require('./bell_oauth_profile');
+var authProfileCb = require('./bell-oauth-profile');
 var routes = require('./routes');
 var user = require('./models/user');
 var queue = require('./work-queue/queue');
