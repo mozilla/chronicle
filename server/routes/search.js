@@ -8,7 +8,7 @@ var Joi = require('joi');
 var Boom = require('boom');
 
 var log = require('../logger')('server.routes.search');
-var visits = require('../models').visits;
+var visits = require('../models/visits');
 
 module.exports = [{
   method: 'GET',

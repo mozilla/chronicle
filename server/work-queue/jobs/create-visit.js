@@ -4,7 +4,7 @@
 
 'use strict';
 
-var visit = require('../../models').visit;
+var visit = require('../../models/visit');
 var log = require('../../logger')('server.work-queue.jobs.create-visit');
 
 module.exports = {

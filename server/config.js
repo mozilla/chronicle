@@ -47,6 +47,12 @@ var conf = convict({
         default: 9200,
         env: 'ES_PORT',
         format: 'port'
+      },
+      queryTimeout: {
+        doc: 'Milliseconds before app-level queries will bail',
+        default: 15000,
+        env: 'ES_TIMEOUT',
+        format: 'int'
       }
     },
     postgres: {
@@ -81,6 +87,12 @@ var conf = convict({
         doc: 'Require SSL for postgres connections.',
         default: false,
         format: Boolean
+      },
+      queryTimeout: {
+        doc: 'Milliseconds before app-level queries will bail',
+        default: 15000,
+        env: 'PGTIMEOUT',
+        format: 'int'
       }
     },
     redis: {

@@ -5,7 +5,7 @@
 'use strict';
 
 var log = require('./logger')('server.bell.profile');
-var user = require('./models').user;
+var user = require('./models/user');
 var config = require('./config');
 
 // this is the custom provider profile function used by Bell to allow us
