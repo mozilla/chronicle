@@ -84,7 +84,6 @@ var user = {
           _verbose('models.user.get succeeded');
         }
         done();
-
         cb(err, r && user._normalize(r.rows[0]));
       });
     });
@@ -143,9 +142,9 @@ var visit = {
     pg.connect(dbParams, function(err, client, done) {
       if (err) { return onConnectionError(err, cb); }
       client.query(query, [visitId, fxaId, url, url, urlHash, title, visitedAt], function(err, r) {
+        done();
         if (err) {
           log.warn('error creating visit: ' + err);
-          done();
           return cb(err);
         }
         // postgres succeeded, now insert into elasticsearch
@@ -164,7 +163,6 @@ var visit = {
           }
         }).then(function() {
           _verbose('models.visit.create succeeded');
-          done();
           cb();
         }, function (err) {
           log.warn('error adding visit to elasticsearch: ' + err);
@@ -183,9 +181,9 @@ var visit = {
       if (err) { return onConnectionError(err, cb); }
       client.query(query, [visitedAt, updatedAt, url, urlHash, url, title, fxaId, visitId],
         function(err, r) {
+        done();
         if (err) {
           log.warn('error updating visit: ' + err);
-          done();
           return cb(err);
         }
         // postgres succeeded, now update in elasticsearch
@@ -208,7 +206,6 @@ var visit = {
           }
         }).then(function() {
           _verbose('models.visit.update succeeded');
-          done();
           cb(err, r && visit._normalize(r.rows[0]));
         }, function (err) {
           log.warn('error updating visit in elasticsearch: ' + err);
@@ -223,9 +220,9 @@ var visit = {
     pg.connect(dbParams, function(err, client, done) {
       if (err) { return onConnectionError(err, cb); }
       client.query(query, [fxaId, visitId], function(err) {
+        done();
         if (err) {
           log.warn('error deleting visit: ' + err);
-          done();
           return cb(err);
         }
         // postgres succeeded, now delete from elasticsearch
@@ -238,12 +235,10 @@ var visit = {
           id: visitId
         }).then(function() {
           _verbose('models.visit.delete succeeded');
-          done();
           cb();
         }, function(err) {
           log.warn('error deleting visit in elasticsearch: ' + err);
           cb(err);
-          done();
         });
       });
     });
