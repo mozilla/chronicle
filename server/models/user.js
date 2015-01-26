@@ -16,8 +16,6 @@ var _verbose = function() {
 };
 
 var user = {
-  // TODO switch to underscores in postgres + camelCase elsewhere.
-  // move the translation bit into the postgres DBO.
   _onFulfilled: function _onFulfilled(msg, callback, results) {
     _verbose(msg);
     callback(null, results && results.rows[0]);

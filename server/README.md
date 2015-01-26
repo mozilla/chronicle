@@ -48,9 +48,11 @@ db conventions:
   - we use UUIDs to identify everything, not incrementing integers
   - `updated_at` NOT NULL: always set it along with `created_at` at create time
     - this gives us the option to version elasticsearch on postgres update times later
+- postgres: underscores vs camelCase
   - db fields, tables, indexes are underscore-delimited
-  - db code will be camelCased
-  - the pg DBO has a function to automatically handle this conversion
+  - db code is camelCased
+  - the pg DBO automatically translates results from underscores to camel before returning results
+  - individual queries inside models contain underscored keys
 - data types
   - char strings
     - use TEXT for text by default (it's all varlena under the hood in postgres)
@@ -60,6 +62,9 @@ db conventions:
     - store everything in UTC
     - to avoid weirdness when developing on laptops in non-UTC timezones, we always specify UTC as the timezone in the postgres connection parameters
     - use TIMESTAMPTZ(3), a 3-decimal place timestamp (corresponding to JS millisecond default time resolution)
+- enforcing security (user only sees/searches own records)
+  - every postgres visit or visits query includes a "WHERE fxa_id = ?" clause
+  - ditto for elasticsearch: require a direct match on the fxa_id field for any set of search data.
 
 code organization / patterns
 - models
@@ -67,16 +72,16 @@ code organization / patterns
   - `/models` contains ultra-primitive things which one day might be nice model code.
   - The basic abstraction is the [DataMapper](http://martinfowler.com/eaaCatalog/dataMapper.html), not [ActiveRecord](http://martinfowler.com/eaaCatalog/activeRecord.html) or [Table Data Gateway](http://martinfowler.com/eaaCatalog/tableDataGateway.html). That is, models don't directly map to tables or rows. Instead, they represent (as-yet-ill-defined) domain objects, and they hide the structure of the database from callers, and obtain data from multiple sources (multiple tables or multiple DBs), and contain queries themselves.
   - The closest approximation we have to a business logic domain model is actually the set of JSON API endpoints exposed to the front-end Backbone code.
-  - The model-view connection on the server hasn't been reified yet, because we generally just return JSON. We might soon add view helpers, though, to transform responses.
-  - db objects
-    - the db objects are super primitive: they just hide connection params and connection err handling.
-    - retry logic and query details are inside the models.
-      - we do this because there's no rock-solid ORM for node.js, and we don't have
-        the time to roll our own that would be good enough quality.
+  - The model-view connection on the server hasn't been reified yet, because we generally just return JSON, and hapi gives us that transform for free. We might soon add view helpers, though, to handle more complex transformations.
+- db objects
+  - the db objects are super primitive: they just hide connection params and connection err handling.
+  - retry logic and query details are inside the models.
+    - we do this because there's no rock-solid ORM for node.js, and we don't have
+      the time to roll our own that would be good enough quality.
 
 js code / API conventions:
 - datatype validation
-  - use Joi to express as schema between layers
+  - use Joi to express datatypes as schema between layers
   - we aren't doing this consistently yet, but do it a little at the API layer
 - dates
   - always transmit dates in the ISO format returned by Date.toJSON()
@@ -84,6 +89,6 @@ js code / API conventions:
 - callbacks vs promises vs pubsub
   - callbacks are the shitty yet expedient default currently sprinkled throughout the codebase
   - promises are better than callbacks for situations where one listener waits at least a turn (for IO or CPU) 
-    - just always be sure to set a timeout and invoke done() at the end of the chain
+    - just always be sure to set a `timeout()` and invoke `done()` at the end of a promise chain
   - pubsub is my favorite thing but we aren't using it yet
     - TODO! figure it out
