@@ -8,7 +8,9 @@ var crypto = require('crypto');
 var Joi = require('joi');
 var Boom = require('boom');
 var uuid = require('uuid');
+
 var log = require('../logger')('server.routes.visits');
+var queue = require('../work-queue/queue');
 var visit = require('../models/visit');
 var visits = require('../models/visits');
 
@@ -98,7 +100,7 @@ module.exports = [{
         title: p.title,
         visitedAt: p.visitedAt
       };
-      request.server.methods.queue.createVisit(o);
+      queue.createVisit(o);
       reply({
         id: visitId,
         url: p.url,
