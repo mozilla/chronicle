@@ -97,6 +97,10 @@ module.exports = {
   createVisit: function(o) {
     log.verbose('createVisit queue method invoked, o is ' + JSON.stringify(o));
     queue.enqueue('chronicle', 'createVisit', o);
+  },
+  extractPage: function(o) {
+    log.verbose('extractPage queue method invoked, o is ' + JSON.stringify(o));
+    queue.enqueue('chronicle', 'extractPage', o);
   }
 };
 //});
