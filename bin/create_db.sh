@@ -53,7 +53,7 @@ psql -c "CREATE TABLE IF NOT EXISTS user_pages (
   extracted_media_html TEXT,
   extracted_media_type TEXT,
   extracted_media_width INTEGER,
-  extracted_offset INTEGER,
+  extracted_offset BIGINT,
   extracted_provider_display TEXT,
   extracted_provider_name TEXT,
   extracted_provider_url VARCHAR(2048),
