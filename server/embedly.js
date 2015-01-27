@@ -23,7 +23,10 @@ module.exports = {
     new Embedly({key: apiKey, logger: npmLog}, function(err, api) {
       if (err) { return cb(err); }
       api.extract({url:url}, function(err, data) {
+        log.verbose('embedly.extract callback for url ' + url + ' returned data ' + JSON.stringify(data));
         if (err) { return cb(err); }
+        var d = data && data[0];
+        if (!d) { return cb(new Error('embedly response was empty for url ' + url)); }
 
         // for right now, let's just return the keys we want in user_pages
         var out = {};
@@ -35,44 +38,48 @@ module.exports = {
           'safe', 'title', 'type', 'url'
         ];
         easyKeys.forEach(function(item) {
-          if (item in data) {
-            out[camelize('extracted_' + item)] = data[item];
+          if (item in d) {
+            out[camelize('extracted_' + item)] = d[item];
           }
         });
 
         // not in the response, but we want extracted_at to be the current time
         out.extractedAt = new Date().toJSON();
 
-        if (data[0].authors.length) {
-          out.extractedAuthorName = data[0].authors[0].name;
-          out.extractedAuthorUrl = data[0].authors[0].url;
+        if (d.authors.length) {
+          out.extractedAuthorName = d.authors[0].name;
+          out.extractedAuthorUrl = d.authors[0].url;
         }
 
-        if (data[0].embeds.length) {
-          out.extractedEmbedHtml = data[0].embed.html;
-          out.extractedEmbedWidth = data[0].embed.width;
-          out.extractedEmbedHeight = data[0].embed.height;
+        if (d.embeds.length) {
+          out.extractedEmbedHtml = d.embed.html;
+          out.extractedEmbedWidth = d.embed.width;
+          out.extractedEmbedHeight = d.embed.height;
         }
 
-        // this is an array of r,g,b values, eg [181, 187, 194]
-        out.extractedFaviconColor = data[0].favicon_colors[0].color;
+        if (d.favicon_colors.length) {
+          // this is an array of r,g,b values, eg [181, 187, 194]
+          out.extractedFaviconColor = d.favicon_colors[0].color;
+        }
 
-        if (data[0].images.length) {
-          out.extractedImageUrl = data[0].images[0].url;
-          out.extractedImageWidth = data[0].images[0].width;
-          out.extractedImageHeight = data[0].images[0].height;
-          out.extractedImageEntropy = data[0].images[0].entropy;
-          out.extractedImageCaption = data[0].images[0].caption;
+        if (d.images.length) {
+          out.extractedImageUrl = d.images[0].url;
+          out.extractedImageWidth = d.images[0].width;
+          out.extractedImageHeight = d.images[0].height;
+          out.extractedImageEntropy = d.images[0].entropy;
+          out.extractedImageCaption = d.images[0].caption;
           // another array of rgb values
-          out.extractedImageColor = data[0].images[0].colors[0].color;
+          if (d.images.colors) {
+            out.extractedImageColor = d.images[0].colors[0].color;
+          }
         }
 
-        if (data[0].media.type) {
-          out.extractedMediaType = data[0].media.type;
-          out.extractedMediaHtml = data[0].media.html;
-          out.extractedMediaHeight = data[0].media.height;
-          out.extractedMediaWidth = data[0].media.width;
-          out.extractedMediaDuration = data[0].media.duration;
+        if (d.media && d.media.type) {
+          out.extractedMediaType = d.media.type;
+          out.extractedMediaHtml = d.media.html;
+          out.extractedMediaHeight = d.media.height;
+          out.extractedMediaWidth = d.media.width;
+          out.extractedMediaDuration = d.media.duration;
         }
 
         return cb(err, out);

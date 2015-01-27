@@ -35,7 +35,7 @@ var userPage = {
     //
     // TODO if we don't fire a callback on creation, we should return a promise _or_
     // fire 'userPage::updated' or 'userPage::updateError' events
-    var name = 'models.user-page.create';
+    var name = 'models.user-page.update';
     _verbose(name + ' called', fxaId, url);
     var lazyCreateParams = [uuid.v4(), fxaId, url, urlHash, title];
     var lazyCreateUserPageQuery = 'WITH new_page AS (  ' +
@@ -76,8 +76,8 @@ var userPage = {
       .then(function(result) {
         // we just got the page_id; push it onto the end of the params array
         _verbose('the lazy create result is ' + JSON.stringify(result));
-        _verbose('the userPageId is ' + result[0].id);
-        addDataParams.push(result[0].id);
+        _verbose('the userPageId is ' + result.id);
+        addDataParams.push(result.id);
         _verbose('about to issue extracted data insertion query');
         _verbose('************ the complete query is **************');
         _verbose(addExtractedDataQuery);
