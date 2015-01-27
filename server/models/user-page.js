@@ -23,7 +23,7 @@ var _verbose = function() {
 var userPage = {
   _onFulfilled: function _onFulfilled(msg, callback, results) {
     _verbose(msg);
-    callback(null, results && results.rows[0]);
+    callback(null, results);
   },
   _onRejected: function _onRejected(msg, callback, err) {
     log.warn(msg);
@@ -57,7 +57,8 @@ var userPage = {
     ' = ' +
     '($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, ' +
     '$19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31) ' +
-    'WHERE user_id = $32 AND id = $33';
+    'WHERE user_id = $32 AND id = $33' +
+    'RETURNING *';
     var addDataParams = [data.extractedAt, data.extractedAuthorName, data.extractedAuthorUrl, 
       data.extractedCacheAge, data.extractedContent, data.extractedDescription,
       data.extractedFaviconColor, data.extractedFaviconUrl, data.extractedImageCaption, 
@@ -84,9 +85,16 @@ var userPage = {
         _verbose(JSON.stringify(addDataParams));
         return postgres.query(addExtractedDataQuery, addDataParams);
       })
-      .done(userPage._onFulfilled.bind(userPage, name + ' succeeded', cb, null),
+      .done(userPage._onFulfilled.bind(userPage, name + ' succeeded', cb),
             userPage._onRejected.bind(userPage, name + ' failed late', cb));
 
+  },
+  get: function(fxaId, userPageId, cb) {
+    var name = 'models.user-page.get';
+    _verbose(name + ' called', fxaId, userPageId);
+    postgres.query('SELECT * FROM user_pages WHERE user_id = $1 and id = $2', [fxaId, userPageId])
+      .done(userPage._onFulfilled.bind(userPage, name + ' succeeded', cb),
+            userPage._onRejected.bind(userPage, name + ' failed', cb));
   }
 };
 module.exports = userPage;

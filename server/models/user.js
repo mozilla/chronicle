@@ -18,7 +18,8 @@ var _verbose = function() {
 var user = {
   _onFulfilled: function _onFulfilled(msg, callback, results) {
     _verbose(msg);
-    callback(null, results && results.rows[0]);
+    _verbose('onfulfilled results are: ' + JSON.stringify(results));
+    callback(null, results);
   },
   _onRejected: function _onRejected(msg, callback, err) {
     log.warn(msg);
@@ -37,10 +38,14 @@ var user = {
   // TODO TODO use this! :-)
   exists: function(fxaId, cb) {
     var name = 'models.user.exists';
-    var query = 'SELECT exists(SELECT 1 FROM users WHERE id = $1)';
+    var query = 'SELECT exists(SELECT 1 FROM users WHERE fxa_id = $1)';
     postgres.query(query, [fxaId])
-      .done(user._onFulfilled.bind(user, name + ' succeeded', cb),
-            user._onRejected.bind(user, name + ' failed', cb));
+      .done(function(result) {
+        // postgres response is '{exists: <boolean>}'
+        // just fire the callback with the boolean
+        user._onFulfilled(name + ' succeeded', cb, result.exists);
+      },
+      user._onRejected.bind(user, name + ' failed', cb));
   },
   get: function(fxaId, cb) {
     var name = 'models.user.get';

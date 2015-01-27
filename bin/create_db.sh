@@ -69,10 +69,13 @@ psql -c "CREATE UNIQUE INDEX user_pages_url_hash_user_id
   ON user_pages (url_hash, user_id);" -d chronicle -U chronicle
 psql -c "CREATE TABLE IF NOT EXISTS visits (
   id UUID PRIMARY KEY,
-  fxa_id CHAR(32) REFERENCES users,
-  user_page_id UUID REFERENCES user_pages(id),
+  fxa_id CHAR(32) NOT NULL REFERENCES users,
+  user_page_id UUID NOT NULL REFERENCES user_pages(id),
   visited_at TIMESTAMPTZ(3) NOT NULL,
   updated_at TIMESTAMPTZ(3)
 );" -d chronicle -U chronicle
 psql -c "CREATE UNIQUE INDEX fxa_id_visited_at_id
   ON visits (fxa_id, visited_at, id);" -d chronicle -U chronicle
+# used to check if a user_page should be deleted on visit delete
+psql -c "CREATE UNIQUE INDEX fxa_id_user_page_id_id
+  ON visits (fxa_id, user_page_id, id);" -d chronicle -U chronicle

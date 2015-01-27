@@ -32,9 +32,9 @@ var postgres = {
     var output, k;
     rows.forEach(function(row) {
       output = {};
-      for (var k in row) {
+      Object.keys(row).forEach(function(k) {
         output[camelize(k)] = row[k];
-      }
+      });
       outputRows.push(output);
     });
     return outputRows;
@@ -64,6 +64,10 @@ var postgres = {
         // transform the underscored keys to camelcased before returning.
         if (results && results.rows.length) {
           formatted = postgres.camelize(results.rows);
+        }
+        // if it's a single thing, just return the single thing.
+        if (formatted && formatted.length === 1) {
+          formatted = formatted[0];
         }
         _defer.resolve(formatted);
       });

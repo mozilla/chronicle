@@ -4,7 +4,7 @@
 
 'use strict';
 
-var Q = require('q');
+var q = require('q');
 var uuid = require('uuid');
 
 var postgres = require('../db/postgres');
@@ -19,11 +19,30 @@ var _verbose = function() {
 var visit = {
   _onFulfilled: function _onFulfilled(msg, callback, results) {
     _verbose(msg);
-    callback(null, results && results.rows[0]);
+    callback(null, results);
   },
   _onRejected: function _onRejected(msg, callback, err) {
     log.warn(msg);
     callback(err);
+  },
+  _transform: function _transform(results, callback) {
+    // do a little transformin' and this might barf, so do it before `done`
+
+    // if nothing was found, continue
+    if (!results) { return q(results); }
+
+    // this is to work around our laziness in SELECT * above
+    results.id = results.visitId;
+    delete results.visitId;
+
+    // keep visit properties top level, move all other page properties under a userPage key
+    var newResult = {};
+    ['id', 'url', 'title', 'visitedAt'].forEach(function(item) {
+      newResult[item] = results[item];
+      delete results[item];
+    });
+    newResult.userPage = results;
+    return q(newResult); // creates a promise that resolves to 'results' yay win
   },
   // 1. find a complex way to combine both queries on the DB side
   // 2. (simpler) perform two simple queries and roll them together here
@@ -32,11 +51,12 @@ var visit = {
     _verbose(name + ' called', fxaId, visitId);
     // it's actually way simpler to SELECT *, and re-select additional columns,
     // vs enumerating everything just to avoid two 'id's in the results.
-    var query = 'SELECT *, visits.fxa_id as user_id ' +
+    var query = 'SELECT visits.id as visit_id, visits.fxa_id as user_id, * ' +
     'FROM visits LEFT JOIN user_pages ON visits.user_page_id = user_pages.id ' +
     'WHERE visits.id = $1 AND visits.fxa_id = $2';
     var params = [visitId, fxaId];
     postgres.query(query, params)
+      .then(visit._transform)
       .done(visit._onFulfilled.bind(visit, name + ' succeeded', cb),
             visit._onRejected.bind(visit, name + ' failed', cb));
   },
@@ -89,8 +109,38 @@ var visit = {
       })
       .fail(visit._onRejected.bind(visit, name + ' postgres insert failed', cb))
       .then(elasticsearch.query('create', esQuery))
-      .done(visit._onFulfilled.bind(visit, name + ' succeeded', cb, null),
+      .done(visit._onFulfilled.bind(visit, name + ' succeeded', cb),
             visit._onRejected.bind(visit, name + ' elasticsearch insert failed', cb));
+  },
+  delete: function(fxaId, visitId, cb) {
+    // delete the visit if it exists.
+    // delete the visit's userPage if no other visits have that page.
+    var name = 'models.visit.delete';
+    var userPageId;
+    postgres.query('DELETE FROM visits WHERE fxa_id = $1 AND id = $2 RETURNING user_page_id', [fxaId, visitId])
+      .fail(visit._onRejected.bind(visit, name + ' failed to delete visit', cb))
+      .then(function(result) {
+        _verbose('delete returning result gives us: ' + JSON.stringify(result));
+        userPageId = result.userPageId;
+        return postgres.query('SELECT count(*) FROM visits WHERE fxa_id = $1 AND user_page_id = $2',
+        [fxaId, userPageId]);
+      })
+      .fail(visit._onRejected.bind(visit, name + ' failed to count visits having a page', cb))
+      .then(function(count) {
+        _verbose('count of remaining visits with page gives us: ' + JSON.stringify(count));
+        // assuming count is int
+        if (count > 0) {
+          // nothing more to do here; call _onFulfilled.
+          // todo: does this ensure the promise chain ends?
+          visit._onFulfilled(name + ' succeeded', cb, null);
+        } else {
+          _verbose('no other visits exist for user page ' + userPageId + ': deleting it');
+          return postgres.query('DELETE FROM user_pages WHERE fxa_id = $1 AND user_page_id = $2',
+          [fxaId, userPageId]);
+        }
+      })
+      .done(visit._onFulfilled.bind(visit, name + ' succeeded', cb, null),
+            visit._onRejected.bind(visit, name + ' failed', cb));
   }
 };
 

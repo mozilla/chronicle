@@ -20,7 +20,7 @@ var _verbose = function() {
 var visits = {
   _onFulfilled: function _onFulfilled(msg, callback, results) {
     _verbose(msg);
-    callback(null, results && visits._normalize(results.rows));
+    callback(null, results);
   },
   _onRejected: function _onRejected(msg, callback, err) {
     log.warn(msg);
@@ -42,7 +42,7 @@ var visits = {
   get: function(fxaId, count, cb) {
     var name = 'models.visits.get';
     _verbose(name + ' invoked', fxaId, count);
-    var query = 'SELECT *, visits.fxa_id as user_id ' + 
+    var query = 'SELECT visits.id as visit_id, visits.fxa_id as user_id, visits.visited_at ' + 
                 'FROM visits LEFT JOIN user_pages ON visits.user_page_id = user_pages.id ' +
                 'WHERE fxa_id = $1 ORDER BY visited_at DESC LIMIT $2';
     var params = [fxaId, count];
@@ -72,12 +72,8 @@ var visits = {
         output.resultCount = resp.hits.total;
         if (!!resp.hits.total) {
           output.results = resp.hits.hits.map(function(item) {
-            // TODO: this is quite similar to the visit._normalize function,
-            // except for downcasing. what's the cleanest way to formalize the
-            // contract between API layers and these 2 databases? it should lead
-            // naturally to API docs, I'd think.
-            // TODO we might also want to return relevance scores or other special
-            // elasticsearch bits as part of this API
+            // TODO should we just return __everything__ for now, until we figure out what's useful
+            // on the front-end?
             var s = item._source;
             return {
               id: s.id,
