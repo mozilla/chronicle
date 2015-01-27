@@ -29,7 +29,7 @@ psql -c "CREATE TABLE IF NOT EXISTS user_pages (
   id UUID PRIMARY KEY,
   user_id CHAR(32) REFERENCES users(fxa_id),
   url VARCHAR(2048) NOT NULL,
-  raw_url TEXT NOT NULL,
+  raw_url VARCHAR(2048) NOT NULL,
   url_hash CHAR(40) NOT NULL,
   title TEXT NOT NULL,
   extracted_at TIMESTAMPTZ(3),

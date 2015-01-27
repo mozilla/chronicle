@@ -10,8 +10,8 @@
 var camelize = require('underscore.string').camelize;
 var Embedly = require('embedly');
 
-var apiKey = require('../config').get('embedlyKey');
-var logFactory = require('../logger');
+var apiKey = require('./config').get('embedlyKey');
+var logFactory = require('./logger');
 var log = logFactory('server.services.embedly');
 var npmLog = logFactory('server.services.embedly.vendor');
 
@@ -75,7 +75,7 @@ module.exports = {
           out.extractedMediaDuration = data[0].media.duration;
         }
 
-        return cb(err, data);
+        return cb(err, out);
       });
     });
   }

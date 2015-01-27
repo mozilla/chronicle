@@ -29,22 +29,23 @@ var userPage = {
     log.warn(msg);
     callback(err);
   },
-  update: function(fxaId, url, urlHash, title, data) {
+  update: function(fxaId, url, urlHash, title, data, cb) {
     // fetch the page id, lazily creating it if it doesn't exist,
     // then update the page with the huge blob of embedly data
     //
     // TODO if we don't fire a callback on creation, we should return a promise _or_
     // fire 'userPage::updated' or 'userPage::updateError' events
     var name = 'models.user-page.create';
-    var lazyCreateParams = [uuid.v4(), fxaId, url, url, urlHash, title];
+    _verbose(name + ' called', fxaId, url);
+    var lazyCreateParams = [uuid.v4(), fxaId, url, urlHash, title];
     var lazyCreateUserPageQuery = 'WITH new_page AS (  ' +
-      '  INSERT INTO user_pages (id, fxa_id, url, raw_url, url_hash, title) ' +
+      '  INSERT INTO user_pages (id, user_id, url, raw_url, url_hash, title) ' +
       '  SELECT $1, $2, $3, $3, $4, $5 ' +
-      '  WHERE NOT EXISTS (SELECT id FROM user_pages WHERE fxa_id = $2, url_hash = $4) ' +
+      '  WHERE NOT EXISTS (SELECT id FROM user_pages WHERE user_id = $2 AND url_hash = $4) ' +
       '  RETURNING id ' +
       ') SELECT id FROM new_page ' +
-      'UNION SELECT id FROM user_pages WHERE fxa_id = $2, url_hash = $4';
-    var addExtractedDataQuery = 'INSERT INTO user_pages ( ' +
+      'UNION SELECT id FROM user_pages WHERE user_id = $2 AND url_hash = $4';
+    var addExtractedDataQuery = 'UPDATE user_pages SET ( ' +
     'extracted_at, extracted_author_name, extracted_author_url, extracted_cache_age, ' +
     'extracted_content, extracted_description, extracted_favicon_color, extracted_favicon_url, ' +
     'extracted_image_caption, extracted_image_color, extracted_image_entropy, ' +
@@ -52,10 +53,11 @@ var userPage = {
     'extracted_lead, extracted_media_duration, extracted_media_height, extracted_media_html, ' +
     'extracted_media_type, extracted_media_width, extracted_offset, extracted_provider_display, ' +
     'extracted_provider_name, extracted_provider_url, extracted_published, extracted_safe, ' +
-    'extracted_title, extracted_type, extracted_url, updated_at ' +
-    'VALUES $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, ' +
-    '$19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31 ' + 
-    'WHERE user_id = $32, id = $33';
+    'extracted_title, extracted_type, extracted_url, updated_at) ' +
+    ' = ' +
+    '($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, ' +
+    '$19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31) ' +
+    'WHERE user_id = $32 AND id = $33';
     var addDataParams = [data.extractedAt, data.extractedAuthorName, data.extractedAuthorUrl, 
       data.extractedCacheAge, data.extractedContent, data.extractedDescription,
       data.extractedFaviconColor, data.extractedFaviconUrl, data.extractedImageCaption, 
@@ -67,15 +69,23 @@ var userPage = {
       data.extractedPublished, data.extractedSafe, data.extractedTitle, data.extractedType,
       data.extractedUrl, new Date().toJSON(), fxaId];
 
+    _verbose('about to issue lazy user page creation query');
     postgres.query(lazyCreateUserPageQuery, lazyCreateParams)
-      .fail(userPage._onRejected.bind(userPage, name + ' failed', cb))
+      .fail(userPage._onRejected.bind(userPage, name + ' failed early', cb))
       .then(function(result) {
         // we just got the page_id; push it onto the end of the params array
-        addDataParams.push(result.id);
+        _verbose('the lazy create result is ' + JSON.stringify(result));
+        _verbose('the userPageId is ' + result[0].id);
+        addDataParams.push(result[0].id);
+        _verbose('about to issue extracted data insertion query');
+        _verbose('************ the complete query is **************');
+        _verbose(addExtractedDataQuery);
+        _verbose('************ the complete params are **************');
+        _verbose(JSON.stringify(addDataParams));
         return postgres.query(addExtractedDataQuery, addDataParams);
       })
       .done(userPage._onFulfilled.bind(userPage, name + ' succeeded', cb, null),
-            userPage._onRejected.bind(userPage, name + ' failed', cb));
+            userPage._onRejected.bind(userPage, name + ' failed late', cb));
 
   }
 };

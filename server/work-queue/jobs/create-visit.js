@@ -9,15 +9,15 @@ var log = require('../../logger')('server.work-queue.jobs.create-visit');
 
 module.exports = {
   // o is an object with keys { fxaId, visitId, url, urlHash, title, visitedAt }
-  perform: function(o) {
+  perform: function(o, cb) {
     log.verbose('job created with params ' + JSON.stringify(o));
     visit.create(o.fxaId, o.visitId, o.visitedAt, o.url, o.urlHash, o.title, function (err) {
       log.verbose('inside the visit.create callback inside the createVisit job!');
       if (err) {
         log.warn('visit.create callback inside job says err: ' + err);
         // tell node-resque that the job failed
-        throw err;
       }
+      cb(err);
     });
   }
 };

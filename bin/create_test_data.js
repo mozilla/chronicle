@@ -14,8 +14,7 @@ var pg = require('pg');
 
 var createHash = require('crypto').createHash;
 var config = require('../server/config');
-var models = require('../server/models');
-var user = models.user;
+var user = require('../server/models/user');
 var log = require('../server/logger')('bin.createTestData');
 
 var defaultCount = 25;

@@ -30,16 +30,11 @@ var visit = {
   get: function(fxaId, visitId, cb) {
     var name = 'models.visit.get';
     _verbose(name + ' called', fxaId, visitId);
-    var visitsQuery = 'SELECT * FROM visits LEFT JOIN user_pages ' +
-                'WHERE visits.id = $1 AND visits.fxa_id = $2 ' +
-                'AND visits.user_page_id = user_pages.id'; // implicit INNER JOIN
-
     // it's actually way simpler to SELECT *, and re-select additional columns,
     // vs enumerating everything just to avoid two 'id's in the results.
-    var visitsQuery = 'SELECT *, visits.fxa_id as user_id '
+    var query = 'SELECT *, visits.fxa_id as user_id ' +
     'FROM visits LEFT JOIN user_pages ON visits.user_page_id = user_pages.id ' +
     'WHERE visits.id = $1 AND visits.fxa_id = $2';
-    // if exists (SELECT fxa_id FROM user WHERE fxa_id = $1) then
     var params = [visitId, fxaId];
     postgres.query(query, params)
       .done(visit._onFulfilled.bind(visit, name + ' succeeded', cb),
@@ -54,20 +49,19 @@ var visit = {
     // whether or not you just created it
     var lazyCreateUserPageQuery =
       'WITH new_page AS (  ' +
-      '  INSERT INTO user_pages (id, fxa_id, url, raw_url, url_hash, title) ' +
-      '  SELECT $1, $2, $3, $3, $4, $5 ' +
-      '  WHERE NOT EXISTS (SELECT id FROM user_pages WHERE fxa_id = $2, url_hash = $4) ' +
+      '  INSERT INTO user_pages (id, user_id, url, raw_url, url_hash, title, created_at, updated_at) ' +
+      '  SELECT $1, $2, $3, $3, $4, $5, $6, $6 ' +
+      '  WHERE NOT EXISTS (SELECT id FROM user_pages WHERE user_id = $2 AND url_hash = $4) ' +
       '  RETURNING id ' +
       ') SELECT id FROM new_page ' +
-      'UNION SELECT id FROM user_pages WHERE fxa_id = $2, url_hash = $4';
-    var lazyCreateParams = [uuid.v4(), fxaId, url, urlHash, title, visitId, visitedAt];
+      'UNION SELECT id FROM user_pages WHERE user_id = $2 AND url_hash = $4';
+    var lazyCreateParams = [uuid.v4(), fxaId, url, urlHash, title, new Date().toJSON()];
     var createVisitQuery = 'INSERT INTO visits ' +
-      '(id, fxa_id, user_page_id, raw_url, url, url_hash, title, visited_at) ' +
-      'VALUES ($1, $2, $3, $4, $4, $5, $6, $7)';
+      '(id, fxa_id, user_page_id, visited_at, updated_at) ' +
+      'VALUES ($1, $2, $3, $4, $4)';
     var userPageId;
 
     // TODO NEXT: fixup the es query. include userPageId.
-    var params = [visitId, fxaId, url, url, urlHash, title, visitedAt];
     var esQuery = {
       index: 'chronicle',
       type: 'visits',
@@ -89,7 +83,7 @@ var visit = {
       .then(function(results) {
         // TODO will userPageId be correct? find out :-P
         userPageId = results && results.id;
-        var visitParams = [visitId, fxaId, userPageId, url, url, urlHash, title, visitedAt];
+        var visitParams = [visitId, fxaId, userPageId, visitedAt];
         // return the new query's promise to avoid nesting promise chains
         return postgres.query(createVisitQuery, visitParams);
       })
