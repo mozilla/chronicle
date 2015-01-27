@@ -29,10 +29,11 @@ var visits = {
   getPaginated: function(fxaId, visitId, count, cb) {
     var name = 'models.visits.getPaginated';
     _verbose(name + ' invoked', fxaId, visitId, count);
-    var query = 'SELECT id, url, url_hash, title, visited_at ' +
-                'FROM visits WHERE fxa_id = $1 ' +
-                'AND visited_at < (SELECT visited_at FROM visits WHERE id = $2) ' +
-                'ORDER BY visited_at DESC LIMIT $3';
+    var query = 'SELECT *, visits.fxa_id as user_id ' +
+                'FROM visits LEFT JOIN user_pages ON visits.user_page_id = user_pages.id ' +
+                'WHERE fxa_id = $1 ' +
+                'AND visits.visited_at < (SELECT visited_at FROM visits WHERE id = $2) ' +
+                'ORDER BY visits.visited_at DESC LIMIT $3';
     var params = [fxaId, visitId, count];
     postgres.query(query, params)
       .done(visits._onFulfilled.bind(visits, name + ' succeeded', cb),
@@ -41,8 +42,9 @@ var visits = {
   get: function(fxaId, count, cb) {
     var name = 'models.visits.get';
     _verbose(name + ' invoked', fxaId, count);
-    var query = 'SELECT id, url, url_hash, title, visited_at ' +
-                'FROM visits WHERE fxa_id = $1 ORDER BY visited_at DESC LIMIT $2';
+    var query = 'SELECT *, visits.fxa_id as user_id ' + 
+                'FROM visits LEFT JOIN user_pages ON visits.user_page_id = user_pages.id ' +
+                'WHERE fxa_id = $1 ORDER BY visited_at DESC LIMIT $2';
     var params = [fxaId, count];
     postgres.query(query, params)
       .done(visits._onFulfilled.bind(visits, name + ' succeeded', cb),

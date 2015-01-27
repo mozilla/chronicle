@@ -25,63 +25,54 @@ psql -c "CREATE TABLE IF NOT EXISTS users (
   created_at TIMESTAMPTZ(3) NOT NULL,
   updated_at TIMESTAMPTZ(3)
 );" -d chronicle -U chronicle
-psql -c "CREATE TABLE IF NOT EXISTS visits (
-  id UUID PRIMARY KEY,
-  fxa_id CHAR(32) REFERENCES users,
-  user_page_id UUID REFERENCES user_pages(id),
-  url TEXT NOT NULL,
-  raw_url TEXT NOT NULL,
-  url_hash CHAR(40) NOT NULL,
-  title TEXT NOT NULL,
-  visited_at TIMESTAMPTZ(3) NOT NULL,
-  updated_at TIMESTAMPTZ(3)
-);" -d chronicle -U chronicle
-psql -c "CREATE UNIQUE INDEX CONCURRENTLY fxaId_visitedAt_id
-  ON visits (fxaId, visitedAt, id);" -d chronicle -U chronicle
 psql -c "CREATE TABLE IF NOT EXISTS user_pages (
   id UUID PRIMARY KEY,
-  user_id CHAR(32) REFERENCES users(fxaId),
+  user_id CHAR(32) REFERENCES users(fxa_id),
   url VARCHAR(2048) NOT NULL,
   raw_url TEXT NOT NULL,
   url_hash CHAR(40) NOT NULL,
   title TEXT NOT NULL,
-  extracted_type TEXT,
-  extracted_title TEXT,
-  extracted_url VARCHAR(2048),
-  extracted_description TEXT,
-  extracted_provider_name TEXT,
-  extracted_provider_url VARCHAR(2048),
-  extracted_provider_display TEXT,
+  extracted_at TIMESTAMPTZ(3),
   extracted_author_name TEXT,
   extracted_author_url VARCHAR(2048),
-  extracted_image_url VARCHAR(2048),
-  extracted_image_width INTEGER,
-  extracted_image_height INTEGER,
-  extracted_image_entropy DOUBLE PRECISION,
+  extracted_cache_age INTEGER,
+  extracted_content TEXT,
+  extracted_description TEXT,
+  extracted_favicon_color TEXT,
+  extracted_favicon_url VARCHAR(2048),
   extracted_image_caption TEXT,
   extracted_image_color TEXT,
-  extracted_html TEXT,
-  extracted_height INTEGER,
-  extracted_width INTEGER,
-  extracted_safe BOOLEAN,
-  extracted_content TEXT,
-  extracted_favicon_url VARCHAR(2048),
-  extracted_favicon_color TEXT,
+  extracted_image_entropy DOUBLE PRECISION,
+  extracted_image_height INTEGER,
+  extracted_image_url VARCHAR(2048),
+  extracted_image_width INTEGER,
   extracted_language TEXT,
   extracted_lead TEXT,
-  extracted_cache_age INTEGER,
-  extracted_offset INTEGER,
-  extracted_published INTEGER,
-  extracted_media_type TEXT,
-  extracted_media_html TEXT,
-  extracted_media_height INTEGER,
-  extracted_media_width INTEGER,
   extracted_media_duration INTEGER,
-  extracted_at TIMESTAMPTZ(3),
+  extracted_media_height INTEGER,
+  extracted_media_html TEXT,
+  extracted_media_type TEXT,
+  extracted_media_width INTEGER,
+  extracted_offset INTEGER,
+  extracted_provider_display TEXT,
+  extracted_provider_name TEXT,
+  extracted_provider_url VARCHAR(2048),
+  extracted_published INTEGER,
+  extracted_safe BOOLEAN,
+  extracted_title TEXT,
+  extracted_type TEXT,
+  extracted_url VARCHAR(2048),
   created_at TIMESTAMPTZ(3) NOT NULL,
   updated_at TIMESTAMPTZ(3) NOT NULL
 );" -d chronicle -U chronicle
-# XXX lookup pages by url_hash
-psql -c "CREATE UNIQUE INDEX CONCURRENTLY user_pages_url_hash
-  ON user_pages (url_hash);" -d chronicle -U chronicle
-# lookup pages by 
+psql -c "CREATE UNIQUE INDEX user_pages_url_hash_user_id
+  ON user_pages (url_hash, user_id);" -d chronicle -U chronicle
+psql -c "CREATE TABLE IF NOT EXISTS visits (
+  id UUID PRIMARY KEY,
+  fxa_id CHAR(32) REFERENCES users,
+  user_page_id UUID REFERENCES user_pages(id),
+  visited_at TIMESTAMPTZ(3) NOT NULL,
+  updated_at TIMESTAMPTZ(3)
+);" -d chronicle -U chronicle
+psql -c "CREATE UNIQUE INDEX fxa_id_visited_at_id
+  ON visits (fxa_id, visited_at, id);" -d chronicle -U chronicle

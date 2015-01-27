@@ -7,7 +7,6 @@
 var Q = require('q');
 var uuid = require('uuid');
 
-var config = require('../config');
 var postgres = require('../db/postgres');
 var elasticsearch = require('../db/elasticsearch');
 var log = require('../logger')('server.models.visit');
@@ -26,21 +25,29 @@ var visit = {
     log.warn(msg);
     callback(err);
   },
-  // TODO add user_pages data when getting a visit
+  // 1. find a complex way to combine both queries on the DB side
+  // 2. (simpler) perform two simple queries and roll them together here
   get: function(fxaId, visitId, cb) {
     var name = 'models.visit.get';
     _verbose(name + ' called', fxaId, visitId);
-    var query = 'SELECT * FROM visits, user_pages ' +
+    var visitsQuery = 'SELECT * FROM visits LEFT JOIN user_pages ' +
                 'WHERE visits.id = $1 AND visits.fxa_id = $2 ' +
                 'AND visits.user_page_id = user_pages.id'; // implicit INNER JOIN
+
+    // it's actually way simpler to SELECT *, and re-select additional columns,
+    // vs enumerating everything just to avoid two 'id's in the results.
+    var visitsQuery = 'SELECT *, visits.fxa_id as user_id '
+    'FROM visits LEFT JOIN user_pages ON visits.user_page_id = user_pages.id ' +
+    'WHERE visits.id = $1 AND visits.fxa_id = $2';
     // if exists (SELECT fxa_id FROM user WHERE fxa_id = $1) then
     var params = [visitId, fxaId];
     postgres.query(query, params)
       .done(visit._onFulfilled.bind(visit, name + ' succeeded', cb),
             visit._onRejected.bind(visit, name + ' failed', cb));
   },
-
   create: function(fxaId, visitId, visitedAt, url, urlHash, title, cb) {
+    // XXX we create only a few user_page fields synchronously; the rest
+    // are filled in async by the scraper worker
     var name = 'models.visit.create';
     _verbose(name + ' called', fxaId, visitId, visitedAt, url, title);
     // create the user_page if it doesn't exist, and return the user_page id
@@ -52,14 +59,14 @@ var visit = {
       '  WHERE NOT EXISTS (SELECT id FROM user_pages WHERE fxa_id = $2, url_hash = $4) ' +
       '  RETURNING id ' +
       ') SELECT id FROM new_page ' +
-      'UNION SELECT id FROM user_pages WHERE url_hash = $4';
+      'UNION SELECT id FROM user_pages WHERE fxa_id = $2, url_hash = $4';
     var lazyCreateParams = [uuid.v4(), fxaId, url, urlHash, title, visitId, visitedAt];
     var createVisitQuery = 'INSERT INTO visits ' +
       '(id, fxa_id, user_page_id, raw_url, url, url_hash, title, visited_at) ' +
       'VALUES ($1, $2, $3, $4, $4, $5, $6, $7)';
     var userPageId;
 
-    // NEXT TODO AFTER LUNCH: fixup the es query. include userPageId.
+    // TODO NEXT: fixup the es query. include userPageId.
     var params = [visitId, fxaId, url, url, urlHash, title, visitedAt];
     var esQuery = {
       index: 'chronicle',
@@ -90,9 +97,6 @@ var visit = {
       .then(elasticsearch.query('create', esQuery))
       .done(visit._onFulfilled.bind(visit, name + ' succeeded', cb, null),
             visit._onRejected.bind(visit, name + ' elasticsearch insert failed', cb));
-  },
-  // TODO use this to asynchronously fill in user_pages data
-  update: function(fxaId, visitId, params, cb) {
   }
 };
 

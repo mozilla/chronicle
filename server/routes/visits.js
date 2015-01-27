@@ -101,6 +101,7 @@ module.exports = [{
         visitedAt: p.visitedAt
       };
       queue.createVisit(o);
+      queue.extractPage({fxaId: fxaId, url: p.url, urlHash: urlHash});
       reply({
         id: visitId,
         url: p.url,

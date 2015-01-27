@@ -5,11 +5,11 @@
 'use strict';
 
 var log = require('../../logger')('server.work-queue.jobs.extract-url');
-var visit = require('../../models/visit');
+var userPage = require('../../models/user-page');
 var embedly = require('../../embedly');
 
 module.exports = {
-  // o is an object with keys { fxaId, url }
+  // o is an object with keys { fxaId, url, urlHash, title }
   perform: function(o) {
     log.verbose('job created with params ' + JSON.stringify(o));
     embedly.extract(o.url, function(err, data) {
@@ -17,9 +17,9 @@ module.exports = {
         // we should retry on failure. leave that to the queue.
         throw err;
       } else {
-        // on success: create a new job in the um post-scraping-saving-data queue.
-        // or, just ask the visit (er, I mean, user page?) to update itself with the data ^_^
-        visit.update(o.fxaId, data);
+        // the visit creation job has probably created a record in the user_page table.
+        // if not, update will lazily create it.
+        userPage.update(o.fxaId, o.url, o.urlHash, o.title, data);
       }
     });
   }
