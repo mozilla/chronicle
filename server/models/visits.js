@@ -4,7 +4,7 @@
 
 'use strict';
 
-var Q = require('q');
+var q = require('q');
 
 var config = require('../config');
 var postgres = require('../db/postgres');
@@ -26,27 +26,43 @@ var visits = {
     log.warn(msg);
     callback(err);
   },
+  _transform: function _transform(results) {
+    if (!results || !results.length) { return; }
+    var transformed = [];
+    results.forEach(function(result) {
+      transformed.push(visit._transform(result));
+    });
+    return transformed;
+  },
   getPaginated: function(fxaId, visitId, count, cb) {
     var name = 'models.visits.getPaginated';
     _verbose(name + ' invoked', fxaId, visitId, count);
-    var query = 'SELECT *, visits.fxa_id as user_id ' +
+    var query = 'SELECT visits.id as visit_id, visits.fxa_id as user_id, visits.visited_at, * ' +
                 'FROM visits LEFT JOIN user_pages ON visits.user_page_id = user_pages.id ' +
                 'WHERE fxa_id = $1 ' +
                 'AND visits.visited_at < (SELECT visited_at FROM visits WHERE id = $2) ' +
                 'ORDER BY visits.visited_at DESC LIMIT $3';
     var params = [fxaId, visitId, count];
     postgres.query(query, params)
+      .then(function(results) {
+        // return a promise that resolves to the transformed results
+        return q(visits._transform(results));
+      })
       .done(visits._onFulfilled.bind(visits, name + ' succeeded', cb),
             visits._onRejected.bind(visits, name + ' failed', cb));
   },
   get: function(fxaId, count, cb) {
     var name = 'models.visits.get';
     _verbose(name + ' invoked', fxaId, count);
-    var query = 'SELECT visits.id as visit_id, visits.fxa_id as user_id, visits.visited_at ' + 
+    var query = 'SELECT visits.id as visit_id, visits.fxa_id as user_id, visits.visited_at, * ' +
                 'FROM visits LEFT JOIN user_pages ON visits.user_page_id = user_pages.id ' +
-                'WHERE fxa_id = $1 ORDER BY visited_at DESC LIMIT $2';
+                'WHERE visits.fxa_id = $1 ORDER BY visits.visited_at DESC LIMIT $2';
     var params = [fxaId, count];
     postgres.query(query, params)
+      .then(function(results) {
+        // return a promise that resolves to the transformed results
+        return q(visits._transform(results));
+      })
       .done(visits._onFulfilled.bind(visits, name + ' succeeded', cb),
             visits._onRejected.bind(visits, name + ' failed', cb));
   },

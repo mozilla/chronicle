@@ -25,11 +25,11 @@ var visit = {
     log.warn(msg);
     callback(err);
   },
-  _transform: function _transform(results, callback) {
+  _transform: function _transform(results) {
     // do a little transformin' and this might barf, so do it before `done`
 
     // if nothing was found, continue
-    if (!results) { return q(results); }
+    if (!results) { return; }
 
     // this is to work around our laziness in SELECT * above
     results.id = results.visitId;
@@ -42,7 +42,7 @@ var visit = {
       delete results[item];
     });
     newResult.userPage = results;
-    return q(newResult); // creates a promise that resolves to 'results' yay win
+    return newResult;
   },
   // 1. find a complex way to combine both queries on the DB side
   // 2. (simpler) perform two simple queries and roll them together here
@@ -56,7 +56,10 @@ var visit = {
     'WHERE visits.id = $1 AND visits.fxa_id = $2';
     var params = [visitId, fxaId];
     postgres.query(query, params)
-      .then(visit._transform)
+      .then(function(results) {
+        // return a promise that resolves to the transformed results
+        return q(visit._transform(results));
+      })
       .done(visit._onFulfilled.bind(visit, name + ' succeeded', cb),
             visit._onRejected.bind(visit, name + ' failed', cb));
   },
