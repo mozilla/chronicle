@@ -4,4 +4,11 @@
 
 'use strict';
 
-module.exports = [].concat(require('./base'), require('./auth'), require('./search'), require('./visits'));
+// TODO just sniff out all the files under /routes?
+module.exports = [].concat(
+  require('./auth'),
+  require('./base'),
+  require('./search'),
+  require('./visit'),
+  require('./visits')
+);
