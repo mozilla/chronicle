@@ -6,14 +6,8 @@
 
 var path = require('path');
 var config = require('../config');
+var baseController = require('../controllers/base');
 var STATIC_PATH = path.join(__dirname, '..', '..', config.get('server.staticPath'));
-
-var baseController = {
-  get: function (request, reply) {
-    var page = request.auth.isAuthenticated ? 'app.html' : 'index.html';
-    reply.file(path.join(STATIC_PATH, page));
-  }
-};
 
 var baseRoutes = [{
   method: 'GET',

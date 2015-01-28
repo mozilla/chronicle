@@ -7,23 +7,8 @@
 var Joi = require('joi');
 var Boom = require('boom');
 
+var searchController = require('../controllers/search');
 var log = require('../logger')('server.routes.search');
-var visits = require('../models/visits');
-
-var searchController = {
-  get: function (request, reply) {
-    var fxaId = request.auth.credentials;
-    var searchTerm = request.query.q;
-    var maxResults = request.query.count;
-    visits.search(fxaId, searchTerm, maxResults, function (err, results) {
-      if (err) {
-        log.warn(err);
-        return reply(Boom.create(500));
-      }
-      reply(results);
-    });
-  }
-};
 
 var searchRoutes = [{
   method: 'GET',
