@@ -71,36 +71,41 @@ var visits = {
     _verbose(name + ' invoked', fxaId, count);
     var esQuery = {
       index: 'chronicle',
-      type: 'visits',
+      type: 'userPages',
       size: count,
       body: {
         query: {
-          bool: {
-            must: {term: {fxaId: fxaId}},
-            should: {term: {title: searchTerm}}
+          match: {
+            extractedContent: searchTerm
           }
-        }
+        },
+        filter: { term: { fxaId: fxaId } }
       }
+    /*
+          multiMatch: {
+            query: searchTerm,
+            fuzziness: 'AUTO',
+            operator: 'and',
+            fields: [
+              'title',
+              'content',
+              'providerDisplay',
+              'providerName',
+              'authorName'
+            ]
+          }
+        },
+        filter: { term: { fxaId: fxaId } }
+      }
+    */
     };
+    log.verbose('searching elasticsearch for the search term ' + searchTerm);
     elasticsearch.query('search', esQuery)
       .done(function(resp) {
+        log.verbose('response from elasticsearch: ' + JSON.stringify(resp));
         var output = {};
         output.resultCount = resp.hits.total;
-        if (!!resp.hits.total) {
-          output.results = resp.hits.hits.map(function(item) {
-            // TODO should we just return __everything__ for now, until we figure out what's useful
-            // on the front-end?
-            var s = item._source;
-            return {
-              id: s.id,
-              fxaId: s.fxaId,
-              title: s.title,
-              url: s.url,
-              urlHash: s.urlHash,
-              visitedAt: s.visitedAt
-            };
-          });
-        }
+        output.results = resp.hits;
         _verbose(name + ' succeeded');
         cb(null, output);
       }, visits._onRejected.bind(visits, name + ' failed', cb));

@@ -43,7 +43,7 @@ var user = {
       .done(function(result) {
         // postgres response is '{exists: <boolean>}'
         // just fire the callback with the boolean
-        user._onFulfilled(name + ' succeeded', cb, result.exists);
+        user._onFulfilled(name + ' succeeded', cb, result);
       },
       user._onRejected.bind(user, name + ' failed', cb));
   },

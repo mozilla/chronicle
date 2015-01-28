@@ -84,21 +84,6 @@ var visit = {
       'VALUES ($1, $2, $3, $4, $4)';
     var userPageId;
 
-    // TODO NEXT: fixup the es query. include userPageId.
-    var esQuery = {
-      index: 'chronicle',
-      type: 'visits',
-      id: visitId,
-      body: {
-        id: visitId,
-        fxaId: fxaId,
-        url: url,
-        urlHash: urlHash,
-        title: title,
-        visitedAt: visitedAt
-      }
-    };
-
     // try to insert into pg; handle pg errors; insert into es; then we're done.
     // don't pass results to fulfillment callback, because they aren't used by the caller.
     postgres.query(lazyCreateUserPageQuery, lazyCreateParams)
@@ -111,7 +96,28 @@ var visit = {
         return postgres.query(createVisitQuery, visitParams);
       })
       .fail(visit._onRejected.bind(visit, name + ' postgres insert failed', cb))
-      .then(elasticsearch.query('create', esQuery))
+      .then(function() {
+        var esQuery = {
+          index: 'chronicle',
+          type: 'userPages',
+          id: userPageId,
+          body: {
+            fxaId: fxaId,
+            id: userPageId,
+            url: url,
+            urlHash: urlHash,
+            title: title,
+            visitedAt: visitedAt
+          }
+        };
+        // if the scraper elasticsearch task happens first, this one will abort, to avoid
+        // overwriting all the scraped data with nothing
+        return elasticsearch.query('create', esQuery)
+          .then(null, function(err) {
+            // TODO if the error is due to the thing already existing, it's not a problem...
+            // swallowing errors for now, until I look up how to catch that specific error
+          });
+      })
       .done(visit._onFulfilled.bind(visit, name + ' succeeded', cb),
             visit._onRejected.bind(visit, name + ' elasticsearch insert failed', cb));
   },

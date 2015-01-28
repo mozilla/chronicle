@@ -71,19 +71,35 @@ var userPage = {
       data.extractedUrl, new Date().toJSON(), fxaId];
 
     _verbose('about to issue lazy user page creation query');
+    var userPageId;
     postgres.query(lazyCreateUserPageQuery, lazyCreateParams)
       .fail(userPage._onRejected.bind(userPage, name + ' failed early', cb))
       .then(function(result) {
         // we just got the page_id; push it onto the end of the params array
         _verbose('the lazy create result is ' + JSON.stringify(result));
         _verbose('the userPageId is ' + result.id);
+        userPageId = result.id;
         addDataParams.push(result.id);
-        _verbose('about to issue extracted data insertion query');
-        _verbose('************ the complete query is **************');
-        _verbose(addExtractedDataQuery);
-        _verbose('************ the complete params are **************');
-        _verbose(JSON.stringify(addDataParams));
         return postgres.query(addExtractedDataQuery, addDataParams);
+      })
+      .fail(userPage._onRejected.bind(userPage, name + ' failed postgres insert', cb))
+      .then(function() {
+        // update ES with _everything_ for now
+        data.fxaId = fxaId;
+        data.url = url;
+        data.title = title;
+        data.urlHash = urlHash;
+        var esQuery = {
+          index: 'chronicle',
+          type: 'userPages',
+          id: userPageId,
+          body: data
+        };
+
+        _verbose('the elasticsearch query is ' + JSON.stringify(esQuery));
+        // if the page doesn't exist yet, this task creates it. visit.create gives up if
+        // the page exists, preventing the scraper fields from being deleted.
+        return elasticsearch.query('index', esQuery);
       })
       .done(userPage._onFulfilled.bind(userPage, name + ' succeeded', cb),
             userPage._onRejected.bind(userPage, name + ' failed late', cb));
