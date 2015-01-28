@@ -49,23 +49,23 @@ module.exports = {
         // not in the response, but we want extracted_at to be the current time
         out.extractedAt = new Date().toJSON();
 
-        if (d.authors.length) {
+        if (d.authors && d.authors.length) {
           out.extractedAuthorName = d.authors[0].name;
           out.extractedAuthorUrl = d.authors[0].url;
         }
 
-        if (d.embeds.length) {
+        if (d.embeds && d.embeds.length) {
           out.extractedEmbedHtml = d.embed.html;
           out.extractedEmbedWidth = d.embed.width;
           out.extractedEmbedHeight = d.embed.height;
         }
 
-        if (d.favicon_colors.length) {
+        if (d.favicon_colors && d.favicon_colors.length) {
           // this is an array of r,g,b values, eg [181, 187, 194]
           out.extractedFaviconColor = d.favicon_colors[0].color;
         }
 
-        if (d.images.length) {
+        if (d.images && d.images.length) {
           out.extractedImageUrl = d.images[0].url;
           out.extractedImageWidth = d.images[0].width;
           out.extractedImageHeight = d.images[0].height;
