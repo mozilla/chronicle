@@ -35,7 +35,7 @@ psql -c "CREATE TABLE IF NOT EXISTS user_pages (
   extracted_at TIMESTAMPTZ(3),
   extracted_author_name TEXT,
   extracted_author_url VARCHAR(2048),
-  extracted_cache_age INTEGER,
+  extracted_cache_age BIGINT,
   extracted_content TEXT,
   extracted_description TEXT,
   extracted_favicon_color TEXT,
