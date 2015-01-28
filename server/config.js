@@ -118,6 +118,20 @@ var conf = convict({
       }
     }
   },
+  embedly: {
+    enabled: {
+      doc: 'Disable embedly for running on travis.',
+      format: Boolean,
+      default: true,
+      env: 'EMBEDLY_ENABLED'
+    },
+    apiKey: {
+      doc: 'Embedly API key',
+      format: String,
+      default: 'your_key_here',
+      env: 'EMBEDLY_KEY'
+    }
+  },
   server: {
     log: {
       doc: 'Mozlog configuration. Defaults currently target dev, not prod.',
@@ -142,12 +156,6 @@ var conf = convict({
         default: false,
         format: Boolean
       }
-    },
-    embedlyKey: {
-      doc: 'Embedly API key',
-      format: String,
-      default: 'your_key_here',
-      env: 'EMBEDLY_KEY'
     },
     host: {
       doc: 'Host for the main api server process.',

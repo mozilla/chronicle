@@ -8,6 +8,7 @@ var crypto = require('crypto');
 var Boom = require('boom');
 var uuid = require('uuid');
 
+var config = require('../config');
 var log = require('../logger')('server.controllers.visits');
 var queue = require('../work-queue/queue');
 var visits = require('../models/visits');
@@ -52,7 +53,11 @@ var visitsController = {
       visitedAt: p.visitedAt
     };
     queue.createVisit(o);
-    queue.extractPage({fxaId: fxaId, url: p.url, urlHash: urlHash});
+    if (config.get('embedly.enabled')) {
+      queue.extractPage({fxaId: fxaId, url: p.url, urlHash: urlHash});
+    } else {
+      log.info('not extracting page because embedly is disabled');
+    }
     reply({
       id: visitId,
       url: p.url,
