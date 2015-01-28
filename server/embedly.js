@@ -43,6 +43,9 @@ module.exports = {
           }
         });
 
+        // published is returned as milliseconds, but we want an ISO timestamp
+        out.extractedPublished = new Date(out.extractedPublished).toJSON();
+
         // not in the response, but we want extracted_at to be the current time
         out.extractedAt = new Date().toJSON();
 

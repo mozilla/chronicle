@@ -57,7 +57,7 @@ psql -c "CREATE TABLE IF NOT EXISTS user_pages (
   extracted_provider_display TEXT,
   extracted_provider_name TEXT,
   extracted_provider_url VARCHAR(2048),
-  extracted_published INTEGER,
+  extracted_published TIMESTAMPTZ(3),
   extracted_safe BOOLEAN,
   extracted_title TEXT,
   extracted_type TEXT,
