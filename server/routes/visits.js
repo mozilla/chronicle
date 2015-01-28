@@ -6,63 +6,9 @@
 
 var crypto = require('crypto');
 var Joi = require('joi');
-var Boom = require('boom');
-var uuid = require('uuid');
 
 var log = require('../logger')('server.routes.visits');
-var queue = require('../work-queue/queue');
-var visits = require('../models/visits');
-
-// TODO: add additional metadata fields to the visit datatype
-// TODO: normalize URLs
-
-var visitsController = {
-  get: function (request, reply) {
-    var fxaId = request.auth.credentials;
-    var visitId = request.query.visitId;
-
-    function onResults(err, results) {
-      if (err) {
-        log.warn(err);
-        return reply(Boom.create(500)); // TODO distinguish between 4xx and 5xx?
-      }
-      reply(results);
-    }
-
-    // if there's a visitId provided, then we want a specific page
-    if (visitId) {
-      visits.getPaginated(fxaId, visitId, request.query.count, onResults);
-    } else {
-      visits.get(fxaId, request.query.count, onResults);
-    }
-  },
-  // moving this into visits (plural) because we're going to support multiple 
-  // uploads from this same endpoint
-  // TODO handle multiple uploads :-)
-  post: function(request, reply) {
-    var p = request.payload;
-    var fxaId = request.auth.credentials;
-    var visitId = p.visitId || uuid.v4();
-    var urlHash = crypto.createHash('sha1').update(p.url).digest('hex').toString();
-    var o = {
-      fxaId: fxaId,
-      visitId: visitId,
-      url: p.url,
-      urlHash: urlHash,
-      title: p.title,
-      visitedAt: p.visitedAt
-    };
-    queue.createVisit(o);
-    queue.extractPage({fxaId: fxaId, url: p.url, urlHash: urlHash});
-    reply({
-      id: visitId,
-      url: p.url,
-      urlHash: urlHash,
-      title: p.title,
-      visitedAt: p.visitedAt
-    });
-  }
-};
+var visitsController = require('../controllers/visits');
 
 var visitsRoutes = [{
   method: 'GET',
