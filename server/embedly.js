@@ -34,8 +34,7 @@ module.exports = {
         // these keys are top-level and match the format in the database
         var easyKeys = [
           'cache_age', 'content', 'description', 'favicon_url', 'language', 'lead',
-          'offset', 'provider_display', 'provider_name', 'provider_url', 'published',
-          'safe', 'title', 'type', 'url'
+          'provider_display', 'provider_name', 'provider_url', 'safe', 'title', 'type', 'url'
         ];
         easyKeys.forEach(function(item) {
           if (item in d) {
@@ -43,8 +42,19 @@ module.exports = {
           }
         });
 
-        // published is returned as milliseconds, but we want an ISO timestamp
-        out.extractedPublished = new Date(out.extractedPublished).toJSON();
+        // publication date handling:
+        //
+        // embedly expresses date of publication as 'published' + 'offset'.
+        // these are both represented as milliseconds since the epoch.
+        // if embedly found no publication time, 'published' + 'offset' will both be empty.
+        // if embedly found publication time but no timezone, 'published' will be UTC.
+        // if embedly found publication time and timezone, 'published' is in that
+        // timezone, and 'offset' expresses the difference from UTC.
+        // we transform these keys to store ISO dates, not millis, in our database.
+        var publicationDateMillis = (d.offset || 0) + (d.published || 0);
+        if (publicationDateMillis) {
+          out.extractedPublished = new Date(publicationDateMillis).toJSON();
+        }
 
         // not in the response, but we want extracted_at to be the current time
         out.extractedAt = new Date().toJSON();
