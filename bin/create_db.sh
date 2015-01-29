@@ -23,7 +23,7 @@ psql -c "CREATE TABLE IF NOT EXISTS users (
   email VARCHAR(255) NOT NULL,
   oauth_token TEXT,
   created_at TIMESTAMPTZ(3) NOT NULL,
-  updated_at TIMESTAMPTZ(3)
+  updated_at TIMESTAMPTZ(3) NOT NULL
 );" -d chronicle -U chronicle
 psql -c "CREATE TABLE IF NOT EXISTS user_pages (
   id UUID PRIMARY KEY,
@@ -71,7 +71,7 @@ psql -c "CREATE TABLE IF NOT EXISTS visits (
   user_id CHAR(32) NOT NULL REFERENCES users,
   user_page_id UUID NOT NULL REFERENCES user_pages(id),
   visited_at TIMESTAMPTZ(3) NOT NULL,
-  updated_at TIMESTAMPTZ(3)
+  updated_at TIMESTAMPTZ(3) NOT NULL
 );" -d chronicle -U chronicle
 psql -c "CREATE UNIQUE INDEX user_id_visited_at_id
   ON visits (user_id, visited_at, id);" -d chronicle -U chronicle

@@ -28,8 +28,8 @@ var user = {
   create: function(userId, email, oauthToken, cb) {
     var name = 'models.user.create'; // RIP `arguments.callee` *snif*
     _verbose(name + ' called', userId, email, oauthToken);
-    var query = 'INSERT INTO users (user_id, email, oauth_token, created_at) ' +
-                'VALUES ($1, $2, $3, $4)';
+    var query = 'INSERT INTO users (user_id, email, oauth_token, created_at, updated_at) ' +
+                'VALUES ($1, $2, $3, $4, $4)';
     var params = [userId, email, oauthToken, new Date().toJSON()];
     postgres.query(query, params)
       .done(user._onFulfilled.bind(user, name + ' succeeded', cb),

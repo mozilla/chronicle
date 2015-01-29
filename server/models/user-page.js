@@ -37,10 +37,11 @@ var userPage = {
     // fire 'userPage::updated' or 'userPage::updateError' events
     var name = 'models.user-page.update';
     _verbose(name + ' called', userId, url);
-    var lazyCreateParams = [uuid.v4(), userId, url, urlHash, title];
+    var currentTime = new Date().toJSON();
+    var lazyCreateParams = [uuid.v4(), userId, url, urlHash, title, currentTime];
     var lazyCreateUserPageQuery = 'WITH new_page AS (  ' +
-      '  INSERT INTO user_pages (id, user_id, url, raw_url, url_hash, title) ' +
-      '  SELECT $1, $2, $3, $3, $4, $5 ' +
+      '  INSERT INTO user_pages (id, user_id, url, raw_url, url_hash, title, created_at, updated_at) ' +
+      '  SELECT $1, $2, $3, $3, $4, $5, $6 ' +
       '  WHERE NOT EXISTS (SELECT id FROM user_pages WHERE user_id = $2 AND url_hash = $4) ' +
       '  RETURNING id ' +
       ') SELECT id FROM new_page ' +
@@ -68,7 +69,7 @@ var userPage = {
       data.extractedMediaType, data.extractedMediaWidth,
       data.extractedProviderDisplay, data.extractedProviderName, data.extractedProviderUrl,
       data.extractedPublished, data.extractedSafe, data.extractedTitle, data.extractedType,
-      data.extractedUrl, new Date().toJSON(), userId];
+      data.extractedUrl, currentTime, userId];
 
     _verbose('about to issue lazy user page creation query');
     var userPageId;
