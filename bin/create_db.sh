@@ -78,3 +78,7 @@ psql -c "CREATE UNIQUE INDEX fxa_id_visited_at_id
 # used to check if a user_page should be deleted on visit delete
 psql -c "CREATE UNIQUE INDEX fxa_id_user_page_id_id
   ON visits (fxa_id, user_page_id, id);" -d chronicle -U chronicle
+
+# lest we forget! clean out our elasticsearch index, too
+curl -XDELETE 'http://localhost:9200/chronicle/'
+curl -XPUT 'http://localhost:9200/chronicle/'

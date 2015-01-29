@@ -54,7 +54,8 @@ var visitsController = {
     };
     queue.createVisit(o);
     if (config.get('embedly.enabled')) {
-      queue.extractPage({fxaId: fxaId, url: p.url, urlHash: urlHash});
+      // extractPage doesn't need all these keys, but the extras won't hurt anything
+      queue.extractPage(o);
     } else {
       log.info('not extracting page because embedly is disabled');
     }

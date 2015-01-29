@@ -32,7 +32,7 @@ var multiWorkerOpts = {
   connection: connectionDetails,
   queues: ['chronicle'],
   minTaskProcessors: 1,
-  maxTaskProcessors: 10,
+  maxTaskProcessors: 30,
 };
 var multiWorker = new nr.multiWorker(multiWorkerOpts, jobs, function() {
   multiWorker.on('start', function(workerId){
