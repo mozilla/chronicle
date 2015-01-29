@@ -34,15 +34,15 @@ var visits = {
     });
     return transformed;
   },
-  getPaginated: function(fxaId, visitId, count, cb) {
+  getPaginated: function(userId, visitId, count, cb) {
     var name = 'models.visits.getPaginated';
-    _verbose(name + ' invoked', fxaId, visitId, count);
-    var query = 'SELECT visits.id as visit_id, visits.fxa_id as user_id, visits.visited_at, * ' +
+    _verbose(name + ' invoked', userId, visitId, count);
+    var query = 'SELECT visits.id as visit_id, visits.user_id as user_id, visits.visited_at, * ' +
                 'FROM visits LEFT JOIN user_pages ON visits.user_page_id = user_pages.id ' +
-                'WHERE fxa_id = $1 ' +
+                'WHERE user_id = $1 ' +
                 'AND visits.visited_at < (SELECT visited_at FROM visits WHERE id = $2) ' +
                 'ORDER BY visits.visited_at DESC LIMIT $3';
-    var params = [fxaId, visitId, count];
+    var params = [userId, visitId, count];
     postgres.query(query, params)
       .then(function(results) {
         // return a promise that resolves to the transformed results
@@ -51,13 +51,13 @@ var visits = {
       .done(visits._onFulfilled.bind(visits, name + ' succeeded', cb),
             visits._onRejected.bind(visits, name + ' failed', cb));
   },
-  get: function(fxaId, count, cb) {
+  get: function(userId, count, cb) {
     var name = 'models.visits.get';
-    _verbose(name + ' invoked', fxaId, count);
-    var query = 'SELECT visits.id as visit_id, visits.fxa_id as user_id, visits.visited_at, * ' +
+    _verbose(name + ' invoked', userId, count);
+    var query = 'SELECT visits.id as visit_id, visits.user_id as user_id, visits.visited_at, * ' +
                 'FROM visits LEFT JOIN user_pages ON visits.user_page_id = user_pages.id ' +
-                'WHERE visits.fxa_id = $1 ORDER BY visits.visited_at DESC LIMIT $2';
-    var params = [fxaId, count];
+                'WHERE visits.user_id = $1 ORDER BY visits.visited_at DESC LIMIT $2';
+    var params = [userId, count];
     postgres.query(query, params)
       .then(function(results) {
         // return a promise that resolves to the transformed results
@@ -66,9 +66,9 @@ var visits = {
       .done(visits._onFulfilled.bind(visits, name + ' succeeded', cb),
             visits._onRejected.bind(visits, name + ' failed', cb));
   },
-  search: function(fxaId, searchTerm, count, cb) {
+  search: function(userId, searchTerm, count, cb) {
     var name = 'models.visits.search';
-    _verbose(name + ' invoked', fxaId, count);
+    _verbose(name + ' invoked', userId, count);
     var esQuery = {
       index: 'chronicle',
       type: 'userPages',
@@ -79,7 +79,7 @@ var visits = {
             extractedContent: searchTerm
           }
         },
-        filter: { term: { fxaId: fxaId } }
+        filter: { term: { userId: userId } }
       }
     /*
           multiMatch: {
@@ -95,7 +95,7 @@ var visits = {
             ]
           }
         },
-        filter: { term: { fxaId: fxaId } }
+        filter: { term: { userId: userId } }
       }
     */
     };

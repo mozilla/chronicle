@@ -33,7 +33,7 @@ function profile (credentials, params, get, profileCb) {
           }
           // finally, set the cookie and redirect.
           log.verbose('logged in existing user ' + data.email);
-          credentials.profile = {fxaId: data.uid};
+          credentials.profile = {userId: data.uid};
           return profileCb(credentials);
         });
       } else {
@@ -44,7 +44,7 @@ function profile (credentials, params, get, profileCb) {
             throw err;
           }
           log.verbose('created new user ' + data.email);
-          credentials.profile = {fxaId: data.uid, isNewUser: true};
+          credentials.profile = {userId: data.uid, isNewUser: true};
           return profileCb(credentials);
         });
       }

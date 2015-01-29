@@ -63,13 +63,13 @@ server.register([
       }
       log.verbose('cookie is not expired.');
 
-      var fxaId = session.fxaId;
-      user.get(fxaId, function(err, result) {
+      var userId = session.userId;
+      user.get(userId, function(err, result) {
         if (err) {
           log.warn('unable to get user to validate user session: ' + err);
           return cb(err, false);
         }
-        cb(null, !!result, fxaId);
+        cb(null, !!result, userId);
       });
     }
   });

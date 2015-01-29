@@ -29,15 +29,15 @@ var userPage = {
     log.warn(msg);
     callback(err);
   },
-  update: function(fxaId, url, urlHash, title, data, cb) {
+  update: function(userId, url, urlHash, title, data, cb) {
     // fetch the page id, lazily creating it if it doesn't exist,
     // then update the page with the huge blob of embedly data
     //
     // TODO if we don't fire a callback on creation, we should return a promise _or_
     // fire 'userPage::updated' or 'userPage::updateError' events
     var name = 'models.user-page.update';
-    _verbose(name + ' called', fxaId, url);
-    var lazyCreateParams = [uuid.v4(), fxaId, url, urlHash, title];
+    _verbose(name + ' called', userId, url);
+    var lazyCreateParams = [uuid.v4(), userId, url, urlHash, title];
     var lazyCreateUserPageQuery = 'WITH new_page AS (  ' +
       '  INSERT INTO user_pages (id, user_id, url, raw_url, url_hash, title) ' +
       '  SELECT $1, $2, $3, $3, $4, $5 ' +
@@ -68,7 +68,7 @@ var userPage = {
       data.extractedMediaType, data.extractedMediaWidth,
       data.extractedProviderDisplay, data.extractedProviderName, data.extractedProviderUrl,
       data.extractedPublished, data.extractedSafe, data.extractedTitle, data.extractedType,
-      data.extractedUrl, new Date().toJSON(), fxaId];
+      data.extractedUrl, new Date().toJSON(), userId];
 
     _verbose('about to issue lazy user page creation query');
     var userPageId;
@@ -85,7 +85,7 @@ var userPage = {
       .fail(userPage._onRejected.bind(userPage, name + ' failed postgres insert', cb))
       .then(function() {
         // update ES with _everything_ for now
-        data.fxaId = fxaId;
+        data.userId = userId;
         data.url = url;
         data.title = title;
         data.urlHash = urlHash;
@@ -105,10 +105,10 @@ var userPage = {
             userPage._onRejected.bind(userPage, name + ' failed late', cb));
 
   },
-  get: function(fxaId, userPageId, cb) {
+  get: function(userId, userPageId, cb) {
     var name = 'models.user-page.get';
-    _verbose(name + ' called', fxaId, userPageId);
-    postgres.query('SELECT * FROM user_pages WHERE user_id = $1 and id = $2', [fxaId, userPageId])
+    _verbose(name + ' called', userId, userPageId);
+    postgres.query('SELECT * FROM user_pages WHERE user_id = $1 and id = $2', [userId, userPageId])
       .done(userPage._onFulfilled.bind(userPage, name + ' succeeded', cb),
             userPage._onRejected.bind(userPage, name + ' failed', cb));
   }

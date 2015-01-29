@@ -231,7 +231,7 @@ var conf = convict({
         env: 'FXA_OAUTH_TOKEN_ENDPOINT'
       },
       profileEndpoint: {
-        doc: 'Firefox Accounts profile server endpoint, used to fetch email, fxa_id.',
+        doc: 'Firefox Accounts profile server endpoint, used to fetch email, user_id.',
         default: 'https://latest.dev.lcip.org/profile/v1/profile',
         format: 'url',
         env: 'FXA_PROFILE_ENDPOINT'

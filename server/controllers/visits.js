@@ -18,7 +18,7 @@ var visits = require('../models/visits');
 
 var visitsController = {
   get: function (request, reply) {
-    var fxaId = request.auth.credentials;
+    var userId = request.auth.credentials;
     var visitId = request.query.visitId;
 
     function onResults(err, results) {
@@ -31,9 +31,9 @@ var visitsController = {
 
     // if there's a visitId provided, then we want a specific page
     if (visitId) {
-      visits.getPaginated(fxaId, visitId, request.query.count, onResults);
+      visits.getPaginated(userId, visitId, request.query.count, onResults);
     } else {
-      visits.get(fxaId, request.query.count, onResults);
+      visits.get(userId, request.query.count, onResults);
     }
   },
   // moving this into visits (plural) because we're going to support multiple 
@@ -41,11 +41,11 @@ var visitsController = {
   // TODO handle multiple uploads :-)
   post: function(request, reply) {
     var p = request.payload;
-    var fxaId = request.auth.credentials;
+    var userId = request.auth.credentials;
     var visitId = p.visitId || uuid.v4();
     var urlHash = crypto.createHash('sha1').update(p.url).digest('hex').toString();
     var o = {
-      fxaId: fxaId,
+      userId: userId,
       visitId: visitId,
       url: p.url,
       urlHash: urlHash,

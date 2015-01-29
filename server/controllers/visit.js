@@ -11,8 +11,8 @@ var visit = require('../models/visit');
 
 var visitController = {
   get: function (request, reply) {
-    var fxaId = request.auth.credentials;
-    visit.get(fxaId, request.params.visitId, function(err, result) {
+    var userId = request.auth.credentials;
+    visit.get(userId, request.params.visitId, function(err, result) {
       if (err) {
         log.warn(err);
         return reply(Boom.create(500));
@@ -25,10 +25,10 @@ var visitController = {
     });
   },
   put: function(request, reply) {
-    var fxaId = request.auth.credentials;
+    var userId = request.auth.credentials;
     var visitId = request.params.visitId;
     var p = request.payload;
-    visit.update(fxaId, visitId, p.visitedAt, p.url, p.title, function(err, result) {
+    visit.update(userId, visitId, p.visitedAt, p.url, p.title, function(err, result) {
       if (err) {
         log.warn(err);
         return reply(Boom.create(500));
@@ -38,8 +38,8 @@ var visitController = {
     });
   },
   delete: function (request, reply) {
-    var fxaId = request.auth.credentials;
-    visit.delete(fxaId, request.params.visitId, function(err) {
+    var userId = request.auth.credentials;
+    visit.delete(userId, request.params.visitId, function(err) {
       if (err) {
         log.warn(err);
         return reply(Boom.create(500));

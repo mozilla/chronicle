@@ -25,21 +25,21 @@ var user = {
     log.warn(msg);
     callback(err);
   },
-  create: function(fxaId, email, oauthToken, cb) {
+  create: function(userId, email, oauthToken, cb) {
     var name = 'models.user.create'; // RIP `arguments.callee` *snif*
-    _verbose(name + ' called', fxaId, email, oauthToken);
-    var query = 'INSERT INTO users (fxa_id, email, oauth_token, created_at) ' +
+    _verbose(name + ' called', userId, email, oauthToken);
+    var query = 'INSERT INTO users (user_id, email, oauth_token, created_at) ' +
                 'VALUES ($1, $2, $3, $4)';
-    var params = [fxaId, email, oauthToken, new Date().toJSON()];
+    var params = [userId, email, oauthToken, new Date().toJSON()];
     postgres.query(query, params)
       .done(user._onFulfilled.bind(user, name + ' succeeded', cb),
             user._onRejected.bind(user, name + ' failed', cb));
   },
   // TODO TODO use this! :-)
-  exists: function(fxaId, cb) {
+  exists: function(userId, cb) {
     var name = 'models.user.exists';
-    var query = 'SELECT exists(SELECT 1 FROM users WHERE fxa_id = $1)';
-    postgres.query(query, [fxaId])
+    var query = 'SELECT exists(SELECT 1 FROM users WHERE user_id = $1)';
+    postgres.query(query, [userId])
       .done(function(result) {
         // postgres response is '{exists: <boolean>}'
         // just fire the callback with the boolean
@@ -47,20 +47,20 @@ var user = {
       },
       user._onRejected.bind(user, name + ' failed', cb));
   },
-  get: function(fxaId, cb) {
+  get: function(userId, cb) {
     var name = 'models.user.get';
-    _verbose(name + ' called', fxaId);
-    var query = 'SELECT fxa_id, email FROM users WHERE fxa_id = $1';
-    postgres.query(query, [fxaId])
+    _verbose(name + ' called', userId);
+    var query = 'SELECT user_id, email FROM users WHERE user_id = $1';
+    postgres.query(query, [userId])
       .done(user._onFulfilled.bind(user, name + ' succeeded', cb),
             user._onRejected.bind(user, name + ' failed', cb));
   },
-  update: function(fxaId, email, oauthToken, cb) {
+  update: function(userId, email, oauthToken, cb) {
     var name = 'models.user.update';
-    _verbose(name + ' called', fxaId, email, oauthToken);
+    _verbose(name + ' called', userId, email, oauthToken);
     var query = 'UPDATE users SET email = $1, oauth_token = $2, updated_at = $3 ' +
-                'WHERE fxa_id = $4 RETURNING email, fxa_id';
-    postgres.query(query, [email, oauthToken, new Date().toJSON(), fxaId])
+                'WHERE user_id = $4 RETURNING email, user_id';
+    postgres.query(query, [email, oauthToken, new Date().toJSON(), userId])
       .done(user._onFulfilled.bind(user, name + ' succeeded', cb),
             user._onRejected.bind(user, name + ' failed', cb));
   }

@@ -9,7 +9,7 @@ var userPage = require('../../models/user-page');
 var embedly = require('../../embedly');
 
 module.exports = {
-  // o is an object with keys { fxaId, url, urlHash, title }
+  // o is an object with keys { userId, url, urlHash, title }
   perform: function(o, cb) {
     log.verbose('job created with params ' + JSON.stringify(o));
     embedly.extract(o.url, function(err, data) {
@@ -18,10 +18,10 @@ module.exports = {
         // we should retry on failure. leave that to the queue.
         throw err;
       } else {
-        log.verbose('extract-page job succeeded for user ' + o.fxaId + ', url ' + o.url + ': ' + JSON.stringify(data));
+        log.verbose('extract-page job succeeded for user ' + o.userId + ', url ' + o.url + ': ' + JSON.stringify(data));
         // the visit creation job has probably created a record in the user_page table.
         // if not, update will lazily create it.
-        userPage.update(o.fxaId, o.url, o.urlHash, o.title, data, function (err) {
+        userPage.update(o.userId, o.url, o.urlHash, o.title, data, function (err) {
           if (err) {
             log.warn('userPage.update failed: ' + err);
             throw err;

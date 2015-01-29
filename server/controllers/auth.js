@@ -12,7 +12,7 @@ var authController = {
     // If we are in testUser mode, just set the cookie and skip the oauth part
     if (config.get('testUser.enabled')) {
       log.verbose('testUser enabled; creating session');
-      request.auth.session.set({fxaId: config.get('testUser.id')});
+      request.auth.session.set({userId: config.get('testUser.id')});
       return reply.redirect('/');
     }
 
@@ -37,7 +37,7 @@ var authController = {
     log.verbose('request.auth.credentials is ' + JSON.stringify(request.auth.credentials));
 
     var session = {
-      fxaId: request.auth.credentials.profile.fxaId
+      userId: request.auth.credentials.profile.userId
     };
     var duration = config.get('server.session.duration');
     if (duration > 0) {

@@ -63,8 +63,8 @@ db conventions:
     - to avoid weirdness when developing on laptops in non-UTC timezones, we always specify UTC as the timezone in the postgres connection parameters
     - use TIMESTAMPTZ(3), a 3-decimal place timestamp (corresponding to JS millisecond default time resolution)
 - enforcing security (user only sees/searches own records)
-  - every postgres visit or visits query includes a "WHERE fxa_id = ?" clause
-  - ditto for elasticsearch: require a direct match on the fxa_id field for any set of search data.
+  - every postgres visit or visits query includes a "WHERE user_id = ?" clause
+  - ditto for elasticsearch: require a direct match on the user_id field for any set of search data.
 
 code organization / patterns
 - models
