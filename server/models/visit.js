@@ -144,7 +144,7 @@ var visit = {
           visit._onFulfilled(name + ' succeeded', cb, null);
         } else {
           _verbose('no other visits exist for user page ' + userPageId + ': deleting it');
-          var deleteQuery = 'DELETE FROM user_pages WHERE user_id = $1 AND user_page_id = $2';
+          var deleteQuery = 'DELETE FROM user_pages WHERE user_id = $1 AND id = $2';
           return postgres.query(deleteQuery, [userId, userPageId])
             .then(elasticsearch.query('delete', {index: 'chronicle', type: 'userPages', id: userPageId}));
         }
