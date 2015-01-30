@@ -118,6 +118,7 @@ var conf = convict({
       }
     }
   },
+  // TODO put these under a 'services' namespace
   embedly: {
     enabled: {
       doc: 'Disable embedly for running on travis.',
@@ -137,6 +138,16 @@ var conf = convict({
     // convict doesn't support protocol-relative urls
     format: String,
     default: '//gravatar.com/avatar/'
+  },
+  url2png: {
+    apiKey: {
+      format: String,
+      default: 'your_key_here'
+    },
+    secretKey: {
+      format: String,
+      default: 'your_key_here'
+    }
   },
   server: {
     log: {

@@ -23,6 +23,10 @@
     "apiKey": "",
     "enabled": true
   },
+  "url2png": {
+    "apiKey": "",
+    "secretKey": ""
+  },
   "server": {
     "host": "127.0.0.1",
     "port": 8080,

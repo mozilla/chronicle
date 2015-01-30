@@ -11,9 +11,19 @@ var uuid = require('uuid');
 var config = require('../config');
 var log = require('../logger')('server.controllers.visits');
 var queue = require('../work-queue/queue');
+var url2png = require('url2png')(config.get('url2png.apiKey'), config.get('url2png.secretKey'));
 var visits = require('../models/visits');
 
 // TODO: normalize URLs
+
+function addScreenshots(items) {
+  // TODO this is the seed of a view or view helper, believe it or not
+  if (!items || !items.length) { return items; }
+  items.forEach(function(item) {
+    item.screenshot_url = url2png.buildURL(item.url, {viewport: '1024x683', thumbnail_max_width: 540});
+  });
+  return items;
+}
 
 var visitsController = {
   get: function (request, reply) {
@@ -25,7 +35,11 @@ var visitsController = {
         log.warn(err);
         return reply(Boom.create(500)); // TODO distinguish between 4xx and 5xx?
       }
-      reply(results);
+      if (!results) {
+        return reply(Boom.create(404)); // not found
+      }
+      // for each visit in results, add the screenshot url
+      reply(addScreenshots(results));
     }
 
     // if there's a visitId provided, then we want a specific page

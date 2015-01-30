@@ -39,7 +39,7 @@ var visits = {
     _verbose(name + ' invoked', userId, visitId, count);
     var query = 'SELECT visits.id as visit_id, visits.user_id as user_id, visits.visited_at, * ' +
                 'FROM visits LEFT JOIN user_pages ON visits.user_page_id = user_pages.id ' +
-                'WHERE user_id = $1 ' +
+                'WHERE visits.user_id = $1 ' +
                 'AND visits.visited_at < (SELECT visited_at FROM visits WHERE id = $2) ' +
                 'ORDER BY visits.visited_at DESC LIMIT $3';
     var params = [userId, visitId, count];
