@@ -23,6 +23,7 @@
     "redis": "0.12.1",
     "underscore": "1.7.0",
     "underscore.string": "3.0.1",
+    "url2png": "6.0.1",
     "uuid": "2.0.1",
     "wreck": "5.1.0"
   },

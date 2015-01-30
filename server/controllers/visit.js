@@ -6,8 +6,16 @@
 
 var Boom = require('boom');
 
+var config = require('../config');
 var log = require('../logger')('server.controllers.visit');
+var url2png = require('url2png')(config.get('url2png.apiKey'), config.get('url2png.secretKey'));
 var visit = require('../models/visit');
+
+function addScreenshot(item) {
+  // TODO this is the seed of a view or view helper, believe it or not
+  item.screenshot_url = url2png.buildURL(item.url, {viewport: '1024x683', thumbnail_max_width: 540});
+  return item;
+}
 
 // TODO when we turn this into a real instantiable object, set req, reply as instance vars
 var visitController = {
@@ -21,7 +29,7 @@ var visitController = {
       if (!result) {
         return reply(Boom.create(404, 'Visit not found'));
       } else {
-        reply(result);
+        reply(addScreenshot(result));
       }
     });
   },
@@ -35,7 +43,7 @@ var visitController = {
         return reply(Boom.create(500));
       }
       // return the visit so backbone can update the model
-      reply(result);
+      reply(addScreenshot(result));
     });
   },
   delete: function (request, reply) {
