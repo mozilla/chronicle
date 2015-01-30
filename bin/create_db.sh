@@ -73,6 +73,7 @@ psql -c "CREATE TABLE IF NOT EXISTS visits (
   visited_at TIMESTAMPTZ(3) NOT NULL,
   updated_at TIMESTAMPTZ(3) NOT NULL
 );" -d chronicle -U chronicle
+# used for visit.get
 psql -c "CREATE UNIQUE INDEX user_id_visited_at_id
   ON visits (user_id, visited_at, id);" -d chronicle -U chronicle
 # used to check if a user_page should be deleted on visit delete

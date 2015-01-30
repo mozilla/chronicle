@@ -13,7 +13,6 @@ var log = require('../logger')('server.controllers.visits');
 var queue = require('../work-queue/queue');
 var visits = require('../models/visits');
 
-// TODO: add additional metadata fields to the visit datatype
 // TODO: normalize URLs
 
 var visitsController = {
@@ -55,6 +54,7 @@ var visitsController = {
     queue.createVisit(o);
     if (config.get('embedly.enabled')) {
       // extractPage doesn't need all these keys, but the extras won't hurt anything
+      // XXX the extractPage job checks if the user_page has been scraped recently
       queue.extractPage(o);
     } else {
       log.info('not extracting page because embedly is disabled');

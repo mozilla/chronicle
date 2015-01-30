@@ -4,11 +4,11 @@
 
 'use strict';
 
-// TODO just sniff out all the files under /routes?
-module.exports = [].concat(
-  require('./auth'),
-  require('./base'),
-  require('./search'),
-  require('./visit'),
-  require('./visits')
-);
+var fs = require('fs');
+var routes = [];
+
+fs.readdirSync(__dirname).forEach(function(file) {
+  if (file === 'index.js') { return; }
+  routes = routes.concat(require('./' + file));
+});
+module.exports = routes;

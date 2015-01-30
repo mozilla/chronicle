@@ -39,7 +39,7 @@ function createTestData(cb) {
   function generateTestRequest(item, n) {
     return {
       auth: {
-        credentials: config.get('testUser.id')
+        credentials: userId
       },
       payload: {
         url: item.url,

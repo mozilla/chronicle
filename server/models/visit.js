@@ -63,6 +63,24 @@ var visit = {
       .done(visit._onFulfilled.bind(visit, name + ' succeeded', cb),
             visit._onRejected.bind(visit, name + ' failed', cb));
   },
+  // TODO: for right now, doing an exact match on urlHash, visitedAt.
+  // We might want to look in a neighborhood of those values later, in which
+  // case we'd need a similarity metric for the url.
+  exists: function(userId, visitedAt, urlHash, cb) {
+    var name = 'models.visit.exists';
+    _verbose(name + ' called', userId, visitedAt, urlHash);
+    var existsQuery = 'SELECT exists(SELECT 1 FROM visits ' +
+      'LEFT JOIN user_pages on visits.user_id = user_pages.user_id ' +
+      'WHERE visits.user_id = $1 AND user_pages.url_hash = $2 AND ' +
+      'visits.visited_at = $3)';
+    var params = [userId, urlHash, visitedAt];
+    postgres.query(existsQuery, params)
+      .done(function(result) {
+        _verbose(name + ' result: ' + result);
+        visit._onFulfilled(name + ' succeeded', cb, result.exists);
+      },
+      visit._onRejected.bind(visit, name + ' failed', cb));
+  },
   create: function(userId, visitId, visitedAt, url, urlHash, title, cb) {
     // XXX we create only a few user_page fields synchronously; the rest
     // are filled in async by the scraper worker
@@ -89,10 +107,8 @@ var visit = {
     postgres.query(lazyCreateUserPageQuery, lazyCreateParams)
       .fail(visit._onRejected.bind(visit, name + ' failed', cb))
       .then(function(results) {
-        // TODO will userPageId be correct? find out :-P
         userPageId = results && results.id;
         var visitParams = [visitId, userId, userPageId, visitedAt];
-        // return the new query's promise to avoid nesting promise chains
         return postgres.query(createVisitQuery, visitParams);
       })
       .fail(visit._onRejected.bind(visit, name + ' postgres insert failed', cb))
@@ -112,11 +128,7 @@ var visit = {
         };
         // if the scraper elasticsearch task happens first, this one will abort, to avoid
         // overwriting all the scraped data with nothing
-        return elasticsearch.query('create', esQuery)
-          .then(null, function(err) {
-            // TODO if the error is due to the thing already existing, it's not a problem...
-            // swallowing errors for now, until I look up how to catch that specific error
-          });
+        return elasticsearch.query('create', esQuery);
       })
       .done(visit._onFulfilled.bind(visit, name + ' succeeded', cb),
             visit._onRejected.bind(visit, name + ' elasticsearch insert failed', cb));

@@ -7,7 +7,6 @@
 var pg = require('pg');
 var Q = require('q');
 var camelize = require('underscore.string').camelize;
-var underscored = require('underscore.string').underscored;
 
 var config = require('../config');
 var log = require('../logger')('server.db.postgres');
@@ -29,7 +28,7 @@ var postgres = {
   // individual queries must be sure to use the underscored versions.
   camelize: function(rows) {
     var outputRows = [];
-    var output, k;
+    var output;
     rows.forEach(function(row) {
       output = {};
       Object.keys(row).forEach(function(k) {

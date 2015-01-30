@@ -41,9 +41,7 @@ var user = {
     var query = 'SELECT exists(SELECT 1 FROM users WHERE user_id = $1)';
     postgres.query(query, [userId])
       .done(function(result) {
-        // postgres response is '{exists: <boolean>}'
-        // just fire the callback with the boolean
-        user._onFulfilled(name + ' succeeded', cb, result);
+        user._onFulfilled(name + ' succeeded', cb, result.exists);
       },
       user._onRejected.bind(user, name + ' failed', cb));
   },

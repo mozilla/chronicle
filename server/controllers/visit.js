@@ -9,6 +9,7 @@ var Boom = require('boom');
 var log = require('../logger')('server.controllers.visit');
 var visit = require('../models/visit');
 
+// TODO when we turn this into a real instantiable object, set req, reply as instance vars
 var visitController = {
   get: function (request, reply) {
     var userId = request.auth.credentials;

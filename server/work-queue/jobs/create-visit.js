@@ -11,13 +11,22 @@ module.exports = {
   // o is an object with keys { userId, visitId, url, urlHash, title, visitedAt }
   perform: function(o, cb) {
     log.verbose('job created with params ' + JSON.stringify(o));
-    visit.create(o.userId, o.visitId, o.visitedAt, o.url, o.urlHash, o.title, function (err) {
-      log.verbose('inside the visit.create callback inside the createVisit job!');
+
+    visit.exists(o.userId, o.visitedAt, o.urlHash, function (err, result) {
       if (err) {
-        log.warn('visit.create callback inside job says err: ' + err);
-        // tell node-resque that the job failed
+        log.warn('failed at visit.exists step for visit url ' + o.url + ' :' + err);
+        return cb(err);
+      } else if (result.exists) {
+        log.warn('duplicate visit submitted for url ' + o.url + ', aborting');
+        return cb();
       }
-      cb(err);
+      visit.create(o.userId, o.visitId, o.visitedAt, o.url, o.urlHash, o.title, function (err) {
+        log.verbose('inside the visit.create callback inside the createVisit job!');
+        if (err) {
+          log.warn('failed at visit.create step for visit url ' + o.url + ' :' + err);
+        }
+        cb(err);
+      });
     });
   }
 };

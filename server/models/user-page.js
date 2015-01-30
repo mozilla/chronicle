@@ -8,7 +8,6 @@
 // can separately handle creating the visit and creating the
 // user page. someday this might also be used by the client-facing API layer.
 
-var underscored = require('underscore.string').underscored;
 var uuid = require('uuid');
 
 var postgres = require('../db/postgres');
@@ -23,7 +22,7 @@ var _verbose = function() {
 var userPage = {
   _onFulfilled: function _onFulfilled(msg, callback, results) {
     _verbose(msg);
-    callback(null, results);
+    return callback(null, results);
   },
   _onRejected: function _onRejected(msg, callback, err) {
     log.warn(msg);
@@ -41,7 +40,7 @@ var userPage = {
     var lazyCreateParams = [uuid.v4(), userId, url, urlHash, title, currentTime];
     var lazyCreateUserPageQuery = 'WITH new_page AS (  ' +
       '  INSERT INTO user_pages (id, user_id, url, raw_url, url_hash, title, created_at, updated_at) ' +
-      '  SELECT $1, $2, $3, $3, $4, $5, $6 ' +
+      '  SELECT $1, $2, $3, $3, $4, $5, $6, $6 ' +
       '  WHERE NOT EXISTS (SELECT id FROM user_pages WHERE user_id = $2 AND url_hash = $4) ' +
       '  RETURNING id ' +
       ') SELECT id FROM new_page ' +
@@ -74,7 +73,6 @@ var userPage = {
     _verbose('about to issue lazy user page creation query');
     var userPageId;
     postgres.query(lazyCreateUserPageQuery, lazyCreateParams)
-      .fail(userPage._onRejected.bind(userPage, name + ' failed early', cb))
       .then(function(result) {
         // we just got the page_id; push it onto the end of the params array
         _verbose('the lazy create result is ' + JSON.stringify(result));
@@ -83,7 +81,6 @@ var userPage = {
         addDataParams.push(result.id);
         return postgres.query(addExtractedDataQuery, addDataParams);
       })
-      .fail(userPage._onRejected.bind(userPage, name + ' failed postgres insert', cb))
       .then(function() {
         // update ES with _everything_ for now
         data.userId = userId;
@@ -98,12 +95,10 @@ var userPage = {
         };
 
         _verbose('the elasticsearch query is ' + JSON.stringify(esQuery));
-        // if the page doesn't exist yet, this task creates it. visit.create gives up if
-        // the page exists, preventing the scraper fields from being deleted.
         return elasticsearch.query('index', esQuery);
       })
       .done(userPage._onFulfilled.bind(userPage, name + ' succeeded', cb),
-            userPage._onRejected.bind(userPage, name + ' failed late', cb));
+            userPage._onRejected.bind(userPage, name + ' failed', cb));
 
   },
   get: function(userId, userPageId, cb) {
@@ -112,6 +107,19 @@ var userPage = {
     postgres.query('SELECT * FROM user_pages WHERE user_id = $1 and id = $2', [userId, userPageId])
       .done(userPage._onFulfilled.bind(userPage, name + ' succeeded', cb),
             userPage._onRejected.bind(userPage, name + ' failed', cb));
+  },
+  // XXX this means "does it exist and has it been scraped yet", not "does it exist".
+  // but an 'exists' function might be nice eventually
+  hasMetadata: function(userId, urlHash, cb) {
+    var name = 'models.user-page.hasMetadata';
+    _verbose(name + ' called', userId, urlHash);
+    var query = 'SELECT exists(SELECT 1 FROM user_pages WHERE ' +
+                'user_id = $1 AND url_hash = $2 AND extracted_url IS NOT NULL)';
+    postgres.query(query, [userId, urlHash])
+      .done(function(result) {
+        userPage._onFulfilled(name + ' succeeded', cb, result.exists);
+      },
+      userPage._onRejected.bind(userPage, name + ' failed', cb));
   }
 };
 module.exports = userPage;

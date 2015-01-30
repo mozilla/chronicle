@@ -22,7 +22,10 @@ module.exports = {
     log.debug('embedly.extract called');
 
     if (!isEnabled) {
-      return cb('Embedly is currently disabled. Set `server.embedly.enabled` to enable.');
+      return cb('Embedly is currently disabled. Set `embedly.enabled` to enable.');
+    }
+    if (!apiKey) {
+      return cb('Embedly requires an API key. Set `embedly.apiKey` to enable.');
     }
 
     // node-embedly logs failures, so we can skip that here
