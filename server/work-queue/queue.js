@@ -32,7 +32,7 @@ var multiWorkerOpts = {
   connection: connectionDetails,
   queues: ['chronicle'],
   minTaskProcessors: 1,
-  maxTaskProcessors: 10,
+  maxTaskProcessors: 30,
 };
 var multiWorker = new nr.multiWorker(multiWorkerOpts, jobs, function() {
   multiWorker.on('start', function(workerId){
@@ -93,10 +93,26 @@ var multiWorker = new nr.multiWorker(multiWorkerOpts, jobs, function() {
 // TODO add reject handler when we listen for queue/worker startup failures
 //Q.all([queueReady.promise, workersReady.promise]).then(function() {
 // TODO: be fancy, loop over jobs
+// TODO figure out the callback contract between queue and worker
+// (not between queue and queue caller, those should be fire-and-forget)
 module.exports = {
   createVisit: function(o) {
     log.verbose('createVisit queue method invoked, o is ' + JSON.stringify(o));
-    queue.enqueue('chronicle', 'createVisit', o);
+    queue.enqueue('chronicle', 'createVisit', o, function(err, data) {
+      if (err) {
+        log.warn('createVisit job failed: ' + err);
+      }
+      log.verbose('createVisit job succeeded: ' + data);
+    });
+  },
+  extractPage: function(o) {
+    log.verbose('extractPage queue method invoked, o is ' + JSON.stringify(o));
+    queue.enqueue('chronicle', 'extractPage', o, function(err, data) {
+      if (err) {
+        log.warn('createVisit job failed: ' + err);
+      }
+      log.verbose('createVisit job succeeded: ' + data);
+    });
   }
 };
 //});

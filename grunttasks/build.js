@@ -14,7 +14,6 @@ module.exports = function (grunt) {
 
     if (target === 'development') {
       taskArr = [
-        'lint',
         'clean',
         'copy',
         'css',

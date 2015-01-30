@@ -4,4 +4,11 @@
 
 'use strict';
 
-module.exports = [].concat(require('./base'), require('./auth'), require('./search'), require('./visits'), require('./ops'));
+var fs = require('fs');
+var routes = [];
+
+fs.readdirSync(__dirname).forEach(function(file) {
+  if (file === 'index.js') { return; }
+  routes = routes.concat(require('./' + file));
+});
+module.exports = routes;

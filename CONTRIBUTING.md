@@ -20,6 +20,10 @@ Coming Soon
 
 Coming Soon
 
+## Code Organization
+
+See `server/README.md` for a ludicrous speed overview of that code.
+
 ## Git Commit Guidelines
 
 We loosely follow the [Angular commit guidelines](https://github.com/angular/angular.js/blob/master/CONTRIBUTING.md#type) of `<type>(<scope>): <subject>` where `type` must be one of:

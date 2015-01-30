@@ -2,3 +2,5 @@ node_modules
 config/*.json
 app/bower_components
 app/styles/*.css
+*.swp
+*.swo
