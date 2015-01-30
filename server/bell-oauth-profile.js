@@ -7,6 +7,7 @@
 var log = require('./logger')('server.bell.profile');
 var user = require('./models/user');
 var config = require('./config');
+var queue = require('./work-queue/queue');
 
 // this is the custom provider profile function used by Bell to allow us
 // to convert oauth tokens into profile information.
@@ -45,6 +46,7 @@ function profile (credentials, params, get, profileCb) {
           }
           log.verbose('created new user ' + data.email);
           credentials.profile = {userId: data.uid, isNewUser: true};
+          queue.sendWelcomeEmail({email: data.email});
           return profileCb(credentials);
         });
       }

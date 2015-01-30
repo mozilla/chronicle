@@ -6,5 +6,6 @@
 
 module.exports = {
   createVisit: require('./create-visit'),
-  extractPage: require('./extract-page')
+  extractPage: require('./extract-page'),
+  sendWelcomeEmail: require('./send-welcome-email')
 };

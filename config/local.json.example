@@ -27,6 +27,15 @@
     "apiKey": "",
     "secretKey": ""
   },
+  "email": {
+    "fromEmail": "info@chronicle.firefox.com",
+    "smtp": {
+      "host": "localhost",
+      "port": 25,
+      "auth_user": "",
+      "auth_pass": ""
+    }
+  },
   "server": {
     "host": "127.0.0.1",
     "port": 8080,
