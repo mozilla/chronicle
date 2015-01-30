@@ -132,6 +132,12 @@ var conf = convict({
       env: 'EMBEDLY_KEY'
     }
   },
+  avatarUrl: {
+    doc: 'protocol-relative avatar service base url',
+    // convict doesn't support protocol-relative urls
+    format: String,
+    default: '//gravatar.com/avatar/'
+  },
   server: {
     log: {
       doc: 'Mozlog configuration. Defaults currently target dev, not prod.',

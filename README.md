@@ -22,13 +22,14 @@ The server-side code dependencies are managed with [npm](https://www.npmjs.com/)
 
 To fetch dependencies and get cooking:
 
-1. `npm install`
+1. `npm install` and ensure redis, elasticsearch, postgres are all running
 2. As part of the npm install process, the `postinstall` script will install the Bower dependencies for you.
 3. Copy `config/local.json.example` to `config/local.json`, and put your local info in there.
 4. Run `./bin/create_db.sh` to create the database, tables, and indexes
   - this script currently hard-codes the db user, password, and dbname to 'chronicle' (issue #112)
-5. Run `node bin/create_test_data.js` to create test data (pass that script `--help` for options)
-
+5. Run `./bin/create_test_data.js` to create a test user and test data
+  - the test user is defined in the config file
+  - the test data is a set of visits created using the URLs in `config/test-urls.js`. Over time we'll experiment with different test data sets, might wind up with a test-urls directory instead.
 6. `npm start`
 7. You're up and running! surf to <http://localhost:8080> :surfer:
 
