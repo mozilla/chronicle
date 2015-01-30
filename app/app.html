@@ -10,25 +10,25 @@
     <link rel="stylesheet" href="styles/compiled.css">
     <!-- endbuild -->
   </head>
-  <body class="l-flexbody">
-    <div id="top-bar">
-      <div class="container">
-        <div class="global-nav">
-          <h1>Chronicle</h1>
-          <div class="user">
-            <a href="/auth/logout">Sign out</a>
-          </div>
+  <body>
+    <header class="row">
+      <div class="row-inner">
+        <h1>Chronicle</h1>
+        <div id="user">
+          <a href="/auth/logout">Sign out</a>
+        </div>
+        <div id="search">
+          <form><input type="text" placeholder="Search" /></form>
         </div>
       </div>
-    </div>
-    <div id="main">
-      <div class="container">
-        <div id="stage"></div>
-      </div>
-    </div>
-    <div id="bottom-bar">
-      <div class="container">
-        <p class="l-text-center">&copy; 2015 &bull; <a href="https://github.com/mozilla/chronicle/" target="_blank">Mozilla</a></p>
+    </header>
+    <div id="container" class="row">
+      <div class="row-inner">
+        <section id="stage">
+        </section>
+        <footer>
+          <p>&copy; 2015 &bull; <a href="http://mozilla.org/" target="_blank">Mozilla</a></p>
+        </footer>
       </div>
     </div>
     <!-- build:js scripts/compiled.js -->

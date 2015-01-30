@@ -1,0 +1,39 @@
+header {
+  background: #4d4d4d;
+  position: fixed;
+  top: 0;
+  z-index: 100;
+
+  .row-inner {
+    height: 65px;
+  }
+
+  h1 {
+    @include vertical-align;
+    color: #fff;
+    font-size: 24px;
+    margin: 0;
+  }
+
+  #user {
+    display: none;
+  }
+
+  #search {
+    margin-top: -20px;
+    position: absolute;
+    right: 20px;
+    top: 50%;
+
+    input {
+      @include hidpi-background-image(icon-search, 16px 16px);
+      background-repeat: no-repeat;
+      background-position: top 50% right 10px;
+      border: 0;
+      border-radius: 6px;
+      font-size: 14px;
+      padding: 7px 7px 7px 15px;
+      width: 350px;
+    }
+  }
+}

@@ -3,12 +3,15 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 define([
+  'underscore',
   'views/base',
-  'stache!templates/visits/item'
-], function (BaseView, VisitsItemTemplate) {
+  'stache!templates/visits/item',
+  'presenters/visit_presenter'
+], function (_, BaseView, VisitsItemTemplate, VisitPresenter) {
   'use strict';
 
   var VisitsItemView = BaseView.extend({
+    className: 'visit',
     template: VisitsItemTemplate,
 
     events: {
@@ -16,7 +19,20 @@ define([
     },
 
     initialize: function () {
+      this.presenter = new VisitPresenter(this.model);
+
       this.listenTo(this.model, 'change', this.render);
+    },
+
+    getContext: function () {
+      return this.presenter;
+    },
+
+    afterRender: function () {
+      // add size class
+      this.$el.addClass(this.presenter.getSizeClassName());
+      // add image position class
+      this.$el.find('.image').addClass(_.sample(['left', 'right']));
     },
 
     destroyModel: function (event) {

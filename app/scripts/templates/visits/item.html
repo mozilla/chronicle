@@ -1,4 +1,12 @@
-<div class="visit">
+<div class="image" style="background-image: url({{extractedImageUrl}});"></div>
+<div class="text">
+  <div class="provider">
+    <img class="favicon" src="{{faviconUrl}}" />
+    <span class="name">{{extractedProviderName}}</span>
+  </div>
   <h3 class="title"><a href="{{url}}">{{title}}</a></h3>
-  <button class="destroy">Destroy</button>
+  <div class="description">{{extractedDescription}}</div>
+  <ul class="actions">
+    <li><a class="destroy" href="#">Destroy</a></li>
+  </ul>
 </div>
