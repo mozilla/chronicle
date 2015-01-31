@@ -20,12 +20,12 @@ function profile (credentials, params, get, profileCb) {
     // Bell returns the parsed data and handles errors internally
     log.verbose('exchanged tokens for profile data:' + JSON.stringify(data));
     // TODO use Joi to validate `data` before sending to DB
-    user.get(data.uid, function (err, user) {
+    user.get(data.uid, function (err, result) {
       if (err) {
         log.warn('user.get failed: ' + err);
         throw err;
       }
-      if (user) {
+      if (result) {
         log.verbose('user exists! updating oauth token and setting session cookie...');
         user.update(data.uid, data.email, params.access_token, function(err) {
           if (err) {
@@ -46,7 +46,8 @@ function profile (credentials, params, get, profileCb) {
           }
           log.verbose('created new user ' + data.email);
           credentials.profile = {userId: data.uid, isNewUser: true};
-          queue.sendWelcomeEmail({email: data.email});
+          // FIX: This doesn't appear to be here. Disabling for now.
+          //queue.sendWelcomeEmail({email: data.email});
           return profileCb(credentials);
         });
       }
