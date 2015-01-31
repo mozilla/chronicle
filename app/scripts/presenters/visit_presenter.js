@@ -21,6 +21,10 @@ define([
       return this.extractedFaviconUrl || '/images/icon-favicon_default@2x.png';
     },
 
+    imageUrl: function () {
+      return this.hasValidExtractedImageUrl() ? this.extractedImageUrl : this.screenshot_url;
+    },
+
     isSearchResult: function () {
       return !!this.url.match(/[?&#][pq]=/i);
     },

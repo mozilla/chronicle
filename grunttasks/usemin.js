@@ -26,11 +26,8 @@ module.exports = function (grunt) {
         ]
       }
     },
-    html: [
-      '<%= staticPath %>/*.html'
-    ],
-    js: [
-      '<%= staticPath %>/scripts/*.js'
-    ]
+    css: ['<%= staticPath %>/styles/*.css'],
+    html: ['<%= staticPath %>/*.html'],
+    js: ['<%= staticPath %>/scripts/*.js']
   });
 };
