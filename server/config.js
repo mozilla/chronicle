@@ -149,6 +149,30 @@ var conf = convict({
       default: 'your_key_here'
     }
   },
+  email: {
+    fromEmail: {
+      format: 'email',
+      default: 'info@chronicle.firefox.com'
+    },
+    smtp: {
+      host: {
+        format: String,
+        default: 'localhost'
+      },
+      port: {
+        format: 'port',
+        default: 25
+      },
+      auth_user: {
+        format: String,
+        default: ''
+      },
+      auth_pass: {
+        format: String,
+        default: ''
+      }
+    }
+  },
   server: {
     log: {
       doc: 'Mozlog configuration. Defaults currently target dev, not prod.',
