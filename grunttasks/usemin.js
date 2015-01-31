@@ -19,10 +19,18 @@ module.exports = function (grunt) {
     options: {
       assetsDirs: [
         '<%= staticPath %>'
-      ]
+      ],
+      patterns: {
+        js: [
+          [/(\/images\/.*?\.png)/gm, 'Update the JS to reference revved images']
+        ]
+      }
     },
     html: [
       '<%= staticPath %>/*.html'
+    ],
+    js: [
+      '<%= staticPath %>/scripts/*.js'
     ]
   });
 };

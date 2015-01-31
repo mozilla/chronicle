@@ -14,7 +14,7 @@ define([
   bdd.describe('visits', function () {
     bdd.before(function () {
       // login automatically as the fake user
-      this.remote.get(URL + '/auth/login');
+      return this.remote.get(URL + '/auth/login');
     });
 
     bdd.it('should show a list of recent visits', function () {

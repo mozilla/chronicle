@@ -1,33 +1,9 @@
-//Primary Content Regions
-#top-bar {
-  background: $white;
-  height: 60px;
+body {
+  background: $body-background;
+  color: $dark-grey;
+  font-family: $body-font;
 }
 
-#bottom-bar {
-  background: $dark-grey;
-  color: $light-grey;
-}
-
-//Modifiers
-.l-flexbody {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-
-  #main {
-    flex: 1;
-  }
-}
-
-.l-text-left {
-  text-align: left;
-}
-
-.l-text-center {
-  text-align: center;
-}
-
-.l-text-right {
-  text-align: right;
+.visits {
+  margin-top: 82px;
 }
