@@ -75,29 +75,25 @@ var visits = {
       size: count,
       body: {
         query: {
-          match: {
-            extractedContent: searchTerm
+          filtered: {
+            query: {
+              multiMatch: {
+                query: searchTerm,
+                fuzziness: 'AUTO',
+                operator: 'and',
+                fields: [
+                  'extractedTitle',
+                  'extractedContent',
+                  'extractedProviderDisplay',
+                  'extractedProviderName',
+                  'extractedAuthorName'
+                ]
+              }
+            }
           }
         },
         filter: { term: { userId: userId } }
       }
-    /*
-          multiMatch: {
-            query: searchTerm,
-            fuzziness: 'AUTO',
-            operator: 'and',
-            fields: [
-              'title',
-              'content',
-              'providerDisplay',
-              'providerName',
-              'authorName'
-            ]
-          }
-        },
-        filter: { term: { userId: userId } }
-      }
-    */
     };
     log.verbose('searching elasticsearch for the search term ' + searchTerm);
     elasticsearch.query('search', esQuery)
