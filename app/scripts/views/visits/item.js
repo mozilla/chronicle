@@ -31,8 +31,6 @@ define([
     afterRender: function () {
       // add size class
       this.$el.addClass(this.presenter.getSizeClassName());
-      // add image position class
-      this.$el.find('.image').addClass(_.sample(['left', 'right']));
     },
 
     destroyModel: function (event) {

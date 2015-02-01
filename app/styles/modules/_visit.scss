@@ -7,12 +7,16 @@
   padding: 20px;
 
   .image {
-    @include two-by-three(270px);
-    background-image: image-url('placeholder.jpg');
-    background-position: center center;
-    background-size: cover;
-    float: right;
-    margin-left: 20px;
+    display: block;
+
+    img {
+      @include two-by-three(270px);
+    }
+
+    &.right {
+      float: right;
+      margin-left: 20px;
+    }
 
     &.left {
       float: left;
@@ -62,7 +66,7 @@
   // Size variations
 
   &.medium {
-    .image {
+    .image img {
       @include two-by-three(160px);
     }
   }
