@@ -10,7 +10,7 @@ header {
 
   h1 {
     @include vertical-align;
-    color: #fff;
+    color: #ffffff;
     font-size: 24px;
     margin: 0;
   }
@@ -27,8 +27,8 @@ header {
 
     input {
       @include hidpi-background-image(icon-search, 16px 16px);
-      background-repeat: no-repeat;
       background-position: top 50% right 10px;
+      background-repeat: no-repeat;
       border: 0;
       border-radius: 6px;
       font-size: 14px;

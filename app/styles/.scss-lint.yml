@@ -1,0 +1,25 @@
+# Default application configuration that all configurations inherit from.
+
+linters:
+
+  Comment:
+    enabled: false
+
+  HexLength:
+    enabled: true
+    style: long # or 'short'
+
+  HexNotation:
+    enabled: true
+    style: lowercase # or 'uppercase'
+
+  LeadingZero:
+    enabled: true
+    style: include_zero # or 'exclude_zero'
+
+  SelectorDepth:
+    enabled: true
+    max_depth: 4
+
+  Shorthand:
+    enabled: false

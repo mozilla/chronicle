@@ -68,6 +68,7 @@
     "lint": "grunt lint",
     "outdated": "npm outdated --depth 0",
     "postinstall": "bower update --config.interactive=false -s",
+    "scss-lint": "scss-lint app/styles || true",
     "shrinkwrap": "npm shrinkwrap --dev && npm run validate-shrinkwrap",
     "start": "grunt serve",
     "test": "echo \"Error: no test specified\"",
