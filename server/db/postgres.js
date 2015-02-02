@@ -12,17 +12,17 @@ var config = require('../config');
 var log = require('../logger')('server.db.postgres');
 
 var dbParams = {
-  user: config.get('db.postgres.user'),
-  password: config.get('db.postgres.password'),
-  host: config.get('db.postgres.host'),
-  port: config.get('db.postgres.port'),
-  database: config.get('db.postgres.database'),
-  ssl: config.get('db.postgres.ssl')
+  user: config.get('db_postgres_user'),
+  password: config.get('db_postgres_password'),
+  host: config.get('db_postgres_host'),
+  port: config.get('db_postgres_port'),
+  database: config.get('db_postgres_database'),
+  ssl: config.get('db_postgres_ssl')
 };
 
 // primitive DB object
 var postgres = {
-  timeout: config.get('db.postgres.queryTimeout'),
+  timeout: config.get('db_postgres_queryTimeout'),
   // postgres is case-insensitive, so we store keys as underscored there,
   // and transform back to camelCase when returning results here.
   // individual queries must be sure to use the underscored versions.

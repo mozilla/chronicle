@@ -14,14 +14,14 @@ var user = require('../server/models/user');
 var visitsController = require('../server/controllers/visits');
 var testUrls = require('../config/test-urls');
 
-if (!config.get('testUser.enabled')) {
+if (!config.get('testUser_enabled')) {
   throw new Error('To create test data, you must set testUser.enabled in the config.');
 }
 
 function createTestUser(cb) {
   var fakeUser = {
-    id: config.get('testUser.id'),
-    email: config.get('testUser.email'),
+    id: config.get('testUser_id'),
+    email: config.get('testUser_email'),
     oauthToken: 'fakeOauthToken'
   };
   log.verbose('fakeUser is ' + JSON.stringify(fakeUser));
@@ -31,7 +31,7 @@ function createTestUser(cb) {
 }
 
 function createTestData(cb) {
-  var userId = config.get('testUser.id');
+  var userId = config.get('testUser_id');
   // we'll use this date as a starting point for generating records. Each successive
   // record will be a number of seconds in the future.
   var historyDate = new Date('2015-01-01T21:26:23.795Z');
@@ -60,11 +60,11 @@ function createTestData(cb) {
     });
   });
 
-  // for now, just wait 60 seconds, then fire the callback blindly
+  // for now, just wait 30 seconds, then fire the callback blindly
   setTimeout(function() {
-    cb(null, '60 seconds is up, hopefully the scraper jobs are all done!');
+    cb(null, '30 seconds is up, hopefully the scraper jobs are all done!');
     process.exit();
-  }, 1000 * 60);
+  }, 1000 * 30);
 }
 
 log.verbose('about to call createTestUser');

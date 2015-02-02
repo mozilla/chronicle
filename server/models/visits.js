@@ -6,7 +6,6 @@
 
 var q = require('q');
 
-var config = require('../config');
 var postgres = require('../db/postgres');
 var elasticsearch = require('../db/elasticsearch');
 var log = require('../logger')('server.models.visits');

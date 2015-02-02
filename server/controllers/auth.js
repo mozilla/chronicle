@@ -10,9 +10,9 @@ var config = require('../config');
 var authController = {
   login: function(request, reply) {
     // If we are in testUser mode, just set the cookie and skip the oauth part
-    if (config.get('testUser.enabled')) {
+    if (config.get('testUser_enabled')) {
       log.verbose('testUser enabled; creating session');
-      request.auth.session.set({userId: config.get('testUser.id')});
+      request.auth.session.set({userId: config.get('testUser_id')});
       return reply.redirect('/');
     }
 
@@ -39,7 +39,7 @@ var authController = {
     var session = {
       userId: request.auth.credentials.profile.userId
     };
-    var duration = config.get('server.session.duration');
+    var duration = config.get('server_session_duration');
     if (duration > 0) {
       session.expiresAt = new Date(new Date().getTime() + duration);
     }

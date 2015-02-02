@@ -8,7 +8,7 @@ var Boom = require('boom');
 
 var config = require('../config');
 var log = require('../logger')('server.controllers.search');
-var url2png = require('url2png')(config.get('url2png.apiKey'), config.get('url2png.secretKey'));
+var url2png = require('url2png')(config.get('url2png_apiKey'), config.get('url2png_secretKey'));
 var visits = require('../models/visits');
 
 function addScreenshots(items) {

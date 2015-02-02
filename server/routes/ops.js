@@ -12,19 +12,19 @@ var redis = require('redis');
 var config = require('../config');
 
 var pgParams = {
-  user: config.get('db.postgres.user'),
-  password: config.get('db.postgres.password'),
-  host: config.get('db.postgres.host'),
-  port: config.get('db.postgres.port'),
-  database: config.get('db.postgres.database'),
-  ssl: config.get('db.postgres.ssl')
+  user: config.get('db_postgres_user'),
+  password: config.get('db_postgres_password'),
+  host: config.get('db_postgres_host'),
+  port: config.get('db_postgres_port'),
+  database: config.get('db_postgres_database'),
+  ssl: config.get('db_postgres_ssl')
 };
 
 var redisParams = {
-  host: config.get('db.redis.host'),
-  port: config.get('db.redis.port'),
-  password: config.get('db.redis.password'),
-  database: config.get('db.redis.database')
+  host: config.get('db_redis_host'),
+  port: config.get('db_redis_port'),
+  password: config.get('db_redis_password'),
+  database: config.get('db_redis_database')
 };
 
 // >:-(
@@ -32,8 +32,8 @@ var redisParams = {
 var esParamsFactory = function() {
   return {
     host: {
-      host: config.get('db.elasticsearch.host'),
-      post: config.get('db.elasticsearch.port'),
+      host: config.get('db_elasticsearch_host'),
+      post: config.get('db_elasticsearch_port'),
       log: 'verbose'
     }
   };

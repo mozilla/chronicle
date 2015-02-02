@@ -7,7 +7,7 @@
 var path = require('path');
 var config = require('../config');
 var baseController = require('../controllers/base');
-var STATIC_PATH = path.join(__dirname, '..', '..', config.get('server.staticPath'));
+var STATIC_PATH = path.join(__dirname, '..', '..', config.get('server_staticPath'));
 
 var baseRoutes = [{
   method: 'GET',
@@ -31,7 +31,7 @@ var baseRoutes = [{
   handler: {
     directory: {
       path: STATIC_PATH,
-      listing: config.get('server.staticDirListing')
+      listing: config.get('server_staticDirListing')
     }
   }
 }];

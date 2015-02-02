@@ -10,7 +10,7 @@ module.exports = function (grunt) {
   var config = require('./server/config');
 
   grunt.initConfig({
-    staticPath: config.get('server.staticPath')
+    staticPath: config.get('server_staticPath')
   });
 
   grunt.loadTasks('grunttasks/');

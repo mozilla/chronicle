@@ -13,7 +13,7 @@ module.exports = {
   // o is an object with keys { userId, url, urlHash, title }
   perform: function(o, cb) {
     log.verbose('job created with params ' + JSON.stringify(o));
-    if (!config.get('embedly.enabled')) {
+    if (!config.get('embedly_enabled')) {
       log.info('embedly disabled; extract-page job returning immediately');
       return cb();
     }

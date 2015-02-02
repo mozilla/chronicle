@@ -15,11 +15,11 @@ var transporter = nodemailer.createTransport();
 // Use SMTP transport if we aren't developing locally.
 if (config.get('env') !== 'local') {
   transporter = nodemailer.createTransport(smtp({
-    host: config.get('email.smtp.host'),
-    port: config.get('email.smtp.port'),
+    host: config.get('email_smtp_host'),
+    port: config.get('email_smtp_port'),
     auth: {
-      user: config.get('email.smtp.auth_user'),
-      pass: config.get('email.smtp.auth_pass')
+      user: config.get('email_smtp_auth_user'),
+      pass: config.get('email_smtp_auth_pass')
     }
   }));
 }
@@ -31,7 +31,7 @@ module.exports = {
     log.verbose('job created with params ' + JSON.stringify(o));
 
     transporter.sendMail({
-      from: config.get('email.fromEmail'),
+      from: config.get('email_fromEmail'),
       to: toEmail,
       subject: 'Welcome to Chronicle',
       text: 'Welcome to Chronicle, ' + toEmail + '!',

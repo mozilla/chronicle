@@ -1,13 +1,5 @@
 {
-  "testUser": {
-    "enabled": true
-  },
-  "embedly": {
-    "enabled": false
-  },
-  "server": {
-    "log": {
-      "level": "verbose"
-    }
-  }
+  "testUser_enabled": true,
+  "embedly_enabled": false,
+  "server_log_level": "verbose"
 }

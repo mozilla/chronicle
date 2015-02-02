@@ -15,10 +15,10 @@ var queueReady = Q.defer();
 var workersReady = Q.defer();
 
 var connectionDetails = {
-  host: config.get('db.redis.host'),
-  password: config.get('db.redis.password'),
-  port: config.get('db.redis.port'),
-  database: config.get('db.redis.database')
+  host: config.get('db_redis_host'),
+  password: config.get('db_redis_password'),
+  port: config.get('db_redis_port'),
+  database: config.get('db_redis_database')
 };
 
 var queueOpts = { connection: connectionDetails };

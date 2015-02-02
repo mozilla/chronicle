@@ -6,7 +6,6 @@
 
 var Q = require('q');
 
-var config = require('../config');
 var postgres = require('../db/postgres');
 var log = require('../logger')('server.models.user');
 

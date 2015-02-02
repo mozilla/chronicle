@@ -4,8 +4,6 @@
 
 'use strict';
 
-var log = require('../logger')('server.routes.auth');
-var config = require('../config');
 var authController = require('../controllers/auth');
 
 var authRoutes = [{

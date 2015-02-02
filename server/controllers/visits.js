@@ -11,7 +11,7 @@ var uuid = require('uuid');
 var config = require('../config');
 var log = require('../logger')('server.controllers.visits');
 var queue = require('../work-queue/queue');
-var url2png = require('url2png')(config.get('url2png.apiKey'), config.get('url2png.secretKey'));
+var url2png = require('url2png')(config.get('url2png_apiKey'), config.get('url2png_secretKey'));
 var visits = require('../models/visits');
 
 // TODO: normalize URLs
@@ -66,7 +66,7 @@ var visitsController = {
       visitedAt: p.visitedAt
     };
     queue.createVisit(o);
-    if (config.get('embedly.enabled')) {
+    if (config.get('embedly_enabled')) {
       // extractPage doesn't need all these keys, but the extras won't hurt anything
       // XXX the extractPage job checks if the user_page has been scraped recently
       queue.extractPage(o);
