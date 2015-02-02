@@ -3,12 +3,20 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 define([
-  'underscore'
-], function (_) {
+  'underscore',
+  'lib/image_proxy'
+], function (_, imageProxy) {
   'use strict';
 
   var MINIMUM_IMAGE_ENTROPY = 1.75;
-  var MINIMUM_IMAGE_WIDTH = 270;
+  var IMAGE_DISPLAY_WIDTH = 270;
+  var IMAGE_DISPLAY_HEIGHT = 180;
+
+  // This pattern ignores extracted images from the following URLs
+  // - anything from github (we'll likely have a long list of domains like this)
+  // - any domain without a path
+  // - search results
+  // - anything paged
   var EXTRACTED_IMAGE_DENY_PATTERN = /github.com|(\..{2,3}\/$)|([&?]q=)|([&?]page=\d+)/;
 
   function VisitPresenter (visit) {
@@ -22,7 +30,15 @@ define([
     },
 
     imageUrl: function () {
-      return this.hasValidExtractedImageUrl() ? this.extractedImageUrl : this.screenshot_url;
+      var url = this.hasValidExtractedImageUrl() ? this.extractedImageUrl : this.screenshot_url;
+
+      // it would be smarter to only crop screenshots if we're not in retina, but it's easier
+      // to let the imageProxy just handle it for now.
+      return imageProxy.crop(url, IMAGE_DISPLAY_WIDTH, IMAGE_DISPLAY_HEIGHT);
+    },
+
+    imagePosition: function () {
+      return (this.title.length % 2) ? 'left' : 'right';
     },
 
     isSearchResult: function () {
@@ -40,7 +56,7 @@ define([
     },
 
     hasLargeImage: function () {
-      return this.extractedImageWidth && this.extractedImageWidth >= MINIMUM_IMAGE_WIDTH;
+      return this.extractedImageWidth && this.extractedImageWidth >= IMAGE_DISPLAY_WIDTH;
     },
 
     getInterestingness: function () {

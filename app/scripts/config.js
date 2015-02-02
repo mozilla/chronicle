@@ -7,8 +7,8 @@ define([
   'use strict';
 
   var config = {
-    oauth: {
-      authEndpoint: '{%= config.get("server.oauth.authEndpoint") %}'
+    embedly: {
+      apiKey: '{%= config.get("embedly.apiKey") %}'
     }
   };
 
