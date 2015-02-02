@@ -60,11 +60,11 @@ function createTestData(cb) {
     });
   });
 
-  // for now, just wait 60 seconds, then fire the callback blindly
+  // for now, just wait 30 seconds, then fire the callback blindly
   setTimeout(function() {
-    cb(null, '60 seconds is up, hopefully the scraper jobs are all done!');
+    cb(null, '30 seconds is up, hopefully the scraper jobs are all done!');
     process.exit();
-  }, 1000 * 60);
+  }, 1000 * 30);
 }
 
 log.verbose('about to call createTestUser');
