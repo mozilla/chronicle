@@ -6,7 +6,7 @@
 
 var path = require('path');
 var config = require('../config');
-var STATIC_PATH = path.join(__dirname, '..', '..', config.get('server.staticPath'));
+var STATIC_PATH = path.join(__dirname, '..', '..', config.get('server_staticPath'));
 
 var baseController = {
   get: function (request, reply) {

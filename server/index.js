@@ -18,7 +18,7 @@ var user = require('./models/user');
 var serverConfig = {};
 
 // log extra error info if we're in ultra-chatty log mode
-if (config.get('server.log.level') === 'trace') {
+if (config.get('server_log_level') === 'trace') {
   serverConfig = {
     debug: {
       request: ['error']
@@ -28,8 +28,8 @@ if (config.get('server.log.level') === 'trace') {
 
 var server = new Hapi.Server(serverConfig);
 server.connection({
-  host: config.get('server.host'),
-  port: config.get('server.port'),
+  host: config.get('server_host'),
+  port: config.get('server_port'),
   router: {
     stripTrailingSlash: true
   }
@@ -46,17 +46,17 @@ server.register([
 
   // hapi-auth-cookie init
   server.auth.strategy('session', 'cookie', {
-    password: config.get('server.session.password'),
-    cookie: config.get('server.session.cookieName'),
-    isSecure: config.get('server.session.isSecure'),
-    ttl: config.get('server.session.duration'),
-    clearInvalid: config.get('server.session.clearInvalid'),
+    password: config.get('server_session_password'),
+    cookie: config.get('server_session_cookieName'),
+    isSecure: config.get('server_session_isSecure'),
+    ttl: config.get('server_session_duration'),
+    clearInvalid: config.get('server_session_clearInvalid'),
     // this function validates that the user exists + session is valid
     validateFunc: function(session, cb) {
       log.verbose('inside hapi-auth-cookie validateFunc.');
       log.verbose('session is ' + JSON.stringify(session));
 
-      var ttl = config.get('server.session.duration');
+      var ttl = config.get('server_session_duration');
       if (ttl > 0 && new Date() > new Date(session.expiresAt)) {
         log.verbose('cookie is expired.');
         return cb(null, false);
@@ -77,17 +77,17 @@ server.register([
   // bell init
   server.auth.strategy('oauth', 'bell', {
     provider: {
-      protocol: config.get('server.oauth.protocol'),
-      auth: config.get('server.oauth.authEndpoint'),
-      token: config.get('server.oauth.tokenEndpoint'),
-      version: config.get('server.oauth.version'),
-      scope: config.get('server.oauth.scope'),
+      protocol: config.get('server_oauth_protocol'),
+      auth: config.get('server_oauth_authEndpoint'),
+      token: config.get('server_oauth_tokenEndpoint'),
+      version: config.get('server_oauth_version'),
+      scope: config.get('server_oauth_scope'),
       profile: authProfileCb
     },
-    password: config.get('server.session.password'),
-    clientId: config.get('server.oauth.clientId'),
-    clientSecret: config.get('server.oauth.clientSecret'),
-    isSecure: config.get('server.session.isSecure')
+    password: config.get('server_session_password'),
+    clientId: config.get('server_oauth_clientId'),
+    clientSecret: config.get('server_oauth_clientSecret'),
+    isSecure: config.get('server_session_isSecure')
   });
 });
 

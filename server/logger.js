@@ -6,8 +6,13 @@ var mozlog = require('mozlog');
 var config = require('./config');
 
 // TODO we shouldn't need copypasta when we are composing 2 log libraries already :-\
-mozlog.config(config.get('server.log'));
-var root = mozlog(config.app);
+mozlog.config({
+  app: config.get('server_log_app'),
+  level: config.get('server_log_level'),
+  fmt: config.get('server_log_fmt'),
+  debug: config.get('server_log_debug')
+});
+var root = mozlog(config.get('server_log_app'));
 if (root.isEnabledFor('debug')) {
   root.warn('\t*** CAREFUL! Louder logs (less than INFO)' +
   ' may include SECRETS! ***');

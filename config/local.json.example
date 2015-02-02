@@ -1,70 +1,44 @@
 {
-  "db": {
-    "elasticsearch": {
-      "host": "127.0.0.1",
-      "port": 9200,
-      "queryTimeout": 15000
-    },
-    "postgres": {
-      "host": "localhost",
-      "port": 5432,
-      "user": "chronicle",
-      "database": "chronicle",
-      "password": "chronicle",
-      "queryTimeout": 15000
-    },
-    "redis": {
-      "host": "127.0.0.1",
-      "port": 6379
-    }
-  },
+  "db_elasticsearch_host": "127.0.0.1",
+  "db_elasticsearch_port": 9200,
+  "db_elasticsearch_queryTimeout": 15000,
+  "db_postgres_host": "localhost",
+  "db_postgres_port": 5432,
+  "db_postgres_user": "chronicle",
+  "db_postgres_database": "chronicle",
+  "db_postgres_password": "chronicle",
+  "db_postgres_queryTimeout": 15000,
+  "db_redis_host": "127.0.0.1",
+  "db_redis_port": 6379,
   "env": "local",
-  "embedly": {
-    "apiKey": "",
-    "enabled": true
-  },
-  "url2png": {
-    "apiKey": "",
-    "secretKey": ""
-  },
-  "email": {
-    "fromEmail": "info@chronicle.firefox.com",
-    "smtp": {
-      "host": "localhost",
-      "port": 25,
-      "auth_user": "",
-      "auth_pass": ""
-    }
-  },
-  "server": {
-    "host": "127.0.0.1",
-    "port": 8080,
-    "staticPath": "public",
-    "staticDirListing": true,
-    "log": {
-      "app": "chronicle",
-      "debug": false,
-      "fmt": "pretty",
-      "level": "info"
-    },
-    "session": {
-      "password": "Wh4t3ver.",
-      "isSecure": false,
-      "duration": 86400000
-    },
-    "oauth": {
-      "clientId": "1f9bbddcb3e160ab",
-      "clientSecret": "24bf8caeaa685e2e42d9a75b48511f83adffaf6fcdd174ce8749358a376be911",
-      "scope": ["chronicle", "profile"],
-      "version": "2.0",
-      "protocol": "oauth2",
-      "redirectEndpoint": "http://localhost:8080/auth/complete",
-      "authEndpoint": "https://oauth-latest.dev.lcip.org/v1/authorization",
-      "tokenEndpoint": "https://oauth-latest.dev.lcip.org/v1/token",
-      "profileEndpoint": "https://latest.dev.lcip.org/profile/v1/profile"
-    }
-  },
-  "testUser": {
-    "enabled": true
-  }
+  "embedly_apiKey": "",
+  "embedly_enabled": true,
+  "url2png_apiKey": "",
+  "url2png_secretKey": "",
+  "email_fromEmail": "info@chronicle.firefox.com",
+  "email_smtp_host": "localhost",
+  "email_smtp_port": 25,
+  "email_smtp_auth_user": "",
+  "email_smtp_auth_pass": "",
+  "server_host": "127.0.0.1",
+  "server_port": 8080,
+  "server_staticPath": "public",
+  "server_staticDirListing": true,
+  "server_log_app": "chronicle",
+  "server_log_debug": false,
+  "server_log_fmt": "pretty",
+  "server_log_level": "info",
+  "server_session_password": "Wh4t3ver.",
+  "server_session_isSecure": false,
+  "server_session_duration": 86400000,
+  "server_oauth_clientId": "1f9bbddcb3e160ab",
+  "server_oauth_clientSecret": "24bf8caeaa685e2e42d9a75b48511f83adffaf6fcdd174ce8749358a376be911",
+  "server_oauth_scope": ["chronicle", "profile"],
+  "server_oauth_version": "2.0",
+  "server_oauth_protocol": "oauth2",
+  "server_oauth_redirectEndpoint": "http://localhost:8080/auth/complete",
+  "server_oauth_authEndpoint": "https://oauth-latest.dev.lcip.org/v1/authorization",
+  "server_oauth_tokenEndpoint": "https://oauth-latest.dev.lcip.org/v1/token",
+  "server_oauth_profileEndpoint": "https://latest.dev.lcip.org/profile/v1/profile",
+  "testUser_enabled": true
 }

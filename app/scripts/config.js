@@ -8,7 +8,7 @@ define([
 
   var config = {
     embedly: {
-      apiKey: '{%= config.get("embedly.apiKey") %}'
+      apiKey: '{%= config.get("embedly_apiKey") %}'
     }
   };
 

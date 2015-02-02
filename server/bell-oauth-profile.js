@@ -16,7 +16,7 @@ var queue = require('./work-queue/queue');
 function profile (credentials, params, get, profileCb) {
   log.verbose('obtained oauth tokens: ' + JSON.stringify(credentials));
   var headers = { headers: {'authorization': 'Bearer ' + params.access_token} };
-  get(config.get('server.oauth.profileEndpoint'), headers, function(data) {
+  get(config.get('server_oauth_profileEndpoint'), headers, function(data) {
     // Bell returns the parsed data and handles errors internally
     log.verbose('exchanged tokens for profile data:' + JSON.stringify(data));
     // TODO use Joi to validate `data` before sending to DB

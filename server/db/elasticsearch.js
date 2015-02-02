@@ -15,8 +15,8 @@ var log = require('../logger')('server.db.elasticsearch');
 var esParamsFactory = function() {
   return {
     host: {
-      host: config.get('db.elasticsearch.host'),
-      post: config.get('db.elasticsearch.port'),
+      host: config.get('db_elasticsearch_host'),
+      post: config.get('db_elasticsearch_port'),
       log: 'verbose'
     }
   };
@@ -24,7 +24,7 @@ var esParamsFactory = function() {
 
 // TODO figure out connection pooling and do it in here ^_^
 var elasticsearch = {
-  timeout: config.get('db.elasticsearch.queryTimeout'),
+  timeout: config.get('db_elasticsearch_queryTimeout'),
   // query elasticsearch; returns a promise
   //
   // queryType := es client API method, for example, 'create'

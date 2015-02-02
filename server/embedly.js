@@ -11,8 +11,8 @@ var camelize = require('underscore.string').camelize;
 var Embedly = require('embedly');
 
 var config = require('./config');
-var apiKey = config.get('embedly.apiKey');
-var isEnabled = config.get('embedly.enabled');
+var apiKey = config.get('embedly_apiKey');
+var isEnabled = config.get('embedly_enabled');
 var logFactory = require('./logger');
 var log = logFactory('server.services.embedly');
 var npmLog = logFactory('server.services.embedly.vendor');
@@ -22,10 +22,10 @@ module.exports = {
     log.debug('embedly.extract called');
 
     if (!isEnabled) {
-      return cb('Embedly is currently disabled. Set `embedly.enabled` to enable.');
+      return cb('Embedly is currently disabled. Set `embedly_enabled` to enable.');
     }
     if (!apiKey) {
-      return cb('Embedly requires an API key. Set `embedly.apiKey` to enable.');
+      return cb('Embedly requires an API key. Set `embedly_apiKey` to enable.');
     }
 
     // node-embedly logs failures, so we can skip that here
