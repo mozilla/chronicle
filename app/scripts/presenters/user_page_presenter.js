@@ -40,7 +40,11 @@ define([
     },
 
     faviconUrl: function () {
-      return this.extractedFaviconUrl || '/images/icon-favicon_default@2x.png';
+      if (this.extractedFaviconUrl) {
+        return imageProxy.display(this.extractedFaviconUrl);
+      } else {
+        return '/images/icon-favicon_default@2x.png';
+      }
     },
 
     imageUrl: function () {

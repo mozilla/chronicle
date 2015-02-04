@@ -1,4 +1,4 @@
-.visit {
+.user-page {
   background: $white;
   border: 1px solid $baby-grey;
   // negative spread keeps the shadow from leaking out the sides
@@ -55,10 +55,6 @@
   .description {
     color: $satan-grey;
     font-size: $default-font-size - 2;
-  }
-
-  .actions {
-    display: none;
   }
 
   // Size variations
