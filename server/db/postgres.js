@@ -42,7 +42,7 @@ var postgres = {
   //
   // query := a prepared query string
   // params := an array of the query params in correct order
-  query: function query(query, params) {
+  query: function query(queryString, params) {
     var _defer = Q.defer();
     var formatted;
     // force promises to eventually resolve
@@ -53,7 +53,7 @@ var postgres = {
         log.trace(err);
         return _defer.reject(err);
       }
-      client.query(query, params, function onQueryResponse(err, results) {
+      client.query(queryString, params, function onQueryResponse(err, results) {
         if (err) {
           log.warn('postgres query failed');
           log.trace(err);
