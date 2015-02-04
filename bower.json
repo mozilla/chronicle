@@ -25,6 +25,7 @@
     "requirejs-mustache": "*",
     "requirejs-text": "~2.0.12",
     "requirejs": "~2.1.15",
-    "mustache": "~0.8.2"
+    "mustache": "~0.8.2",
+    "moment": "~2.9.0"
   }
 }
