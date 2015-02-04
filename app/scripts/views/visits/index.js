@@ -5,11 +5,13 @@
 define([
   'underscore',
   'jquery',
+  'moment',
   'views/base',
   'stache!templates/visits/index',
   'collections/visits',
-  'views/visits/item'
-], function (_, $, BaseView, VisitsIndexTemplate, Visits, VisitsItemView) {
+  'views/visits/item',
+  'views/visits/date_divider'
+], function (_, $, moment, BaseView, VisitsIndexTemplate, Visits, VisitsItemView, VisitsDateDividerView) {
   'use strict';
 
   var VisitsIndexView = BaseView.extend({
@@ -43,7 +45,23 @@ define([
 
     // this appends visit items rather than replacing them
     _renderVisits: function () {
-      this.renderCollection(VisitsItemView, '.visits');
+      //this.renderCollection(VisitsItemView, '.visits');
+
+      var els = [];
+
+      this.collection.each(function (visit) {
+        var currentVisitDate = moment(visit.get('visitedAt')).startOf('day');
+
+        if (!this.previousVisitDate || this.previousVisitDate.diff(currentVisitDate) !== 0) {
+          els.push(this.trackSubview(new VisitsDateDividerView(currentVisitDate)).render().el);
+        }
+
+        els.push(this.trackSubview(new VisitsItemView({ model: visit })).render().el);
+
+        this.previousVisitDate = currentVisitDate;
+      }.bind(this));
+
+      this.$('.visits').append(els);
     },
 
     _fetch: function () {
