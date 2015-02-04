@@ -23,7 +23,7 @@ define([
       this.lastVisitId = null;
       this.hasMoreVisits = true;
       this.loadingMoreVisits = false;
-      this.count = 100;
+      this.count = 50;
       this.bottomBufferSize = 750;
       this.scrollDelay = 50;
 
