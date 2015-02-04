@@ -132,22 +132,28 @@ var visit = {
         [userId, userPageId]);
       })
       .fail(visit._onRejected.bind(visit, name + ' failed to count visits having a page', cb))
-      .then(function(count) {
-        _verbose('count of remaining visits with page gives us: ' + JSON.stringify(count));
-        // assuming count is int
-        if (count > 0) {
+      .done(function(result) {
+        var count = result && parseInt(result.count, 10);
+        // non-numbers will be coerced to NaN by parseInt, which is typeof 'number', lol
+        // note that if result is undefined, count will be, too, and isNaN(undefined) is true.
+        if (isNaN(count)) {
+          log.warn('attempting to count remaining visits sharing a user_page failed to return a numeric count, count was ' + count);
+          visit._onRejected(name + ' failed to return a count of visits sharing a user_page', cb, null);
+        } else if (count > 0) {
           // nothing more to do here; call _onFulfilled.
           // todo: does this ensure the promise chain ends?
           visit._onFulfilled(name + ' succeeded', cb, null);
         } else {
           _verbose('no other visits exist for user page ' + userPageId + ': deleting it');
           var deleteQuery = 'DELETE FROM user_pages WHERE user_id = $1 AND id = $2';
-          return postgres.query(deleteQuery, [userId, userPageId])
-            .then(elasticsearch.query('delete', {index: 'chronicle', type: 'userPages', id: userPageId}));
+          // TODO I really dislike nesting promises like this. We should split this user_page cleanup
+          // out into a separate method.
+          postgres.query(deleteQuery, [userId, userPageId])
+            .then(elasticsearch.query('delete', {index: 'chronicle', type: 'userPages', id: userPageId}))
+            .done(visit._onFulfilled.bind(visit, name + ' succeeded', cb, null),
+                  visit._onRejected.bind(visit, name + ' failed', cb));
         }
-      })
-      .done(visit._onFulfilled.bind(visit, name + ' succeeded', cb, null),
-            visit._onRejected.bind(visit, name + ' failed', cb));
+      }, visit._onRejected.bind(visit, name + ' failed', cb));
   }
 };
 
