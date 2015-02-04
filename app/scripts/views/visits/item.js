@@ -38,6 +38,10 @@ define([
 
       if (window.confirm('Destroy this visit?')) {
         this.model.destroy();
+
+        this.$el.fadeOut(function () {
+          this.remove();
+        }.bind(this));
       }
     }
   });
