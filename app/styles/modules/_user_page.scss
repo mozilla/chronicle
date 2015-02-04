@@ -1,10 +1,10 @@
-.user-page {
-  background: #ffffff;
-  border: 1px solid #dfe1e4;
+.visit {
+  background: $white;
+  border: 1px solid $baby-grey;
   // negative spread keeps the shadow from leaking out the sides
   box-shadow: 0 2px 4px -3px rgba(0, 0, 0, 0.14);
   overflow: auto;
-  padding: 20px;
+  padding: $double-gap;
 
   .image {
     display: block;
@@ -15,48 +15,50 @@
 
     &.right {
       float: right;
-      margin-left: 20px;
+      margin-left: $double-gap;
     }
 
     &.left {
       float: left;
       margin-left: 0;
-      margin-right: 20px;
+      margin-right: $double-gap;
     }
   }
 
-  .text {
-    .provider {
-      margin-bottom: 10px;
+  .provider {
+    margin-bottom: $default-gap;
 
-      .favicon {
-        height: 16px;
-        margin-right: 5px;
-        vertical-align: -3px;
-        width: 16px;
-      }
-
-      .name {
-        font-size: 12px;
-        font-weight: 500;
-      }
+    .favicon {
+      height: $half-grid;
+      margin-right: 5px;
+      vertical-align: -3px;
+      width: 1$half-grid;
     }
 
-    .title {
-      font-size: 22px;
-      line-height: 120%;
-      margin: 0 0 10px 0;
-
-      a {
-        color: inherit;
-        text-decoration: none;
-      }
+    .name {
+      font-size: $small-font-size;
+      font-weight: 500;
     }
+  }
 
-    .description {
-      color: #666666;
-      font-size: 14px;
+  .title {
+    font-size: $large-font-size;
+    line-height: 120%;
+    margin: 0 0 $default-gap 0;
+
+    a {
+      color: inherit;
+      text-decoration: none;
     }
+  }
+
+  .description {
+    color: $satan-grey;
+    font-size: $default-font-size - 2;
+  }
+
+  .actions {
+    display: none;
   }
 
   // Size variations
@@ -69,43 +71,39 @@
 
   &.medium,
   &.small {
-    .text {
-      .provider {
-        float: left;
-        height: 16px;
-        margin: 0;
+    .provider {
+      float: left;
+      height: $half-grid;
+      margin: 0;
 
-        .favicon {
-          margin-right: 8px;
-          vertical-align: 1px;
-        }
-
-        .name {
-          display: none;
-        }
+      .favicon {
+        margin-right: 8px;
+        vertical-align: 1px;
       }
 
-      .title {
-        font-size: 15px;
+      .name {
+        display: none;
       }
+    }
+
+    .title {
+      font-size: $default-font-size - 1;
     }
   }
 
   &.small {
-    background: #f4f4f4;
-    margin-top: 10px;
-    padding: 10px 20px;
+    background: lighten($body-background, 1);
+    margin-top: $default-gap;
+    padding: $default-gap $double-gap;
 
     .image,
-    .text .provider .name,
-    .text .description {
+    .provider .name,
+    .description {
       display: none;
     }
 
-    .text {
-      .title {
-        margin: 0;
-      }
+    .title {
+      margin: 0;
     }
   }
 
@@ -120,7 +118,7 @@
   // medium or large after a small
   &.small + &.medium,
   &.small + &.large {
-    margin-top: 10px;
+    margin-top: $default-gap;
   }
 
   // medium or large after one another

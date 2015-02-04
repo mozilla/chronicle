@@ -9,3 +9,12 @@
 .is-warning {
   color: $warning;
 }
+
+
+@mixin is-border-state-machine($border-width, $base-color, $engaged-color) {
+  border: $border-width solid $base-color;
+  transition: all $fast;
+  &:hover, &:focus {
+    border-color: $engaged-color;
+  }
+}

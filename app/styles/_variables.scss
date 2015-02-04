@@ -1,13 +1,37 @@
-// Typography
-$body-font: 'Fira Sans', sans-serif;
-
-//Color: these are made up right now :)
-$primary: #0bc7b1;
-
+//COLOR VARIABLES
+$primary: #0095dd;
 $body-background: #f2f2f2;
 $white: #ffffff;
 $light-grey: #eeeeee;
 $dark-grey: #333333;
-
+$middle-grey: #4d4d4d;
+$satan-grey: #666666;
+$baby-grey: #dfe1e4;
 $success: #00ff00;
 $warning: #ff0000;
+
+//TYPE VARIABLES
+$body-font: 'Fira Sans', sans-serif;
+$small-font-size: 12px;
+$default-font-size: 16px;
+$content-header-font-size: 22px;
+$large-font-size: 24px;
+
+//GAP VARIABLES
+$default-gap: 10px;
+$small-gap: $default-gap * .6;
+$double-gap: $default-gap * 2;
+$quad-gap: $default-gap * 4;
+$octo-gap: $default-gap * 8;
+
+//GRID VARIABLES
+$default-grid: 32px;
+$half-grid: $default-grid * .5;
+$double-grid: $default-grid * 2;
+
+//BORDER VARIABLES
+$default-radius: 2px;
+$double-radius: $default-radius * 2;
+
+//TIMING VARIABLES
+$fast: 75ms;

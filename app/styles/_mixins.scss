@@ -32,3 +32,8 @@
   white-space: nowrap;
   width: $width;
 }
+
+@mixin color-scheme($color, $background-color) {
+  background-color: $background-color;
+  color: $color;
+}

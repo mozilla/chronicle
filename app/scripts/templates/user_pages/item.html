@@ -1,14 +1,12 @@
 <a class="image {{imagePosition}}" href="{{_getUrl}}">
   <img src="{{imageUrl}}" />
 </a>
-<div class="text">
-  <div class="provider">
-    <img class="favicon" src="{{faviconUrl}}" />
-    <span class="name">{{extractedProviderName}}</span>
-  </div>
-  <h3 class="title"><a href="{{_getUrl}}">{{title}}</a></h3>
-  <div class="description">{{extractedDescription}}</div>
-  <ul class="actions">
-    <li class="destroy"><a href="#">Destroy</a></li>
-  </ul>
+<div class="provider">
+  <img class="favicon" src="{{faviconUrl}}" />
+  <span class="name">{{extractedProviderName}}</span>
 </div>
+<h3 class="title"><a href="{{url}}">{{title}}</a></h3>
+<div class="description">{{extractedDescription}}</div>
+<ul class="actions">
+  <li><a class="destroy" href="#">Destroy</a></li>
+</ul>
