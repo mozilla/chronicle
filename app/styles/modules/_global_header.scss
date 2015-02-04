@@ -11,6 +11,7 @@
   h1 {
     @include vertical-align;
     font-size: 24px;
+    left: 44px;
     margin: 0;
 
     a {
@@ -20,7 +21,29 @@
   }
 
   #user-info {
-    display: none;
+    margin-top: -18px;
+    position: absolute;
+    top: 50%;
+
+    img {
+      border-radius: 50%;
+      height: 36px;
+      width: 36px;
+    }
+
+    nav {
+      background: #fff;
+      border: 1px solid #eee;
+      box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
+      display: none;
+      width: 250px;
+    }
+
+    &:hover {
+      nav {
+        display: block;
+      }
+    }
   }
 
   #search-box {
