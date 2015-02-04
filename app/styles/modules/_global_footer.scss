@@ -1,0 +1,12 @@
+#global-footer {
+  @include color-scheme($white, $middle-grey);
+  margin-top: $default-gap;
+  padding: $double-gap 0;
+  p {
+    margin: 0;
+    text-align: center;
+  }
+  a {
+    color: $white;
+  }
+}

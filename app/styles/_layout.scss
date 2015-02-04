@@ -8,8 +8,18 @@ body {
   margin-top: $octo-gap;
 }
 
+#container {
+  flex: 1;
+}
+
 .l-flex {
   display: flex;
+  
+  &-body {
+    @extend .l-flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
 
   &-horizontal {
     @extend .l-flex;
