@@ -21,6 +21,7 @@
   "globals": {
     "define": false,
     "Promise": true,
-    "window": true
+    "window": true,
+    "document": true
   }
 }
