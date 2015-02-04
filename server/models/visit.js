@@ -135,7 +135,11 @@ var visit = {
       .then(function(count) {
         _verbose('count of remaining visits with page gives us: ' + JSON.stringify(count));
         // assuming count is int
-        if (count > 0) {
+        if (typeof count !== 'number') {
+          log.warn('attempting to count remaining visits sharing a user_page failed to return a numeric count, count was ' + count);
+          // for now, I guess just return. We've possibly left an orphaned user_page, not the end of the world.
+          visit._onFulfilled(name + ' succeeded', cb, null);
+        } else if (count > 0) {
           // nothing more to do here; call _onFulfilled.
           // todo: does this ensure the promise chain ends?
           visit._onFulfilled(name + ' succeeded', cb, null);
