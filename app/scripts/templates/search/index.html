@@ -1,0 +1,11 @@
+<h3 class="number-of-results">
+  {{#onlyOneResult}}
+    {{numberOfResults}} result
+  {{/onlyOneResult}}
+  {{^onlyOneResult}}
+    {{numberOfResults}} results
+  {{/onlyOneResult}}
+</h3>
+<div class="search-results">
+  <!-- collection inserted after render -->
+</div>

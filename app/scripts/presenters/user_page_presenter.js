@@ -19,18 +19,32 @@ define([
   // - anything paged
   var EXTRACTED_IMAGE_DENY_PATTERN = /github.com|(\..{2,3}\/$)|([&?]q=)|([&?]page=\d+)/;
 
-  function VisitPresenter (visit) {
-    // flatten attributes
-    _.extend(this, visit.attributes, visit.get('userPage'));
+  function UserPagePresenter (userPage, options) {
+    // Copy over user page attributes
+    _.extend(this, userPage.attributes);
+
+    // Set default options
+    options = _.extend({
+      relatedVisit: null,
+      alternateImages: true
+    }, options);
+
+    this.relatedVisit = options.relatedVisit && options.relatedVisit.attributes;
+    this.alternateImages = options.alternateImages;
   }
 
-  _.extend(VisitPresenter.prototype, {
+  _.extend(UserPagePresenter.prototype, {
+    title: function () {
+      // Use the relatedVisit title if we have it
+      return (this.relatedVisit && this.relatedVisit.title) || this.extractedTitle;
+    },
+
     faviconUrl: function () {
       return this.extractedFaviconUrl || '/images/icon-favicon_default@2x.png';
     },
 
     imageUrl: function () {
-      var url = this.hasValidExtractedImageUrl() ? this.extractedImageUrl : this.screenshot_url;
+      var url = this.hasValidExtractedImageUrl() ? this.extractedImageUrl : this._getScreenshotUrl();
 
       // it would be smarter to only crop screenshots if we're not in retina, but it's easier
       // to let the imageProxy just handle it for now.
@@ -38,21 +52,25 @@ define([
     },
 
     imagePosition: function () {
-      return (this.title.length % 2) ? 'left' : 'right';
+      if (this.alternateImages) {
+        return (this.title().length % 2) ? 'left' : 'right';
+      } else {
+        return 'right';
+      }
     },
 
     isSearchResult: function () {
-      return !!this.url.match(/[?&#][pq]=/i);
+      return !!this._getUrl().match(/[?&#][pq]=/i);
     },
 
     hasHashBang: function () {
-      return !!this.url.match(/(#!)|(#(.*?)\/)/);
+      return !!this._getUrl().match(/(#!)|(#(.*?)\/)/);
     },
 
     hasValidExtractedImageUrl: function () {
       return this.extractedImageUrl &&
              (this.extractedImageEntropy && this.extractedImageEntropy > MINIMUM_IMAGE_ENTROPY) &&
-             !this.url.match(EXTRACTED_IMAGE_DENY_PATTERN);
+             !this._getUrl().match(EXTRACTED_IMAGE_DENY_PATTERN);
     },
 
     hasLargeImage: function () {
@@ -115,8 +133,18 @@ define([
       } else {
         return 'small';
       }
+    },
+
+    // TODO: this is working around a difference in the location of the screenshot url (#264)
+    _getScreenshotUrl: function () {
+      return this.screenshot_url || (this.relatedVisit && this.relatedVisit.screenshot_url);
+    },
+
+    // TODO: this is working around a difference in the location of the url (#264)
+    _getUrl: function () {
+      return this.url || this.rawUrl;
     }
   });
 
-  return VisitPresenter;
+  return UserPagePresenter;
 });

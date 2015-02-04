@@ -11,20 +11,13 @@
     <!-- endbuild -->
   </head>
   <body>
-    <header class="row">
-      <div class="row-inner">
-        <h1>Chronicle</h1>
-        <div id="user">
-          <a href="/auth/logout">Sign out</a>
-        </div>
-        <div id="search">
-          <form><input type="text" placeholder="Search" /></form>
-        </div>
-      </div>
+    <header id="global-header" class="row">
+      <!-- view: global_header/global_header -->
     </header>
     <div id="container" class="row">
       <div class="row-inner">
         <section id="stage">
+          <!-- view: dynamically by router.js -->
         </section>
         <footer>
           <p>&copy; 2015 &bull; <a href="http://mozilla.org/" target="_blank">Mozilla</a></p>

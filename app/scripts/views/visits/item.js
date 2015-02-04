@@ -5,23 +5,23 @@
 define([
   'underscore',
   'views/base',
-  'stache!templates/visits/item',
-  'presenters/visit_presenter'
-], function (_, BaseView, VisitsItemTemplate, VisitPresenter) {
+  'stache!templates/user_pages/item',
+  'models/user_page',
+  'presenters/user_page_presenter'
+], function (_, BaseView, UserPagesItemView, UserPage, UserPagePresenter) {
   'use strict';
 
   var VisitsItemView = BaseView.extend({
-    className: 'visit',
-    template: VisitsItemTemplate,
+    className: 'visit user-page',
+    template: UserPagesItemView,
 
     events: {
       'click .destroy': 'destroyModel'
     },
 
     initialize: function () {
-      this.presenter = new VisitPresenter(this.model);
-
-      this.listenTo(this.model, 'change', this.render);
+      this.userPage = new UserPage(this.model.get('userPage'));
+      this.presenter = new UserPagePresenter(this.userPage, { relatedVisit: this.model });
     },
 
     getContext: function () {
