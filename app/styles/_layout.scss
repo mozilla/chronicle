@@ -4,6 +4,16 @@ body {
   font-family: $body-font;
 }
 
-#stage {
-  margin-top: 82px;
+.visits {
+  margin-top: $octo-gap;
+}
+
+.l-flex {
+  display: flex;
+
+  &-horizontal {
+    @extend .l-flex;
+    align-items: center;
+    justify-content: space-between;
+  }
 }

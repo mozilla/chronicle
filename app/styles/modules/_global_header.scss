@@ -1,66 +1,66 @@
 #global-header {
-  background: #4d4d4d;
+  @include color-scheme($white, $middle-grey);
   position: fixed;
   top: 0;
   z-index: 100;
 
   .row-inner {
-    height: 65px;
+    height: $double-grid;
   }
 
   h1 {
-    @include vertical-align;
-    font-size: 24px;
-    left: 44px;
-    margin: 0;
-
+    flex: 1;
+    font-size: $large-font-size;
+    line-height: $large-font-size;
+    margin: 0 $default-gap;
     a {
-      color: #ffffff;
+      color: $white;
       text-decoration: none;
     }
   }
 
   #user-info {
-    margin-top: -18px;
-    position: absolute;
-    top: 50%;
-
     img {
-      border-radius: 50%;
-      height: 36px;
-      width: 36px;
+      width: $double-grid;
+      height: $double-grid;
+      background: #fafafa;
     }
-
     nav {
-      background: #ffffff;
-      border: 1px solid #eeeeee;
-      box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
-      display: none;
-      width: 250px;
-    }
-
-    &:hover {
-      nav {
-        display: block;
-      }
+      display: none
     }
   }
 
   #search-box {
-    margin-top: -20px;
-    position: absolute;
-    right: 20px;
-    top: 50%;
+    flex-basis: $default-grid * 10;
+    form {
+      flex: 1;
+      input {
+        @include hidpi-background-image(icon-search, 16px 16px);
+        @include color-scheme($middle-grey, $white);
+        @include is-border-state-machine(2px, $middle-grey, $dark-grey);
+        background-position: top 50% right 12px;
+        background-repeat: no-repeat;
+        border-radius: $double-radius;
+        flex: 1;
+        font-size: $default-font-size;
+        padding: $small-gap $quad-gap $small-gap $small-gap;
+      }
+    }
+  }
+}
 
-    input {
-      @include hidpi-background-image(icon-search, 16px 16px);
-      background-position: top 50% right 10px;
-      background-repeat: no-repeat;
-      border: 0;
-      border-radius: 6px;
-      font-size: 14px;
-      padding: 7px 7px 7px 15px;
-      width: 350px;
+@media screen and (max-width: 520px){
+  #global-header {
+    h1 {
+      display: none;
+    }
+
+    #user-info {
+      margin-right: $default-gap;
+    }
+
+    #search-box {
+      flex: 1;
     }
   }
 }
