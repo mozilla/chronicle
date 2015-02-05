@@ -12,44 +12,37 @@
     flex: 1;
     font-size: $large-font-size;
     line-height: $large-font-size;
-    margin: 0 $default-gap;
+    margin: 0 $small-gap;
+
     a {
       color: $white;
       text-decoration: none;
     }
   }
 
-  #user-info {
-    img {
-      width: $double-grid;
-      height: $double-grid;
-      background: #fafafa;
-    }
-    nav {
-      display: none
-    }
-  }
-
   #search-box {
     flex-basis: $default-grid * 10;
+
     form {
       flex: 1;
-      input {
-        @include hidpi-background-image(icon-search, 16px 16px);
-        @include color-scheme($middle-grey, $white);
-        @include is-border-state-machine(2px, $middle-grey, $dark-grey);
-        background-position: top 50% right 12px;
-        background-repeat: no-repeat;
-        border-radius: $double-radius;
-        flex: 1;
-        font-size: $default-font-size;
-        padding: $small-gap $quad-gap $small-gap $small-gap;
-      }
+    }
+    
+    input {
+      @include hidpi-background-image(icon-search, 16px 16px);
+      @include color-scheme($middle-grey, $white);
+      @include is-border-state-machine(2px, $middle-grey, $dark-grey);
+      background-position: top 50% right 12px;
+      background-repeat: no-repeat;
+      border-radius: $double-radius;
+      flex: 1;
+      font-size: $default-font-size;
+      padding: $small-gap $quad-gap $small-gap $small-gap;
     }
   }
 }
 
 @media screen and (max-width: 520px){
+
   #global-header {
     h1 {
       display: none;

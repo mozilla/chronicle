@@ -1,14 +1,23 @@
-<img class="avatar" src="{{avatarUrl}}" alt="avatar" />
-
-<nav>
-  <h4>{{email}}</h4>
-  <ul>
-    <li>Manage Firefox Account...</li>
-  </ul>
-  <h4>Chronicle</h4>
-  <ul>
-    <li>Send Feedback</li>
-    <li>Settings</li>
-    <li><a href="/auth/logout">Sign Out of Chronicle</a></li>
-  </ul>
-</nav>
+<div class="trigger l-flex-horizontal-centered">
+  <div class="mask">
+    <img class="avatar" src="{{avatarUrl}}" alt="avatar" width="36" height="36"/>
+  </div>
+</div>
+<div class="menu">
+  <nav>
+    <div class="menu-chunk">
+      <h4 class="truncate">{{email}}</h4>
+      <ul>
+        <li><a href="#">Manage Firefox Account...</a></li>
+      </ul>
+    </div>
+    <div class="menu-chunk">
+      <h4>Chronicle</h4>
+      <ul>
+        <li><a href="#">Send Feedback</a></li>
+        <li><a href="#">Settings</a></li>
+        <li><a href="/auth/logout">Sign Out of Chronicle</a></li>
+      </ul>
+    </div>
+  </nav>
+</div>

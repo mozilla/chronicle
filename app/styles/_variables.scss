@@ -2,6 +2,7 @@
 $primary: #0095dd;
 $body-background: #f2f2f2;
 $white: #ffffff;
+$black: #000000;
 $light-grey: #eeeeee;
 $dark-grey: #333333;
 $middle-grey: #4d4d4d;
@@ -9,6 +10,7 @@ $satan-grey: #666666;
 $baby-grey: #dfe1e4;
 $success: #00ff00;
 $warning: #ff0000;
+$translucent-black: rgba(0, 0, 0, 0.4);
 
 //TYPE VARIABLES
 $body-font: 'Fira Sans', sans-serif;
@@ -19,19 +21,22 @@ $large-font-size: 24px;
 
 //GAP VARIABLES
 $default-gap: 10px;
-$small-gap: $default-gap * .6;
+$small-gap: $default-gap * 0.6;
 $double-gap: $default-gap * 2;
 $quad-gap: $default-gap * 4;
 $octo-gap: $default-gap * 8;
 
 //GRID VARIABLES
 $default-grid: 32px;
-$half-grid: $default-grid * .5;
+$half-grid: $default-grid * 0.5;
 $double-grid: $default-grid * 2;
 
 //BORDER VARIABLES
-$default-radius: 2px;
+$default-radius: 4px;
 $double-radius: $default-radius * 2;
+$round-radius: 50%;
 
 //TIMING VARIABLES
-$fast: 75ms;
+$default: 150ms;
+$fast: $default * 0.5;
+
