@@ -26,4 +26,10 @@ body {
     align-items: center;
     justify-content: space-between;
   }
+  
+  &-horizontal-centered {
+    @extend .l-flex;
+    align-items: center;
+    justify-content: space-around;
+  }
 }

@@ -1,0 +1,87 @@
+#user-info {
+  height: $default-grid + $half-grid;
+  flex: 0 0 $default-grid + $half-grid;
+
+  .trigger {
+    border-radius: $double-radius;
+    cursor: pointer;
+    height: 100%;
+    transition: background $default;
+    width: 100%;
+
+
+    .mask {
+      border: 1px solid lighten($satan-grey, 10);
+      border-radius: $round-radius;
+      height: $default-grid + $small-gap;
+      overflow: hidden;
+      width: $default-grid + $small-gap;
+    }
+  }
+
+  .menu {
+    @include color-scheme($middle-grey, $white);
+    border: 1px solid lighten($satan-grey, 20);
+    border-radius: $default-radius;
+    box-shadow: 0 5px 5px $translucent-black;
+    display: none;
+    font-size: $small-font-size;
+    margin: 4px 0 0 -6px;
+    position: absolute;
+    width: $default-grid * 8;
+
+// leaving fussy caret border/position CSS unvariablized for clarity
+    &:before {
+      border-bottom: 9px solid lighten($satan-grey, 20);
+      border-left: 8px solid transparent;
+      border-right: 8px solid transparent;
+      content: '';
+      height: 0;
+      left: $half-grid + 4;
+      position: absolute;
+      top: -10.5px;
+      width: 0;
+    }
+
+    &:after {
+      border-bottom: 10px solid $white;
+      border-left: 9px solid transparent;
+      border-right: 9px solid transparent;
+      content: '';
+      height: 0;
+      left: $half-grid + 3;
+      position: absolute;
+      top: -9.5px;
+      width: 0;
+    }
+  }
+
+  .menu-chunk {
+    padding: $default-font-size;
+
+    h4 {
+      margin: 0 0 $small-gap;
+    }
+
+    ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    a {
+      color: $dark-grey;
+      display: block;
+      padding: $default-gap 0 0 0;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    + .menu-chunk {
+      border-top: 1px solid $baby-grey;
+    }
+  }
+}
