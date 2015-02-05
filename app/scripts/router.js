@@ -56,18 +56,17 @@ define([
     // watches for clicks that should be handled by backbone and calls navigate internally
     watchAnchors: function () {
       $(window.document).on('click', 'a[href^="/"]', function (event) {
-        // someone killed this event, ignore it.
-        if (event.isDefaultPrevented()) {
-          return;
-        }
+        // Remove leading slashes
+        var url = $(event.target).attr('href').replace(/^\//, '');
 
-        if (!event.altKey && !event.ctrlKey && !event.metaKey && !event.shiftKey) {
+        // rewrite the url if:
+        // - nobody prevented the event
+        // - it doesn't start with 'auth'
+        // - no special keys
+        if (!event.isDefaultPrevented() && !url.match(/^auth/) && !event.altKey &&
+            !event.ctrlKey && !event.metaKey && !event.shiftKey) {
           event.preventDefault();
 
-          // Remove leading slashes
-          var url = $(event.target).attr('href').replace(/^\//, '');
-
-          // Instruct Backbone to trigger routing events
           this.navigate(url, { trigger: true });
         }
       }.bind(this));
