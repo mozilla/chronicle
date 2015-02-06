@@ -1,0 +1,33 @@
+.actions {
+  
+  .medium &,
+  .large & {
+    clear: both;
+    display: block;
+  }
+
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  a {
+    display: block;
+    height: $default-grid;
+    width: $default-grid;
+  }
+
+  .destroy a {
+    @include hidpi-background-image(icon-delete, 20px 20px);
+    background-position: center center;
+    background-repeat: no-repeat;
+
+    &:hover {
+      @include hidpi-background-image(icon-delete-hover, 20px 20px);
+    }
+
+    &:active {
+      @include hidpi-background-image(icon-delete-active, 20px 20px);
+    }
+  }
+}
+
