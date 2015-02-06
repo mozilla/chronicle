@@ -97,7 +97,7 @@ define([
     },
 
     _getPixelsFromBottom: function () {
-      return $(document).height() - $('body').scrollTop() - $(window).height();
+      return $(document).height() - $(document).scrollTop() - $(window).height();
     },
   });
 
