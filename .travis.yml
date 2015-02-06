@@ -33,6 +33,7 @@ before_script:
   - cp config/local.json.travis config/local.json
   # Setup database
   - bin/create_db.sh postgres
+  - bin/migrate.js
   - node bin/create_test_data.js
   # Configure and start xvfb
   - export DISPLAY=:99.0
