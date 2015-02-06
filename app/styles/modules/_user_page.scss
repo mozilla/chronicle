@@ -88,6 +88,8 @@
   }
 
   &.small {
+    display: flex;
+    align-items: center;
     background: lighten($body-background, 1);
     margin-top: $default-gap;
     padding: $default-gap $double-gap;
@@ -99,6 +101,7 @@
     }
 
     .title {
+      flex: 1;
       margin: 0;
     }
   }

@@ -1,6 +1,6 @@
 #user-info {
-  height: $default-grid + $half-grid;
   flex: 0 0 $default-grid + $half-grid;
+  height: $default-grid + $half-grid;
 
   .trigger {
     border-radius: $double-radius;
