@@ -1,20 +1,34 @@
 .actions {
-  
-  .medium &,
-  .large & {
-    clear: both;
-    display: block;
-  }
-
   list-style: none;
   margin: 0;
   padding: 0;
+  
+  .medium &,
+  .large & {
+    @extend .l-flex;
+    clear: both;
 
-  a {
-    display: block;
-    height: $default-grid;
-    width: $default-grid;
+    li {
+      @extend .l-flex-horizontal;
+    }
+
+    a {
+      flex: 0 0 $default-grid;
+      height: $default-grid;
+    }
   }
+
+  .small & {
+
+    a {
+      display: block;
+      float: left;
+      height: $default-grid;
+      width: $default-grid;
+    }
+  }
+
+
 
   .destroy a {
     @include hidpi-background-image(icon-delete, 20px 20px);
