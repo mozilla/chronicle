@@ -42,3 +42,4 @@ before_script:
   - java -jar selenium-server-standalone-2.44.0.jar &> /dev/null &
 script:
   - grunt test
+  - time npm run lint
