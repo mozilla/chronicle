@@ -59,8 +59,8 @@ CREATE TABLE IF NOT EXISTS visits (
 );
 -- create the visits indexes
 -- used for visit.get
-CREATE UNIQUE INDEX user_id_visited_at_id
+CREATE UNIQUE INDEX visits_user_id_visited_at_id
   ON visits (user_id, visited_at, id);
 -- used to check if a user_page should be deleted on visit delete
-CREATE UNIQUE INDEX user_id_user_page_id_id
+CREATE UNIQUE INDEX visits_user_id_user_page_id_id
   ON visits (user_id, user_page_id, id);
