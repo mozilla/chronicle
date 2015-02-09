@@ -4,6 +4,7 @@
 
 'use strict';
 
+var fs = require('fs');
 var path = require('path');
 var config = require('../config');
 var STATIC_PATH = path.join(__dirname, '..', '..', config.get('server_staticPath'));
@@ -11,7 +12,14 @@ var STATIC_PATH = path.join(__dirname, '..', '..', config.get('server_staticPath
 var baseController = {
   get: function (request, reply) {
     var page = request.auth.isAuthenticated ? 'app.html' : 'index.html';
-    reply.file(path.join(STATIC_PATH, page));
+
+    fs.readFile(path.join(STATIC_PATH, page), 'utf8', function (err, data) {
+      if (err) {
+        throw err;
+      }
+
+      reply(data);
+    });
   }
 };
 
