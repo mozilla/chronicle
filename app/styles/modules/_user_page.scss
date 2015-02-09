@@ -88,7 +88,7 @@
   }
 
   &.small {
-    display: flex;
+    @extend .l-flex;
     align-items: center;
     background: lighten($body-background, 1);
     margin-top: $default-gap;
