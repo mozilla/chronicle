@@ -17,6 +17,9 @@ linters:
     enabled: true
     style: include_zero # or 'exclude_zero'
 
+  PlaceholderInExtend:
+    enabled: false
+
   SelectorDepth:
     enabled: true
     max_depth: 4
