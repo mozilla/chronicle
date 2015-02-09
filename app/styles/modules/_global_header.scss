@@ -13,6 +13,9 @@
     font-size: $large-font-size;
     line-height: $large-font-size;
     margin: 0 $small-gap;
+    @include respond-to(small) {
+      display: none;
+    }
 
     a {
       color: $white;
@@ -22,6 +25,9 @@
 
   #search-box {
     flex-basis: $default-grid * 10;
+    @include respond-to(small) {
+      flex: 1;
+    }
 
     form {
       flex: 1;
@@ -37,23 +43,6 @@
       flex: 1;
       font-size: $default-font-size;
       padding: $small-gap $quad-gap $small-gap $small-gap;
-    }
-  }
-}
-
-@media screen and (max-width: 520px){
-
-  #global-header {
-    h1 {
-      display: none;
-    }
-
-    #user-info {
-      margin-right: $default-gap;
-    }
-
-    #search-box {
-      flex: 1;
     }
   }
 }
