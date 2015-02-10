@@ -13,6 +13,7 @@
     font-size: $large-font-size;
     line-height: $large-font-size;
     margin: 0 $small-gap;
+
     @include respond-to(small) {
       display: none;
     }
@@ -25,6 +26,7 @@
 
   #search-box {
     flex-basis: $default-grid * 10;
+    
     @include respond-to(small) {
       flex: 1;
     }

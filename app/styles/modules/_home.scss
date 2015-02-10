@@ -1,0 +1,426 @@
+$cover-background: #bbd8ef;
+$feed-background: #92d2b3;
+$mobile-background: #fbf0bd;
+$promise-background: #e78066;
+
+$container-max-width: 440px;
+
+#landing-page-wrapper {
+  opacity: 0;
+}
+
+#landing-page {
+  color: $middle-grey;
+  text-align: center;
+  text-shadow: 0 1px 1px $white;
+  
+  h1 {
+    font-size: $large-font-size + $default-font-size;
+    line-height: $default-grid;
+    margin: 0 0 $default-gap;
+
+    @include respond-to(small) {
+      font-size: $default-grid;
+      margin: 0 0 $small-gap;
+    }
+  }
+
+  h2 {
+    font-size: $content-header-font-size;
+    margin: 0 0 $default-gap;
+
+    @include respond-to(small) {
+      font-size: $default-font-size;
+      margin: 0 0 $small-gap;
+    }
+  }
+
+  p {
+    font-size: $default-font-size + 2;
+    line-height: $default-gap * 2.6;
+    margin: 0 0 $default-gap;
+    
+    @include respond-to(small) {
+      font-size: $default-font-size - 1;
+      line-height: $double-gap;
+      margin: 0 0 $small-gap;
+    }
+  }
+
+  .content {
+    @extend .l-flex-vertical;
+    background: $translucent-white;
+    border-radius: $default-radius;
+    box-shadow: 0 3px 10px $translucent-black,
+                0 -5px 1px $translucenter-black inset;
+    max-width: $container-max-width;
+    padding: $double-gap;
+    position: relative;
+
+    @include respond-to(small) {
+      background: $translucenter-white;
+      flex: 1 0 100vh;
+      justify-content: center;
+      max-width: 100%;
+      padding: $default-gap;
+      width: 100%;
+    }
+  }
+
+  //these rules are basically disposable...
+  //the logo class will eventually hold our logo
+
+  .logo {
+    border: 5px solid $middle-grey;
+    border-radius: $round-radius;
+    height: $default-grid * 3;
+    margin: 0 auto $double-gap auto;
+    width: $default-grid * 3;
+  }
+
+  .arrow-wrapper {
+    bottom: $double-gap;
+    height: $default-grid;
+    position: absolute;
+    width: 100%;
+
+    @include respond-to(small) {
+      bottom: $default-gap;
+    }
+
+    .arrow {
+      @include hidpi-background-image(arrow, 44px 18px);
+      background-position: center center;
+      background-repeat: no-repeat;
+      cursor: pointer;
+      height: $default-grid;
+      margin: 0 auto;
+      opacity: 0.4;
+      width: $double-grid;
+
+      @include respond-to(small) {
+        transform: scale(.8);
+      }
+    }
+  }
+
+  #cover {
+    background: $cover-background;
+    box-shadow: 0 0 100px darken($cover-background, 12) inset;
+  }
+
+  #feed {
+    background: $feed-background;
+    box-shadow: 0 0 100px darken($feed-background, 12) inset;
+
+    .feed-example {
+      @extend .l-flex-vertical;
+      flex: 0 0 300px;
+      margin: $default-gap $default-gap $double-gap;
+
+      @include respond-to(small) {
+         flex: 0 0 260px;
+         margin: $small-gap;
+      }
+    }
+
+    .item-wrapper {
+      flex: 0 0 ($default-grid - 2);
+      margin-bottom: $small-gap * 0.5;
+      position: relative;
+      width: 100%;
+
+      @include respond-to(small) {
+        flex: 0 0 ($default-grid - 8);
+      }
+    }
+
+    .search-item {
+      @include hidpi-background-image(icon-search, 16px 16px);
+      background-color: $white;
+      background-position: $default-gap center;
+      background-repeat: no-repeat;
+      border: 1px solid $baby-grey;
+      border-radius: $double-gap;
+      flex: 0 0 ($default-grid - 2);
+      margin: 0 auto $small-gap auto;
+      width: 80%;
+
+      @include respond-to(small) {
+        flex: 0 0 ($default-grid - 8);
+      }
+    }
+
+    .item {
+      background: $white;
+      border-radius: $double-gap 0 0 $double-gap;
+      box-shadow: 0 1px 1px $baby-grey;
+      height: ($default-grid - 2);
+      width: 100%;
+
+      @include respond-to(small) {
+        height: ($default-grid - 8);
+      }
+    }
+
+    .img {
+      background: $baby-grey;
+      border-radius: $round-radius;
+      height: ($default-grid - 2);
+      left: 0;
+      position: absolute;
+      top: 0;
+      width: ($default-grid - 2);
+      
+      @include respond-to(small) {
+        height: ($default-grid - 8);
+        width: ($default-grid - 8);
+      }
+    }
+  }
+
+  #mobile {
+    background: $mobile-background;
+    box-shadow: 0 0 100px darken($mobile-background, 12) inset;
+
+    .chronicle-devices {
+      @include hidpi-background-image(chronicle-devices, 370px 168px);
+      background-repeat: no-repeat;
+      height: 168px;
+      margin: $default-gap auto;
+      width: 370px;
+
+      @include respond-to(small) {
+        background-size: 300px 136px;
+        height: 136px;
+        width: 300px;
+      }
+    }
+  }
+
+  #promise {
+    background: $promise-background; 
+    box-shadow: 0 0 100px darken($promise-background, 12) inset;
+
+    .mozilla-logo {
+      @include hidpi-background-image(mozilla, 160px 42px);
+      height: 42px;
+      margin: $default-gap auto $quad-gap auto;
+      width: 160px;
+    }
+  }
+
+  #start {
+    box-shadow: 0 0 100px darken($body-background, 12) inset;
+
+    input {
+      font-size: $default-font-size + 2;
+      margin: $double-gap auto;
+      max-width: $default-grid * 10;
+      min-width: $default-grid * 8;
+      padding: $default-gap;
+    }
+  }
+}
+
+/* The following is a lightly modified version of the styles
+*  used by the fullpage plugin.
+*  modifications made:
+*   removed vendor prefixes
+*   alphabetized rulesets
+*   wrapped all Sass in .home to prevent collisions
+*   removed classes assigned directly to body/HTML
+*/
+
+// scss-lint:disable all
+
+.home {
+
+  #superContainer {
+    height: 100%;
+    position: relative;
+    touch-action: none;
+  }
+
+  .fp-section {
+    position: relative;
+  }
+
+  .fp-slide {
+    float: left;
+  }
+
+  .fp-slide, .fp-slidesContainer {
+    display: block;
+    height: 100%;
+  }
+
+  .fp-slides {
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+    transition: all 0.3s ease-out;
+    z-index:1;
+  }
+
+  .fp-section.fp-table, .fp-slide.fp-table {
+    display: table;
+    table-layout: fixed;
+    width: 100%;
+  }
+
+  .fp-tableCell {
+    display: table-cell;
+    height: 100%;
+    vertical-align: middle;
+    width: 100%;
+  }
+
+  .fp-slidesContainer {
+    float: left;
+    position: relative;
+  }
+
+  .fp-controlArrow {
+    border-style: solid;
+    cursor: pointer;
+    height: 0;
+    margin-top: -38px;
+    position: absolute;
+    top: 50%;
+    width: 0;
+    z-index: 4;
+  }
+
+  .fp-controlArrow.fp-prev {
+    border-color: transparent #fff transparent transparent;
+    border-width: 38.5px 34px 38.5px 0;
+    left: 15px;
+    width: 0;
+  }
+
+  .fp-controlArrow.fp-next {
+    border-color: transparent transparent transparent #fff;
+    border-width: 38.5px 0 38.5px 34px;
+    right: 15px;
+  }
+
+  .fp-scrollable {
+    overflow: scroll;
+  }
+
+  .fp-notransition {
+    transition: none !important;
+  }
+
+  #fp-nav {
+    margin-top: -32px;
+    opacity: .5;
+    position: fixed;
+    top: 50%;
+    z-index: 100;
+
+    @include respond-to(small) {
+      display: none;
+    }
+  }
+
+  #fp-nav.right {
+    right: 17px;
+  }
+
+  #fp-nav.left {
+    left: 17px;
+  }
+
+  .fp-slidesNav {
+    left: 50%;
+    opacity: 1;
+    position: absolute;
+    z-index: 4;
+  }
+
+  .fp-slidesNav.bottom {
+    bottom: 17px;
+  }
+
+  .fp-slidesNav.top {
+    top: 17px;
+  }
+
+  #fp-nav ul,
+  .fp-slidesNav ul {
+    margin: 0;
+    padding: 0;
+  }
+
+  #fp-nav ul li,
+  .fp-slidesNav ul li {
+    display: block;
+    height: 13px;
+    margin: 7px;
+    position: relative;
+    width: 14px;
+  }
+
+  .fp-slidesNav ul li {
+    display: inline-block;
+  }
+
+  #fp-nav ul li a,
+  .fp-slidesNav ul li a {
+    cursor: pointer;
+    display: block;
+    height: 100%;
+    position: relative;
+    text-decoration: none;
+    width: 100%;
+    z-index: 1;
+  }
+
+  #fp-nav ul li a.active span,
+  .fp-slidesNav ul li a.active span {
+    background: #333;
+  }
+
+  #fp-nav ul li a span,
+  .fp-slidesNav ul li a span {
+    background: rgba(0, 0, 0, 0);
+    border-radius: 50%;
+    border: 1px solid #000;
+    height: 8px;
+    left: 2px;
+    position: absolute;
+    top: 2px;
+    width: 8px;
+    z-index: 1;
+  }
+
+  #fp-nav ul li .fp-tooltip {
+    color: #fff;
+    display: block;
+    font-family: arial, helvetica, sans-serif;
+    font-size: 14px;
+    max-width: 220px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    top: -2px;
+    white-space: nowrap;
+    width: 0;
+  }
+
+  #fp-nav ul li:hover .fp-tooltip {
+    opacity: 1;
+    transition: opacity 0.2s ease-in;
+    width: auto;
+  }
+
+  #fp-nav ul li .fp-tooltip.right {
+    right: 20px;
+  }
+
+  #fp-nav ul li .fp-tooltip.left {
+    left: 20px;
+  }
+}

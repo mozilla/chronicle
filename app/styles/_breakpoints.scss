@@ -11,9 +11,8 @@ $breakpoints: (
     @media (#{map-get($breakpoints, $breakpoint)}) {
       @content;
     }
-  }
-  @else {
-    @warn "Unfortunately, no value could be retrieved from `#{$breakpoint}`. "
-        + "Please make sure it is defined in `$breakpoints` map.";
+  } @else {
+    @warn 'Unfortunately, no value could be retrieved from `#{$breakpoint}`. '
+        + 'Please make sure it is defined in `$breakpoints` map.';
   }
 }

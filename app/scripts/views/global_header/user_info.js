@@ -28,7 +28,7 @@ define([
     _toggleMenuState: function (event) {
       var $target = $(event.currentTarget);
 
-      if (!$target.hasClass('is-triggered')) {
+      if (!$target.hasClass('triggered')) {
         this._bindDismissMenu();
       } else {
         this._unbindDismissMenu();
@@ -41,7 +41,7 @@ define([
       var $trigger = $('.trigger');
       var $menu = $('.menu');
 
-      $trigger.stop().toggleClass('is-triggered');
+      $trigger.stop().toggleClass('triggered');
       $menu.stop().fadeToggle(this.toggleSpeed);
     },
 
