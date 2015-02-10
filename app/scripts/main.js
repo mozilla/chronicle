@@ -28,9 +28,21 @@ require.config({
   }
 });
 
+function startApp() {
+  require(['backbone', 'router'], function (Backbone) {
+    Backbone.history.start();
+  });
+}
+
+function startHome() {
+  require(['views/home/home'], function (HomeView) {
+    new HomeView({ el: 'html.home' });
+  });
+}
+
 require([
-  'backbone',
-  'router'
-], function (Backbone) {
-  Backbone.history.start();
+  'jquery'
+], function ($) {
+  // Use the class on html to determine if we should boot home or app
+  $('html').hasClass('app') ? startApp() : startHome();
 });
