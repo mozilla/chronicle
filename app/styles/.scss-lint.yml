@@ -13,9 +13,19 @@ linters:
     enabled: true
     style: lowercase # or 'uppercase'
 
+  IdSelector:
+    enabled: false
+
   LeadingZero:
     enabled: true
     style: include_zero # or 'exclude_zero'
+
+  NestingDepth:
+    enabled: true
+    max_depth: 4
+
+  PlaceholderInExtend:
+    enabled: false
 
   SelectorDepth:
     enabled: true
