@@ -30,7 +30,7 @@
   "server_log_level": "info",
   "server_session_password": "Wh4t3ver.",
   "server_session_isSecure": false,
-  "server_session_duration": 86400000,
+  "server_session_duration": 2592000000,
   "server_oauth_clientId": "1f9bbddcb3e160ab",
   "server_oauth_clientSecret": "24bf8caeaa685e2e42d9a75b48511f83adffaf6fcdd174ce8749358a376be911",
   "server_oauth_scope": ["chronicle", "profile"],

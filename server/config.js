@@ -266,9 +266,9 @@ var conf = convict({
     env: 'SESSION_ALLOW_INSECURE_COOKIES'
   },
   server_session_duration: {
-    doc: 'Session duration in milliseconds. Zero, the default, means session cookie.',
+    doc: 'Session duration in milliseconds. Zero means session cookie. We default to one month.',
     format: 'int',
-    default: 0,
+    default: 2592000000,
     env: 'SESSION_DURATION'
   },
   server_session_cookieName: {
@@ -282,6 +282,11 @@ var conf = convict({
     default: true,
     format: Boolean,
     env: 'SESSION_COOKIE_CLEAR_INVALID'
+  },
+  server_session_keepAlive: {
+    doc: 'Whether to automatically reset the ttl on cookies.',
+    default: true,
+    format: Boolean
   }
 });
 

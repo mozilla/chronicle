@@ -49,6 +49,7 @@ server.register([
     password: config.get('server_session_password'),
     cookie: config.get('server_session_cookieName'),
     isSecure: config.get('server_session_isSecure'),
+    keepAlive: config.get('server_session_keepAlive'),
     ttl: config.get('server_session_duration'),
     clearInvalid: config.get('server_session_clearInvalid'),
     // this function validates that the user exists + session is valid
