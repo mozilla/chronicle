@@ -27,7 +27,7 @@ To fetch dependencies and get cooking:
 3. Copy `config/local.json.example` to `config/local.json`, and put your local info in there.
 4. Run `./bin/create_db.sh` to create the database
   - this script currently hard-codes the db user, password, and dbname to 'chronicle' (issue #112)
-5. Run `./bin/migrate.js` to run all the migrations that create the database tables and indexes
+5. Run `./bin/migrate.js` to run all the migrations that create the database tables and indexes. (This script also reindexes elasticsearch, but on the first pass, you don't have data in postgres to copy over.)
 6. Run `./bin/create_test_data.js` to create a test user and test data
   - the test user is defined in the config file
   - the test data is a set of visits created using the URLs in `config/test-urls.js`. Over time we'll experiment with different test data sets, might wind up with a test-urls directory instead.
