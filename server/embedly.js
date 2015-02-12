@@ -17,6 +17,13 @@ var logFactory = require('./logger');
 var log = logFactory('server.services.embedly');
 var npmLog = logFactory('server.services.embedly.vendor');
 
+// returns hex number without the prepended '#'
+// accepts an array with [r, g, b] in specified order
+var _rgbToHex = function(color) {
+  /*jshint bitwise: false */
+  return ((1 << 24) + (color[0] << 16) + (color[1] << 8) + color[2]).toString(16).slice(1);
+};
+
 module.exports = {
   extract: function extract(url, cb) {
     log.debug('embedly.extract called');
@@ -32,6 +39,7 @@ module.exports = {
     new Embedly({key: apiKey, logger: npmLog}, function(err, api) {
       if (err) { return cb(err); }
       api.extract({url:url}, function(err, data) {
+        var r, g, b;
         log.verbose('embedly.extract callback for url ' + url + ' returned data ' + JSON.stringify(data));
         if (err) { return cb(err); }
         var d = data && data[0];
@@ -81,7 +89,8 @@ module.exports = {
 
         if (d.favicon_colors && d.favicon_colors.length) {
           // this is an array of r,g,b values, eg [181, 187, 194]
-          out.extractedFaviconColor = d.favicon_colors[0].color;
+          // convert it to a hex color
+          out.extractedFaviconColor = _rgbToHex(d.favicon_colors[0].color);
         }
 
         if (d.images && d.images.length) {
@@ -92,7 +101,7 @@ module.exports = {
           out.extractedImageCaption = d.images[0].caption;
           // another array of rgb values
           if (d.images.colors) {
-            out.extractedImageColor = d.images[0].colors[0].color;
+            out.extractedImageColor = _rgbToHex(d.images[0].colors[0].color);
           }
         }
 

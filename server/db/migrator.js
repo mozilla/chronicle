@@ -5,6 +5,7 @@
 'use strict';
 
 var fs = require('fs');
+var path = require('path');
 var Joi = require('joi');
 var pg = require('pg');
 var pgpatcher = require('pg-patcher');
@@ -12,7 +13,7 @@ var q = require('q');
 
 var config = require('../config');
 var log = require('../logger')('server.db.migrator');
-var elasticsearch = require('./elasticsearch.js');
+var reindex = require('./reindex');
 
 var migrator = function (patchLevel) {
   log.debug('migrator called, patchLevel is ' + patchLevel);
@@ -41,20 +42,33 @@ var migrator = function (patchLevel) {
       log.trace(err);
       deferred.reject(err);
     } else {
-      pgpatcher(client, level, {dir: __dirname + '/migrations'}, function onPatched(err, result) {
+      pgpatcher(client, level, {dir: path.join(__dirname, 'migrations')}, function onPatched(err, result) {
         log.debug('pgpatcher callback fired');
-        // TODO: reindex elasticsearch by extracting user_pages from the migrated DB
         if (err) {
           log.error('pgpatcher migration failed: ' + err);
           done();
           pg.end();
-          deferred.reject(err);
-        } else {
-          log.info('pgpatcher migration succeeded');
+          return deferred.reject(err);
+        }
+        log.info('pgpatcher migration succeeded');
+        // at patchLevel 0 and 1, there is no user_pages table to reindex
+        if (patchLevel < 2) {
+          done();
+          pg.end();
+          return deferred.resolve(result);
+        }
+        reindex.start(function(err) {
+          if (err) {
+            log.error('elasticsearch reindexing failed: ' + err);
+            done();
+            pg.end();
+            return deferred.reject(err);
+          }
+          log.info('elasticsearch reindexing succeeded');
           done();
           pg.end();
           deferred.resolve(result);
-        }
+        });
       });
     }
   });

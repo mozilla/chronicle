@@ -107,6 +107,26 @@ var conf = convict({
     env: 'REDIS_DATABASE',
     format: 'int'
   },
+  db_reindex_timeout: {
+    doc: 'Timeout for an individual step of the reindexing job.',
+    format: 'int',
+    default: 30000
+  },
+  db_reindex_batchSize: {
+    doc: 'Batch size for elasticsearch reindexing',
+    default: 100,
+    format: 'int'
+  },
+  db_reindex_maxRetries: {
+    doc: 'Number of times to retry an individual reindexing step before giving up completely',
+    default: 5,
+    format: 'int'
+  },
+  db_reindex_retryWait: {
+    doc: 'Base wait period before retrying after a failure. There is a linear multiplier in the code.',
+    default: 10000,
+    format: 'int'
+  },
   // TODO put these under a 'services' namespace
   embedly_enabled: {
     doc: 'Disable embedly for running on travis.',
