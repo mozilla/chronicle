@@ -1,0 +1,17 @@
+<h1>Welcome y'all</h1>
+
+{{#supportedBrowser}}
+<div id="install-container">
+  <p>Some details about the add-on</p>
+  <button class="install">Install the add-on</button>
+</div>
+<div id="continue-container" class="hidden">
+  <p>Go ahead and install that add-on and then continue to awesomeness.</p>
+  <button class="continue">Bring it on</button>
+</div>
+{{/supportedBrowser}}
+
+{{^supportedBrowser}}
+  <p>Sorry, there isn't currently an add-on for your browser.</p>
+  <button class="continue">Continue</button>
+{{/supportedBrowser}}

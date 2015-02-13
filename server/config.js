@@ -287,6 +287,12 @@ var conf = convict({
     doc: 'Whether to automatically reset the ttl on cookies.',
     default: true,
     format: Boolean
+  },
+  addon_firefox_url: {
+    doc: 'Firefox Add-on URL',
+    format: String,
+    default: 'http://your-add-on-url-goes-here/',
+    env: 'ADDON_FIREFOX_URL'
   }
 });
 

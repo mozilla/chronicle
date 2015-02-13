@@ -44,7 +44,12 @@ var authController = {
       session.expiresAt = new Date(new Date().getTime() + duration);
     }
     request.auth.session.set(session);
-    reply.redirect('/');
+    if (request.auth.credentials.profile.isNewUser) {
+      reply.redirect('/#welcome');
+    } else {
+      reply.redirect('/');
+    }
+
   }
 };
 

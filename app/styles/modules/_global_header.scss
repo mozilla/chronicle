@@ -2,7 +2,7 @@
   @include color-scheme($white, $middle-grey);
   position: fixed;
   top: 0;
-  z-index: 100;
+  z-index: 10;
 
   .row-inner {
     height: $double-grid;
@@ -32,11 +32,11 @@
     form {
       flex: 1;
     }
-    
+
     input {
       @include hidpi-background-image(icon-search, 16px 16px);
       @include color-scheme($middle-grey, $white);
-      @include is-border-state-machine(2px, $middle-grey, $dark-grey);
+      @include border-state-machine(2px, $middle-grey, $dark-grey);
       background-position: top 50% right 12px;
       background-repeat: no-repeat;
       border-radius: $double-radius;

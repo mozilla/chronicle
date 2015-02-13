@@ -15,6 +15,8 @@ define([
   'use strict';
 
   var VisitsIndexView = BaseView.extend({
+    FETCH_RETRY_WAIT: 5000,
+
     template: VisitsIndexTemplate,
 
     initialize: function () {
@@ -45,8 +47,6 @@ define([
 
     // this appends visit items rather than replacing them
     _renderVisits: function () {
-      //this.renderCollection(VisitsItemView, '.visits');
-
       var els = [];
 
       this.collection.each(function (visit) {
@@ -68,7 +68,6 @@ define([
       // let checkScrollPosition know that we're already loading more visits
       this.loadingMoreVisits = true;
 
-      // prepare the data
       var data = {
         count: this.count
       };
@@ -78,16 +77,21 @@ define([
       }
 
       // fire off the xhr request
-      var xhr = this.collection.fetch({ reset: true, data: data });
+      this.collection.fetch({ reset: true, data: data })
+        .done(this._fetchDone.bind(this))
+        .fail(this._fetchFailed.bind(this));
+    },
 
-      // keep track of the state of things
-      xhr.done(function (data) {
-        this.loadingMoreVisits = false;
+    _fetchDone: function (data) {
+      this.loadingMoreVisits = false;
 
-        // if the length is less than the count we know there aren't more results
-        this.hasMoreVisits = this.collection.length === this.count;
-        this.lastVisitId = this.collection.last().get('id');
-      }.bind(this));
+      // if the length is less than the count we know there aren't more results
+      this.hasMoreVisits = this.collection.length === this.count;
+      this.lastVisitId = this.collection.last().get('id');
+    },
+
+    _fetchFailed: function (xhr) {
+      // TODO: Do something interesting with 404s (no results)
     },
 
     _checkScrollPosition: function () {
