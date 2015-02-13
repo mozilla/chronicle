@@ -5,16 +5,19 @@
 define([
   'jquery',
   'backbone',
+  'lib/modal_manager',
   'views/global_header/global_header',
   'views/visits/index',
-  'views/search/index'
-], function ($, Backbone, GlobalHeaderView, VisitsIndexView, SearchIndexView) {
+  'views/search/index',
+  'views/welcome'
+], function ($, Backbone, modalManager, GlobalHeaderView, VisitsIndexView, SearchIndexView, WelcomeView) {
   'use strict';
 
   var Router = Backbone.Router.extend({
     routes: {
       '': 'showIndex',
-      'search/(:query)': 'showSearchIndex'
+      'search/(:query)': 'showSearchIndex',
+      'welcome': 'showWelcome'
     },
 
     initialize: function () {
@@ -35,6 +38,13 @@ define([
 
     showSearchIndex: function (query) {
       this.setStage(new SearchIndexView(query));
+    },
+
+    showWelcome: function () {
+      modalManager.open(new WelcomeView(), { fullScreen: true });
+
+      // Setup the index view underneath the modal
+      this.showIndex();
     },
 
     setStage: function (view) {

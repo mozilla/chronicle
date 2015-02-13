@@ -12,7 +12,9 @@ require.config({
     text: '../bower_components/requirejs-text/text',
     mustache: '../bower_components/mustache/mustache',
     stache: '../bower_components/requirejs-mustache/stache',
-    moment: '../bower_components/moment/moment'
+    moment: '../bower_components/moment/moment',
+    velocity: '../bower_components/velocity/velocity',
+    velocityui: '../bower_components/velocity/velocity.ui'
   },
   shim: {
     underscore: {

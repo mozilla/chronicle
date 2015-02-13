@@ -9,6 +9,11 @@ define([
   var config = {
     embedly: {
       apiKey: '{%= config.get("embedly_apiKey") %}'
+    },
+    addon: {
+      firefox: {
+        url: '{%= config.get("addon_firefox_url") %}'
+      }
     }
   };
 

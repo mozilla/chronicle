@@ -1,25 +1,25 @@
-.is-hidden {
+.hidden {
   display: none;
 }
 
-.is-succcess {
+.succcess {
   color: $success;
 }
 
-.is-warning {
+.warning {
   color: $warning;
 }
 
-.is-triggered {
+.triggered {
   background: linear-gradient(to bottom, #060606 0%, #2d2d2d 100%);
 }
 
 
-@mixin is-border-state-machine($border-width, $base-color, $engaged-color) {
+@mixin border-state-machine($border-width, $base-color, $engaged-color) {
   border: $border-width solid $base-color;
   transition: all $fast;
 
-  &:hover, 
+  &:hover,
   &:focus {
     border-color: $engaged-color;
   }

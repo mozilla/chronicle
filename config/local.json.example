@@ -40,5 +40,6 @@
   "server_oauth_authEndpoint": "https://oauth-latest.dev.lcip.org/v1/authorization",
   "server_oauth_tokenEndpoint": "https://oauth-latest.dev.lcip.org/v1/token",
   "server_oauth_profileEndpoint": "https://latest.dev.lcip.org/profile/v1/profile",
-  "testUser_enabled": true
+  "testUser_enabled": true,
+  "addon_firefox_url": ""
 }
