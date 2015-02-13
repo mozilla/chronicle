@@ -11,18 +11,108 @@
     <!-- endbuild -->
   </head>
   <body class="l-flex-body">
-    <div id="container" class="row">
-      <div class="row-inner">
-        <h1>Chronicle</h1>
-        <h2>Welcome home</h2>
-        <a href="/auth/login">Sign in</a>
+
+  <div class="notification static toggle">
+    <div class="row-inner">
+      <p>Chronicle is currently in development. <a href="http://mozillachronicle.tumblr.com/">Learn more.</a></p>
+    </div>
+  </div>
+
+    <div id="landing-page-wrapper">
+    <div id="landing-page">
+      <div id="cover" class="section">
+        <div class="l-flex-vertical-centered">
+          <div class="content">
+            <div class="logo"></div>
+            <h1>Chronicle</h1>
+            <p>Find everything you've ever found</p>
+            <button class="skip-intro button button-big button-primary l-centered">Get started</button>
+          </div>
+        </div>
+        <div class="arrow-wrapper"><div class="arrow delayed-scale-in-out"></div></div>
+      </div>
+
+      <div id="feed" class="section">
+        <div class="l-flex-vertical-centered">
+          <div class="content">
+          <h2>You know when you can’t find that  great <span class="content-switch">video</span> you saw online last week?</h2>
+            <div class="feed-example">
+              <div class="search-item"></div>
+              <div class="item-wrapper" data-index="0">
+                <div class="item"></div>
+                <div class="img"></div>
+              </div>
+              <div class="item-wrapper" data-index="1">
+                <div class="item"></div>
+                <div class="img"></div>
+              </div>
+              <div class="item-wrapper" data-index="2">
+                <div class="item"></div>
+                <div class="img"></div>
+              </div>
+              <div class="item-wrapper" data-index="3">
+                <div class="item"></div>
+                <div class="img"></div>
+              </div>
+              <div class="item-wrapper" data-index="4">
+                <div class="item"></div>
+                <div class="img"></div>
+              </div>
+              <div class="item-wrapper" data-index="5">
+                <div class="item"></div>
+                <div class="img"></div>
+              </div>
+              <div class="item-wrapper" data-index="6">
+                <div class="item"></div>
+                <div class="img"></div>
+              </div>
+              <div class="item-wrapper" data-index="7">
+                <div class="item"></div>
+                <div class="img"></div>
+              </div>
+            </div>
+
+            <h2>Chronicle fixes that.</h2>
+            <p>We take all the best stuff you’ve seen online  and organize it into a  beautiful, searchable feed.</p>
+          </div>
+        </div>
+        <div class="arrow-wrapper"><div class="arrow"></div></div>
+      </div>
+
+      <div id="mobile" class="section">
+        <div class="l-flex-vertical-centered">
+          <div class="content">
+            <h2>Chronicle goes where you do.</h2>
+            <div class="chronicle-devices"></div>
+            <p>Sign in to Chronicle on iOS or Android and bring your online life with you wherever you go.</p>
+          </div>
+        </div>
+        <div class="arrow-wrapper"><div class="arrow"></div></div>
+      </div>
+
+      <div id="promise" class="section">
+        <div class="l-flex-vertical-centered">
+          <div class="content">
+            <div class="mozilla-logo"></div>
+            <h2>Chronicle puts you in control</h2>
+            <p>Chronicle is built by Mozilla, the non-profit behind Firefox and the most trusted internet company for privacy. We’ll never share or sell your data because we believe it belongs to you.</p>
+          </div>
+        </div>
+        <div class="arrow-wrapper"><div class="arrow"></div></div>
+      </div>
+
+      <div id="start" class="section">
+        <div class="l-flex-vertical-centered">
+          <div class="content">
+            <div class="logo"></div>
+            <h1>Chronicle</h1>
+            <input class="email" type="text" placeholder="enter your email...">
+            <a href="/auth/login"><button class="skip-intro button button-big button-primary l-centered">Submit</button></a>
+          </div>
+        </div>
       </div>
     </div>
-    <footer id="global-footer" class="row">
-      <div class="row-inner">
-        <p>&copy; 2015 &bull; <a href="http://mozilla.org/" target="_blank">Mozilla</a></p>
-      </div>
-    </footer>
+    </div>
     <!-- build:js scripts/compiled.js -->
     <script data-main="scripts/main" src="bower_components/requirejs/require.js"></script>
     <!-- endbuild -->

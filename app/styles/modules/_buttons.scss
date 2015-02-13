@@ -1,0 +1,44 @@
+.button {
+  @include scale-state-machine();
+  border: 0;
+  border-radius: $default-radius;
+  min-height: $default-grid;
+  min-width: $double-grid;
+  padding: 0 $default-gap;
+}
+
+.button-big {
+  box-shadow: 0 -2px 1px $translucent-black inset;
+  font-size: $large-font-size;
+  max-width: $default-grid * 10;
+  min-height: $double-grid;
+  min-width: $default-grid * 8;
+  text-shadow: 0 2px 1px $translucenter-black;
+}
+
+.button-group {
+  @extend .l-flex;
+
+  .button {
+    @include bg-state-machine($light-grey, false);
+  }
+}
+
+.button-default {
+  @include bg-state-machine($light-grey, false);
+}
+
+.button-warn {
+  @include bg-state-machine($warning, true);  
+}
+
+.button-primary {
+  @include bg-state-machine($primary, true); 
+  border-bottom: 2px solid darken($primary, 10); 
+}
+
+.button-border {
+  border: 2px solid $dark-grey;
+  border-radius: $double-radius;
+  color: $dark-grey;
+}

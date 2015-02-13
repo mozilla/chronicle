@@ -11,10 +11,12 @@
 
   &-padded {
     @extend .row-inner;
+    
     @include respond-to(big) {
       padding-left: $double-gap;
       padding-right: $double-gap;
     }
+
     @include respond-to(small) {
       padding-left: $default-gap;
       padding-right: $default-gap;
@@ -23,6 +25,7 @@
 
   &-break {
     @extend .row-inner;
+
     @include respond-to(big) {
       padding-left: $double-gap;
       padding-right: $double-gap;

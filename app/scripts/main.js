@@ -14,7 +14,8 @@ require.config({
     stache: '../bower_components/requirejs-mustache/stache',
     moment: '../bower_components/moment/moment',
     velocity: '../bower_components/velocity/velocity',
-    velocityui: '../bower_components/velocity/velocity.ui'
+    velocityui: '../bower_components/velocity/velocity.ui',
+    fullpage: '../bower_components/fullpage/jquery.fullPage'
   },
   shim: {
     underscore: {
@@ -26,7 +27,11 @@ require.config({
         'jquery'
       ],
       exports: 'Backbone'
-    }
+    },
+    fullpage: {
+      deps: ['jquery'],
+      exports: '$.fn.fullpage'
+    } 
   }
 });
 

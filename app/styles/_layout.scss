@@ -12,6 +12,10 @@ body {
   flex: 1;
 }
 
+.l-centered {
+  margin: 0 auto;
+}
+
 .l-flex {
   display: flex;
   
@@ -31,5 +35,17 @@ body {
     @extend .l-flex;
     align-items: center;
     justify-content: space-around;
+  }
+
+  &-vertical {
+    @extend .l-flex;
+    flex-direction: column;
+
+    &-centered {
+      @extend .l-flex-vertical;
+      align-items: center;
+      justify-content: center;
+      min-height: 100%;
+    }
   }
 }
