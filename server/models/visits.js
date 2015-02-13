@@ -83,6 +83,7 @@ var visits = {
                 fields: [
                   'extractedTitle',
                   'extractedContent',
+                  'extractedDescription',
                   'extractedProviderDisplay',
                   'extractedProviderName',
                   'extractedAuthorName'
