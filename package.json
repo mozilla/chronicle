@@ -48,10 +48,10 @@
     "grunt-template": "0.2.3",
     "grunt-todo": "0.4.0",
     "grunt-usemin": "3.0.0",
+    "husky": "0.6.2",
     "intern": "2.2.2",
     "jshint-stylish": "1.0.0",
-    "load-grunt-tasks": "3.1.0",
-    "precommit-hook": "1.0.7"
+    "load-grunt-tasks": "3.1.0"
   },
   "engines": {
     "node": ">=0.10.33"
@@ -65,9 +65,11 @@
   },
   "scripts": {
     "authors": "grunt contributors",
+    "clean": "rm -rf ./node_modules app/bower_components public && npm i --silent",
     "lint": "grunt lint",
     "outdated": "npm outdated --depth 0",
     "postinstall": "bower update --config.interactive=false -s",
+    "prepush": "npm run lint",
     "scss-lint": "scss-lint app/styles || true",
     "shrinkwrap": "npm shrinkwrap --dev && npm run validate-shrinkwrap",
     "start": "grunt serve",
