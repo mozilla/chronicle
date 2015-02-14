@@ -89,7 +89,6 @@ var visits = {
                   'extractedUrl',
                   'extractedProviderDisplay',
                   'extractedProviderName',
-                  'extractedProviderUrl',
                   'extractedAuthorName'
                 ]
               }
