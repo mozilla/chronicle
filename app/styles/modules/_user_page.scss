@@ -82,8 +82,15 @@
       }
     }
 
+    /*
+    * tweaked position to give better
+    * alignment w/ favicon
+    */
+
     .title {
       font-size: $default-font-size - 1;
+      position: relative;
+      top: 1px;
     }
   }
 
@@ -92,7 +99,7 @@
     align-items: center;
     background: lighten($body-background, 1);
     margin-top: $default-gap;
-    padding: $default-gap $double-gap;
+    padding: $small-gap $double-gap;
 
     .image,
     .provider .name,
@@ -103,10 +110,15 @@
     .title {
       flex: 1;
       margin: 0;
+      padding-right: $default-gap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
   }
 
   // Fancy sibling selectors to achieve groupings
+  // scss-lint:disable MergeableSelector
 
   // small after another small
   &.small + &.small {
