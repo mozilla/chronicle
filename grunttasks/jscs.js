@@ -6,12 +6,14 @@ module.exports = function (grunt) {
   'use strict';
 
   grunt.config('jscs', {
-    src: [
-      '{,app/**/,grunttasks/**/,server/**/,tests/**/}*.js',
-      '!app/bower_components/**'
-    ],
     options: {
       config: '.jscsrc'
+    },
+    app: {
+      src: [
+        '{,app/**/,bin/**/,grunttasks/**/,server/**/,tests/**/}*.js',
+        '!app/bower_components/**'
+      ]
     }
   });
 };

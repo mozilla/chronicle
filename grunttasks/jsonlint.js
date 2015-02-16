@@ -6,16 +6,10 @@ module.exports = function (grunt) {
   'use strict';
 
   grunt.config('jsonlint', {
-    config: {
-      src: [
-        '.bowerrc',
-        '.jshintrc',
-        '.jscsrc'
-      ]
-    },
     app: {
       src: [
-        '{,app/**/,grunttasks/**/,server/**/,tests/**/}*.json',
+        '{.bowerrc,.jshintrc,.jscsrc}',
+        '{,app/**/,bin/**/,grunttasks/**/,server/**/,tests/**/}*.json',
         'config/*.{json,example}',
         '!app/bower_components/**'
       ]

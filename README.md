@@ -90,13 +90,14 @@ Run the following in separate terminal windows/tabs:
 
 If you just want to test something quickly with a small, known test data set:
 
-1. Run `server/db/create_db.js` to drop and re-create the local Postgres database.
-2. To enable test data, ensure the `testUser.enabled` config option is set in `config/local.json`.
+1. Run `./bin/create_db.sh` to drop and re-create the local Postgres database.
+2. Run `./bin/migrate.js` to apply any Postgres migrations specified in the `server/db/migrations/` directory.
+3. To enable test data, ensure the `testUser.enabled` config option is set in `config/local.json`.
   - You can use the default id and email (defined in `server/config.js`), or set them yourself.
     You can set the values via env vars or config values.
     See `server/config.js` for the defaults and which config values or env vars to use.
-3. Run `server/db/create_test_data.js` to create a dummy user and a few dummy visits.
-  - The number of records to create is configurable; invoke it with `--help` for details.
+4. Run `./bin/create_test_data.js` to create a dummy user and a few dummy visits.
+  - The created dummy visits which will be created can be found in the `config/test-urls.js` file.
 
 ## Learn More
 * Tumblr: http://mozillachronicle.tumblr.com/
