@@ -27,8 +27,7 @@
     "underscore": "1.7.0",
     "underscore.string": "3.0.3",
     "url2png": "6.0.2",
-    "uuid": "2.0.1",
-    "wreck": "5.2.0"
+    "uuid": "2.0.1"
   },
   "devDependencies": {
     "grunt-autoprefixer": "2.2.0",
