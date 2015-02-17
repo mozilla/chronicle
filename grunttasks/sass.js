@@ -5,10 +5,12 @@
 module.exports = function (grunt) {
   'use strict';
 
+  var config = require('../server/config');
+
   grunt.config('sass', {
     options: {
       imagePath: '/images',
-      outputStyle: 'compressed',
+      outputStyle: config.get('sass_outputStyle'),
       precision: 3,
       sourceMap: true
     },

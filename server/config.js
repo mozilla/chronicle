@@ -308,6 +308,11 @@ var conf = convict({
     default: true,
     format: Boolean
   },
+  sass_outputStyle: {
+    doc: 'Sass output style for generated CSS',
+    format: ['nested', 'compressed'],
+    default: 'compressed'
+  },
   addon_firefox_url: {
     doc: 'Firefox Add-on URL',
     format: String,
