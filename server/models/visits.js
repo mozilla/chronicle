@@ -81,9 +81,12 @@ var visits = {
                 fuzziness: 'AUTO',
                 operator: 'and',
                 fields: [
+                  'title',
                   'extractedTitle',
                   'extractedContent',
+                  'extractedLead',
                   'extractedDescription',
+                  'extractedUrl',
                   'extractedProviderDisplay',
                   'extractedProviderName',
                   'extractedAuthorName'
