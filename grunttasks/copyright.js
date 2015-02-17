@@ -6,12 +6,12 @@ module.exports = function (grunt) {
   'use strict';
 
   grunt.config('copyright', {
+    options: {
+      pattern: /This Source Code Form is subject to the terms of the Mozilla Public/
+    },
     app: {
-      options: {
-        pattern: /This Source Code Form is subject to the terms of the Mozilla Public/
-      },
       src: [
-        '{,app/**/,grunttasks/**/,server/**/,tests/**/}*.js',
+        '{,app/**/,bin/**/,grunttasks/**/,server/**/,tests/**/}*.js',
         '!app/bower_components/**'
       ]
     }

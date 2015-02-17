@@ -8,15 +8,19 @@
 // TODO add 'next' and 'prev' convenience methods?
 // TODO bring back commander, I guess
 
+'use strict';
+
 var fs = require('fs');
+var path = require('path');
 var log = require('../server/logger')('bin.migrate');
-var migrator = require('../server/db/migrator.js');
+var migrator = require('../server/db/migrator');
 var targetLevel = parseInt(process.argv[2], 10);
+var files;
 
 // if no args were passed, or if the arg wasn't an integer,
 // then, by default, use the highest defined patch level
 if (isNaN(targetLevel)) {
-  files = fs.readdirSync(__dirname + '/../server/db/migrations');
+  files = fs.readdirSync(path.join(__dirname , '..', 'server', 'db', 'migrations'));
   var max = 0;
   files.forEach(function(file) {
     // assume files are of the conventional form 'patch-n-m.sql'
@@ -27,6 +31,7 @@ if (isNaN(targetLevel)) {
   });
   targetLevel = max;
 }
+
 migrator(targetLevel)
   .done(function onSuccess(resp) {
     log.info('migration succeeded');
