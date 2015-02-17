@@ -35,7 +35,7 @@ define([
       } else if (diff === -1) {
         formattedDate = 'Yesterday';
       } else {
-        formattedDate = this.date.format('MMMM do');
+        formattedDate = this.date.format('MMMM Do');
       }
 
       return formattedDate;
