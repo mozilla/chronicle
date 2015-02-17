@@ -14,6 +14,8 @@ var user = require('../server/models/user');
 var visitsController = require('../server/controllers/visits');
 var testUrls = require('../config/test-urls');
 
+var HOURS_IN_MS = 1000 * 60 * 60;
+
 if (!config.get('testUser_enabled')) {
   throw new Error('To create test data, you must set testUser.enabled in the config.');
 }
@@ -33,7 +35,7 @@ function createTestUser(cb) {
 function createTestData(cb) {
   var userId = config.get('testUser_id');
   // we'll use this date as a starting point for generating records. Each successive
-  // record will be a number of seconds in the future.
+  // record will be a number of hours in the future.
   var historyDate = new Date('2015-01-01T21:26:23.795Z');
 
   function generateTestRequest(item, n) {
@@ -44,7 +46,7 @@ function createTestData(cb) {
       payload: {
         url: item.url,
         title: item.title,
-        visitedAt: new Date(historyDate.getTime() + (1000 * 60 * n)).toJSON()
+        visitedAt: new Date(historyDate.getTime() + (5 * HOURS_IN_MS * n)).toJSON()
       }
     };
   }
