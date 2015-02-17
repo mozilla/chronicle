@@ -23,8 +23,8 @@
     a {
       display: block;
       float: left;
-      height: $default-grid;
-      width: $default-grid;
+      height: $default-grid - $small-gap;
+      width: $default-grid - $small-gap;
     }
   }
 
@@ -44,4 +44,3 @@
     }
   }
 }
-

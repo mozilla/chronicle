@@ -99,7 +99,7 @@ $container-max-width: 440px;
       width: $double-grid;
 
       @include respond-to(small) {
-        transform: scale(.8);
+        transform: scale(0.8);
       }
     }
   }
@@ -119,8 +119,8 @@ $container-max-width: 440px;
       margin: $default-gap $default-gap $double-gap;
 
       @include respond-to(small) {
-         flex: 0 0 260px;
-         margin: $small-gap;
+        flex: 0 0 260px;
+        margin: $small-gap;
       }
     }
 
@@ -229,7 +229,7 @@ $container-max-width: 440px;
 *   removed vendor prefixes
 *   alphabetized rulesets
 *   wrapped all Sass in .home to prevent collisions
-*   removed classes assigned directly to body/HTML
+*   removed classes assigned directly to body/html
 */
 
 // scss-lint:disable all

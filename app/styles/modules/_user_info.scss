@@ -1,10 +1,10 @@
 #user-info {
+  flex: 0 0 $default-grid + $half-grid;
+  height: $default-grid + $half-grid;
+
   @include respond-to(small) {
     margin-right: $default-gap;
   }
-  
-  flex: 0 0 $default-grid + $half-grid;
-  height: $default-grid + $half-grid;
 
   .trigger {
     border-radius: $double-radius;
