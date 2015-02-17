@@ -110,8 +110,8 @@
     .title {
       flex: 1;
       margin: 0;
-      padding-right: $default-gap;
       overflow: hidden;
+      padding-right: $default-gap;
       text-overflow: ellipsis;
       white-space: nowrap;
     }

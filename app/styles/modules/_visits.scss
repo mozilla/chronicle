@@ -1,0 +1,30 @@
+.visits {
+
+  &:before {
+    background: $baby-grey;
+    content: '';
+    height: 100%;
+    margin: ($quad-gap * -1) 0 0 ($default-gap * 2.8);
+    overflow: hidden;
+    position: absolute;
+    width: 1px;
+    z-index: -1;
+  }
+
+  .visit-date-divider {
+    background: $date-gradient;
+    border-radius: $double-gap;
+    box-shadow: 0 1px 1px $translucent-black inset;
+    color: $white;
+    display: inline-block;
+    font-size: $small-font-size;
+    font-weight: 200;
+    margin: $default-grid 0 $small-gap;
+    padding: $small-gap $double-gap ($small-gap - 2);
+    text-transform: uppercase;
+
+    & + .user-page {
+      margin-top: $default-gap;
+    }
+  }
+}
