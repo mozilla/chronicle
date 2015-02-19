@@ -10,6 +10,8 @@ module.exports = [{
   method: 'GET',
   path: '/ver.json',
   config: {
-    handler: verJsonController.get
+    handler: verJsonController.get,
+    description: 'Displays the Git SHAs for the deployed server.',
+    tags: ['ops']
   }
 }];

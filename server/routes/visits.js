@@ -21,7 +21,9 @@ var visitsRoutes = [{
         count: Joi.number().integer().min(1).max(100).default(25),
         visitId: Joi.string().guid()
       }
-    }
+    },
+    description: 'Get <code>count</code> visits from the database, starting at <code>visitId</code>.',
+    tags: ['visits']
   }
 }, {
   method: 'POST',
@@ -37,7 +39,8 @@ var visitsRoutes = [{
         // client can optionally provide uuid
         visitId: Joi.string().guid()
       }
-    }
+    },
+    tags: ['visits']
   }
 }];
 

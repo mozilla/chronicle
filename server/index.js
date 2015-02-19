@@ -7,6 +7,7 @@
 var Hapi = require('hapi');
 var HapiAuthCookie = require('hapi-auth-cookie');
 var Bell = require('bell');
+var Lout = require('lout');
 var pg = require('pg');
 
 var config = require('./config');
@@ -37,7 +38,8 @@ server.connection({
 
 server.register([
   HapiAuthCookie,
-  Bell
+  Bell,
+  Lout
 ], function (err) {
   if (err) {
     log.warn('failed to load plugin: ' + err);

@@ -87,6 +87,8 @@ module.exports = [{
       }, function (err) {
         reply(err.message).code(503);
       });
-    }
+    },
+    description: 'An endpoint for the OPs team to test server health.',
+    tags: ['ops']
   }
 }];

@@ -19,7 +19,8 @@ var authRoutes = [{
       'hapi-auth-cookie': {
         redirectTo: false // don't redirect users who don't have a session
       }
-    }
+    },
+    tags: ['auth']
   }
 }, {
   method: 'GET',
@@ -29,7 +30,8 @@ var authRoutes = [{
     auth: {
       strategy: 'session',
       mode: 'try'
-    }
+    },
+    tags: ['auth']
   }
 }, {
   // Bell uses the same endpoint for both the start and redirect
@@ -43,6 +45,7 @@ var authRoutes = [{
       strategy: 'oauth',
       mode: 'try'
     },
+    tags: ['auth']
   }
 }];
 

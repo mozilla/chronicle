@@ -21,7 +21,8 @@ var searchRoutes = [{
         q: Joi.string().required(),
         count: Joi.number().integer().min(1).max(100).default(25)
       }
-    }
+    },
+    tags: ['search']
   }
 }];
 
