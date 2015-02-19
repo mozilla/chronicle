@@ -19,7 +19,9 @@ var visitRoutes = [{
       params: {
         visitId: Joi.string().guid().required()
       }
-    }
+    },
+    description: 'Get a specific visit, by <code>visitId</code>.',
+    tags: ['visit']
   }
 }, {
   method: 'PUT',
@@ -37,7 +39,9 @@ var visitRoutes = [{
       params: {
         visitId: Joi.string().guid().required()
       }
-    }
+    },
+    description: 'Create a specific visit and set the specified <code>url</code>, <code>title</code>, <code>visitedAt</code> fields.',
+    tags: ['visit']
   }
 }, {
   method: 'DELETE',
@@ -49,7 +53,9 @@ var visitRoutes = [{
       params: {
         visitId: Joi.string().guid().required()
       }
-    }
+    },
+    description: 'Delete a specific visit, by <code>visitId</code>.',
+    tags: ['visit']
   }
 }];
 

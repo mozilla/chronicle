@@ -24,15 +24,21 @@ var baseRoutes = [{
         redirectTo: false // don't redirect users who don't have a session
       }
     },
+    description: 'Serves the welcome page or home page.',
+    tags: ['home']
   }
 }, {
   method: 'GET',
   path: '/{param*}',
-  handler: {
-    directory: {
-      path: STATIC_PATH,
-      listing: config.get('server_staticDirListing')
-    }
+  config: {
+    handler: {
+      directory: {
+        path: STATIC_PATH,
+        listing: config.get('server_staticDirListing')
+      }
+    },
+    description: 'A catch-all route for serving static files.',
+    tags: ['static']
   }
 }];
 

@@ -14,7 +14,8 @@ var profileRoutes = [{
   path: '/v1/profile',
   config: {
     handler: profileController.get,
-    auth: 'session'
+    auth: 'session',
+    tags: ['profile']
   }
 }];
 
