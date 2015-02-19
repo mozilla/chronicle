@@ -5,10 +5,15 @@
 module.exports = function (grunt) {
   'use strict';
 
-  grunt.registerTask('lint', [
+  var SUBTASKS = [
     'jshint',
     'jscs',
     'jsonlint',
     'copyright'
-  ]);
+  ];
+
+  grunt.registerTask('lint', SUBTASKS);
+  grunt.registerTask('quicklint', SUBTASKS.map(function (task) {
+    return 'newer:' + task;
+  }));
 };
