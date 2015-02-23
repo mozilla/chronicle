@@ -6,18 +6,11 @@
 
 var Boom = require('boom');
 
-var config = require('../config');
 var log = require('../logger')('server.controllers.search');
-var url2png = require('url2png')(config.get('url2png_apiKey'), config.get('url2png_secretKey'));
-var visits = require('../models/visits');
 
-function addScreenshots(items) {
-  // XXX this uses different keys than the visit and visits transforms
-  items.forEach(function(item) {
-    item._source.screenshot_url = url2png.buildURL(item._source.url, {viewport: '1024x683', thumbnail_max_width: 540});
-  });
-  return items;
-}
+// hmm, should this just be a method on the visits controller?
+var visits = require('../models/visits');
+var searchView = require('../views/search');
 
 var searchController = {
   get: function (request, reply) {
@@ -25,14 +18,15 @@ var searchController = {
     var searchTerm = request.query.q;
     var maxResults = request.query.count;
     visits.search(userId, searchTerm, maxResults, function (err, results) {
+      var output;
       if (err) {
         log.warn(err);
         return reply(Boom.create(500));
       }
       if (results && results.results) {
-        addScreenshots(results.results.hits);
+        output = searchView.render(results);
       }
-      reply(results);
+      reply(output || results);
     });
   }
 };

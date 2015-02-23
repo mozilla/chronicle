@@ -17,13 +17,6 @@ var logFactory = require('./logger');
 var log = logFactory('server.services.embedly');
 var npmLog = logFactory('server.services.embedly.vendor');
 
-// returns hex number without the prepended '#'
-// accepts an array with [r, g, b] in specified order
-var _rgbToHex = function(color) {
-  /*jshint bitwise: false */
-  return ((1 << 24) + (color[0] << 16) + (color[1] << 8) + color[2]).toString(16).slice(1);
-};
-
 module.exports = {
   extract: function extract(url, cb) {
     log.debug('embedly.extract called');
@@ -39,25 +32,13 @@ module.exports = {
     new Embedly({key: apiKey, logger: npmLog}, function(err, api) {
       if (err) { return cb(err); }
       api.extract({url:url}, function(err, data) {
-        var r, g, b;
         log.verbose('embedly.extract callback for url ' + url + ' returned data ' + JSON.stringify(data));
         if (err) { return cb(err); }
         var d = data && data[0];
         if (!d) { return cb(new Error('embedly response was empty for url ' + url)); }
+        if (d.type === 'error') { return cb(new Error('embedly response was of type error for url ' + url)); }
 
-        // for right now, let's just return the keys we want in user_pages
-        var out = {};
-
-        // these keys are top-level and match the format in the database
-        var easyKeys = [
-          'cache_age', 'content', 'description', 'favicon_url', 'language', 'lead',
-          'provider_display', 'provider_name', 'provider_url', 'safe', 'title', 'type', 'url'
-        ];
-        easyKeys.forEach(function(item) {
-          if (item in d) {
-            out[camelize('extracted_' + item)] = d[item];
-          }
-        });
+        // by default, we are now going to keep everything in the format embedly sends us, except:
 
         // publication date handling:
         //
@@ -70,50 +51,13 @@ module.exports = {
         // we transform these keys to store ISO dates, not millis, in our database.
         var publicationDateMillis = (d.offset || 0) + (d.published || 0);
         if (publicationDateMillis) {
-          out.extractedPublished = new Date(publicationDateMillis).toJSON();
+          d.published = new Date(publicationDateMillis).toJSON();
+          delete d.offset;
         }
 
         // not in the response, but we want extracted_at to be the current time
-        out.extractedAt = new Date().toJSON();
-
-        if (d.authors && d.authors.length) {
-          out.extractedAuthorName = d.authors[0].name;
-          out.extractedAuthorUrl = d.authors[0].url;
-        }
-
-        if (d.embeds && d.embeds.length) {
-          out.extractedEmbedHtml = d.embed.html;
-          out.extractedEmbedWidth = d.embed.width;
-          out.extractedEmbedHeight = d.embed.height;
-        }
-
-        if (d.favicon_colors && d.favicon_colors.length) {
-          // this is an array of r,g,b values, eg [181, 187, 194]
-          // convert it to a hex color
-          out.extractedFaviconColor = _rgbToHex(d.favicon_colors[0].color);
-        }
-
-        if (d.images && d.images.length) {
-          out.extractedImageUrl = d.images[0].url;
-          out.extractedImageWidth = d.images[0].width;
-          out.extractedImageHeight = d.images[0].height;
-          out.extractedImageEntropy = d.images[0].entropy;
-          out.extractedImageCaption = d.images[0].caption;
-          // another array of rgb values
-          if (d.images.colors) {
-            out.extractedImageColor = _rgbToHex(d.images[0].colors[0].color);
-          }
-        }
-
-        if (d.media && d.media.type) {
-          out.extractedMediaType = d.media.type;
-          out.extractedMediaHtml = d.media.html;
-          out.extractedMediaHeight = d.media.height;
-          out.extractedMediaWidth = d.media.width;
-          out.extractedMediaDuration = d.media.duration;
-        }
-
-        return cb(err, out);
+        d.extracted_at = new Date().toJSON();
+        return cb(err, d);
       });
     });
   }

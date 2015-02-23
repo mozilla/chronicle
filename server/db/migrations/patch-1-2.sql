@@ -14,35 +14,7 @@ CREATE TABLE IF NOT EXISTS user_pages (
   raw_url VARCHAR(2048) NOT NULL,
   url_hash CHAR(40) NOT NULL,
   title TEXT NOT NULL,
-  extracted_at TIMESTAMPTZ(3),
-  extracted_author_name TEXT,
-  extracted_author_url VARCHAR(2048),
-  extracted_cache_age BIGINT,
-  extracted_content TEXT,
-  extracted_description TEXT,
-  extracted_favicon_color TEXT,
-  extracted_favicon_url VARCHAR(2048),
-  extracted_image_caption TEXT,
-  extracted_image_color TEXT,
-  extracted_image_entropy DOUBLE PRECISION,
-  extracted_image_height INTEGER,
-  extracted_image_url VARCHAR(2048),
-  extracted_image_width INTEGER,
-  extracted_language TEXT,
-  extracted_lead TEXT,
-  extracted_media_duration INTEGER,
-  extracted_media_height INTEGER,
-  extracted_media_html TEXT,
-  extracted_media_type TEXT,
-  extracted_media_width INTEGER,
-  extracted_provider_display TEXT,
-  extracted_provider_name TEXT,
-  extracted_provider_url VARCHAR(2048),
-  extracted_published TIMESTAMPTZ(3),
-  extracted_safe BOOLEAN,
-  extracted_title TEXT,
-  extracted_type TEXT,
-  extracted_url VARCHAR(2048),
+  extracted_data JSON,
   created_at TIMESTAMPTZ(3) NOT NULL,
   updated_at TIMESTAMPTZ(3) NOT NULL
 );
@@ -64,3 +36,5 @@ CREATE UNIQUE INDEX visits_user_id_visited_at_id
 -- used to check if a user_page should be deleted on visit delete
 CREATE UNIQUE INDEX visits_user_id_user_page_id_id
   ON visits (user_id, user_page_id, id);
+-- used for batch reindexing based on creation time
+CREATE INDEX user_pages_created_at ON user_pages (created_at);

@@ -9,16 +9,19 @@
 'use strict';
 
 var config = require('../server/config');
+
+// doing this above the other requires to avoid starting the queue unnecessarily
+// TODO properly shut down the queue so we don't have to do dumb stuff like this
+if (!config.get('testUser_enabled')) {
+  throw new Error('To create test data, you must set testUser.enabled in the config.');
+}
+
 var log = require('../server/logger')('bin.createTestData');
 var user = require('../server/models/user');
 var visitsController = require('../server/controllers/visits');
 var testUrls = require('../config/test-urls');
 
 var HOURS_IN_MS = 1000 * 60 * 60;
-
-if (!config.get('testUser_enabled')) {
-  throw new Error('To create test data, you must set testUser.enabled in the config.');
-}
 
 function createTestUser(cb) {
   var fakeUser = {

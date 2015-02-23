@@ -70,7 +70,7 @@ var visits = {
     _verbose(name + ' invoked', userId, count);
     var esQuery = {
       index: 'chronicle',
-      type: 'userPages',
+      type: 'user_pages',
       size: count,
       body: {
         query: {
@@ -82,20 +82,21 @@ var visits = {
                 operator: 'and',
                 fields: [
                   'title',
-                  'extractedTitle',
-                  'extractedContent',
-                  'extractedLead',
-                  'extractedDescription',
-                  'extractedUrl',
-                  'extractedProviderDisplay',
-                  'extractedProviderName',
-                  'extractedAuthorName'
+                  'extracted_data.title',
+                  'extracted_data.content',
+                  'extracted_data.lead',
+                  'extracted_data.description',
+                  'extracted_data.url',
+                  'extracted_data.provider_display',
+                  'extracted_data.provider_name',
+                  // TODO: use nested objects if we need more structured searches
+                  'extracted_data.authors.name'
                 ]
               }
             }
           }
         },
-        filter: { term: { userId: userId } }
+        filter: { term: { user_id: userId } }
       }
     };
     log.verbose('searching elasticsearch for the search term ' + searchTerm);

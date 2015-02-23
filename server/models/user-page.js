@@ -36,6 +36,7 @@ var userPage = {
     // fire 'userPage::updated' or 'userPage::updateError' events
     var name = 'models.user-page.update';
     _verbose(name + ' called', userId, url);
+    var noCamel = true; // do not camelize the results
     var currentTime = new Date().toJSON();
     var lazyCreateParams = [uuid.v4(), userId, url, urlHash, title, currentTime];
     var lazyCreateUserPageQuery = 'WITH new_page AS (  ' +
@@ -45,31 +46,11 @@ var userPage = {
       '  RETURNING id ' +
       ') SELECT id FROM new_page ' +
       'UNION SELECT id FROM user_pages WHERE user_id = $2 AND url_hash = $4';
-    var addExtractedDataQuery = 'UPDATE user_pages SET ( ' +
-    'extracted_at, extracted_author_name, extracted_author_url, extracted_cache_age, ' +
-    'extracted_content, extracted_description, extracted_favicon_color, extracted_favicon_url, ' +
-    'extracted_image_caption, extracted_image_color, extracted_image_entropy, ' +
-    'extracted_image_height, extracted_image_url, extracted_image_width, extracted_language, ' +
-    'extracted_lead, extracted_media_duration, extracted_media_height, extracted_media_html, ' +
-    'extracted_media_type, extracted_media_width, extracted_provider_display, ' +
-    'extracted_provider_name, extracted_provider_url, extracted_published, extracted_safe, ' +
-    'extracted_title, extracted_type, extracted_url, updated_at) ' +
-    ' = ' +
-    '($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, ' +
-    '$19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30) ' +
-    'WHERE user_id = $31 AND id = $32 ' +
+    var addExtractedDataQuery = 'UPDATE user_pages ' +
+    'SET (extracted_data, updated_at) = ($1, $2) ' +
+    'WHERE user_id = $3 and id = $4 ' +
     'RETURNING *';
-    var addDataParams = [data.extractedAt, data.extractedAuthorName, data.extractedAuthorUrl, 
-      data.extractedCacheAge, data.extractedContent, data.extractedDescription,
-      data.extractedFaviconColor, data.extractedFaviconUrl, data.extractedImageCaption, 
-      data.extractedImageColor, data.extractedImageEntropy, data.extractedImageHeight, 
-      data.extractedImageUrl, data.extractedImageWidth, data.extractedLanguage, data.extractedLead,
-      data.extractedMediaDuration, data.extractedMediaHeight, data.extractedMediaHtml,
-      data.extractedMediaType, data.extractedMediaWidth,
-      data.extractedProviderDisplay, data.extractedProviderName, data.extractedProviderUrl,
-      data.extractedPublished, data.extractedSafe, data.extractedTitle, data.extractedType,
-      data.extractedUrl, currentTime, userId];
-
+    var addDataParams = [data, currentTime, userId];
     _verbose('about to issue lazy user page creation query');
     var userPageId;
     postgres.query(lazyCreateUserPageQuery, lazyCreateParams)
@@ -79,21 +60,16 @@ var userPage = {
         _verbose('the userPageId is ' + result.id);
         userPageId = result.id;
         addDataParams.push(result.id);
-        return postgres.query(addExtractedDataQuery, addDataParams);
+        return postgres.query(addExtractedDataQuery, addDataParams, noCamel);
       })
-      .then(function() {
-        // update ES with _everything_ for now
-        data.userId = userId;
-        data.url = url;
-        data.title = title;
-        data.urlHash = urlHash;
+      .then(function(completeResult) {
+        // make the ES record mirror the PG record, for simplicity's sake
         var esQuery = {
           index: 'chronicle',
-          type: 'userPages',
+          type: 'user_pages',
           id: userPageId,
-          body: data
+          body: completeResult
         };
-
         _verbose('the elasticsearch query is ' + JSON.stringify(esQuery));
         return elasticsearch.query('index', esQuery);
       })
@@ -114,7 +90,7 @@ var userPage = {
     var name = 'models.user-page.hasMetadata';
     _verbose(name + ' called', userId, urlHash);
     var query = 'SELECT exists(SELECT 1 FROM user_pages WHERE ' +
-                'user_id = $1 AND url_hash = $2 AND extracted_url IS NOT NULL)';
+                'user_id = $1 AND url_hash = $2 AND extracted_data IS NOT NULL)';
     postgres.query(query, [userId, urlHash])
       .done(function(result) {
         userPage._onFulfilled(name + ' succeeded', cb, result.exists);

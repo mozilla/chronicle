@@ -25,6 +25,8 @@ var visit = {
     log.warn(msg);
     callback(err);
   },
+  // this just got uglier due to the possibility of non-camelized results.
+  // TODO make this function unnecessary by altering the schema or queries.. too tricky.
   _transform: function _transform(results) {
     // do a little transformin' and this might barf, so do it before `done`
 
@@ -35,14 +37,7 @@ var visit = {
     results.id = results.visitId;
     delete results.visitId;
 
-    // keep visit properties top level, move all other page properties under a userPage key
-    var newResult = {};
-    ['id', 'url', 'title', 'visitedAt'].forEach(function(item) {
-      newResult[item] = results[item];
-      delete results[item];
-    });
-    newResult.userPage = results;
-    return newResult;
+    return results;
   },
   // 1. find a complex way to combine both queries on the DB side
   // 2. (simpler) perform two simple queries and roll them together here
@@ -85,31 +80,32 @@ var visit = {
     var createVisitQuery = 'INSERT INTO visits ' +
       '(id, user_id, user_page_id, visited_at, updated_at) ' +
       'VALUES ($1, $2, $3, $4, $4)';
+    var noCamel = true; // don't camelize returned results; keeps ES just like PG
     var userPageId;
 
-    // try to insert into pg; handle pg errors; insert into es; then we're done.
-    // don't pass results to fulfillment callback, because they aren't used by the caller.
-    postgres.query(lazyCreateUserPageQuery, lazyCreateParams)
+    // 1. either fetch the userPageId, or create the page and return the id
+    // 2. create the visit
+    // 3. fetch the userPage from postgres and insert into elasticsearch
+    //    - this could probably be optimized to make 1 fewer postgres queries,
+    //      but this code is already embarrassingly overoptimized
+    postgres.query(lazyCreateUserPageQuery, lazyCreateParams, noCamel)
       .fail(visit._onRejected.bind(visit, name + ' failed', cb))
       .then(function(results) {
         userPageId = results && results.id;
         var visitParams = [visitId, userId, userPageId, visitedAt];
-        return postgres.query(createVisitQuery, visitParams);
+        return postgres.query(createVisitQuery, visitParams, noCamel);
       })
       .fail(visit._onRejected.bind(visit, name + ' postgres insert failed', cb))
       .then(function() {
+        return postgres.query('SELECT * FROM user_pages WHERE id = $1', [userPageId], noCamel);
+      })
+      .then(function(result) {
         var esQuery = {
           index: 'chronicle',
-          type: 'userPages',
+          type: 'user_pages',
           id: userPageId,
-          body: {
-            userId: userId,
-            id: userPageId,
-            url: url,
-            urlHash: urlHash,
-            title: title,
-            visitedAt: visitedAt
-          }
+          // NOTE: we are inserting the PG record directly, for simplicity's sake.
+          body: result
         };
         // if the scraper elasticsearch task happens first, this one will abort, to avoid
         // overwriting all the scraped data with nothing
@@ -149,7 +145,7 @@ var visit = {
           // TODO I really dislike nesting promises like this. We should split this user_page cleanup
           // out into a separate method.
           postgres.query(deleteQuery, [userId, userPageId])
-            .then(elasticsearch.query('delete', {index: 'chronicle', type: 'userPages', id: userPageId}))
+            .then(elasticsearch.query('delete', {index: 'chronicle', type: 'user_pages', id: userPageId}))
             .done(visit._onFulfilled.bind(visit, name + ' succeeded', cb, null),
                   visit._onRejected.bind(visit, name + ' failed', cb));
         }
