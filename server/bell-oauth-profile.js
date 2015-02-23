@@ -8,6 +8,7 @@ var log = require('./logger')('server.bell.profile');
 var user = require('./models/user');
 var config = require('./config');
 var queue = require('./work-queue/queue');
+var allowedUsers = config.get('alpha_allowedUsers');
 
 // this is the custom provider profile function used by Bell to allow us
 // to convert oauth tokens into profile information.
@@ -19,6 +20,15 @@ function profile (credentials, params, get, profileCb) {
   get(config.get('server_oauth_profileEndpoint'), headers, function(data) {
     // Bell returns the parsed data and handles errors internally
     log.verbose('exchanged tokens for profile data:' + JSON.stringify(data));
+
+    // XXX temporary while we're in alpha: only allow whitelisted users, but let
+    // the controller handle the error; Bell seems to lock us into 500ing.
+    if (allowedUsers.indexOf(data.email) === -1) {
+      log.warn('Non-whitelisted user attempted to log in: ' + data.email);
+      credentials.profile = {email: data.email, userId: null, isAllowed: false};
+      return profileCb(credentials);
+    }
+
     // TODO use Joi to validate `data` before sending to DB
     user.get(data.uid, function (err, result) {
       if (err) {
@@ -34,7 +44,7 @@ function profile (credentials, params, get, profileCb) {
           }
           // finally, set the cookie and redirect.
           log.verbose('logged in existing user ' + data.email);
-          credentials.profile = {userId: data.uid};
+          credentials.profile = {userId: data.uid, isAllowed: true};
           return profileCb(credentials);
         });
       } else {
@@ -45,7 +55,7 @@ function profile (credentials, params, get, profileCb) {
             throw err;
           }
           log.verbose('created new user ' + data.email);
-          credentials.profile = {userId: data.uid, isNewUser: true};
+          credentials.profile = {userId: data.uid, isNewUser: true, isAllowed: true};
           // FIX: This doesn't appear to be here. Disabling for now.
           //queue.sendWelcomeEmail({email: data.email});
           return profileCb(credentials);
