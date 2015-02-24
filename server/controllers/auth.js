@@ -4,6 +4,7 @@
 
 'use strict';
 
+var Boom = require('boom');
 var log = require('../logger')('server.controllers.auth');
 var config = require('../config');
 
@@ -35,6 +36,14 @@ var authController = {
     // Now, use it to set a cookie.
     log.verbose('inside auth/complete');
     log.verbose('request.auth.credentials is ' + JSON.stringify(request.auth.credentials));
+
+    // XXX temporary while we're in alpha: only allow whitelisted users, show
+    // a friendly error message if they're not on the list.
+    // TODO: on the front-end, auto-populate their email in a "want us to email you when
+    // we are adding new users?" form
+    if (!request.auth.credentials.profile.isAllowed) {
+      return reply(Boom.create(401, 'Sorry, only whitelisted users are allowed at this time.'));
+    }
 
     var session = {
       userId: request.auth.credentials.profile.userId

@@ -9,6 +9,12 @@ var path = require('path');
 
 var convict = require('convict');
 
+// XXX Ops has asked us to flatten a JSON config. Underscores denote nesting,
+//     so please use them to denote config namespaces. Do not use underscores
+//     to separate keys within a config; use lowerCamelCase. This seems silly,
+//     and it is, but we can at least be *consistently* silly.
+//     Example: testUser_email, testUser_id: these used to be testUser: { id, email }.
+//     Example: db_elasticsearch_queryTimeout. Same deal.
 var conf = convict({
   env: {
     doc: 'Application environment.',
@@ -318,6 +324,12 @@ var conf = convict({
     format: String,
     default: 'http://your-add-on-url-goes-here/',
     env: 'ADDON_FIREFOX_URL'
+  },
+  // alpha_ namespace denotes stuff to change / remove after we graduate from private alpha
+  alpha_allowedUsers: {
+    doc: 'List of emails allowed to log in. No regexes, just straight-up string comparison.',
+    format: Array,
+    default: []
   }
 });
 
