@@ -26,6 +26,7 @@ var postgres = {
   // postgres is case-insensitive, so we store keys as underscored there,
   // and transform back to camelCase when returning results here.
   // individual queries must be sure to use the underscored versions.
+  // TODO replace with utils.camelize
   camelize: function(rows) {
     var outputRows = [];
     var output;
@@ -34,6 +35,12 @@ var postgres = {
       Object.keys(row).forEach(function(k) {
         output[camelize(k)] = row[k];
       });
+      // special case: json extracted_data blob
+      if (row.extracted_data) {
+        Object.keys(row.extracted_data).forEach(function(key) {
+          output.extractedData[camelize(key)] = row.extracted_data[key];
+        });
+      }
       outputRows.push(output);
     });
     return outputRows;
@@ -42,7 +49,9 @@ var postgres = {
   //
   // query := a prepared query string
   // params := an array of the query params in correct order
-  query: function query(queryString, params) {
+  // noCamel := optional argument; if true, records are returned without being camelized,
+  //            necessary when inserting PG results into elasticsearch
+  query: function query(queryString, params, noCamel) {
     var _defer = Q.defer();
     var formatted;
     // force promises to eventually resolve
@@ -60,9 +69,9 @@ var postgres = {
           return _defer.reject(err);
         }
         done();
-        // transform the underscored keys to camelcased before returning.
+        // transform the underscored keys to camelcased before returning, unless we explicitly say no
         if (results && results.rows.length) {
-          formatted = postgres.camelize(results.rows);
+          formatted = noCamel ? results.rows : postgres.camelize(results.rows);
         }
         // if it's a single thing, just return the single thing.
         if (formatted && formatted.length === 1) {

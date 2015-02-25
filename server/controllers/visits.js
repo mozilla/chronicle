@@ -11,19 +11,8 @@ var uuid = require('uuid');
 var config = require('../config');
 var log = require('../logger')('server.controllers.visits');
 var queue = require('../work-queue/queue');
-var url2png = require('url2png')(config.get('url2png_apiKey'), config.get('url2png_secretKey'));
 var visits = require('../models/visits');
-
-// TODO: normalize URLs
-
-function addScreenshots(items) {
-  // TODO this is the seed of a view or view helper, believe it or not
-  if (!items || !items.length) { return items; }
-  items.forEach(function(item) {
-    item.screenshot_url = url2png.buildURL(item.url, {viewport: '1024x683', thumbnail_max_width: 540});
-  });
-  return items;
-}
+var visitsView = require('../views/visits');
 
 var visitsController = {
   get: function (request, reply) {
@@ -39,7 +28,7 @@ var visitsController = {
         return reply(Boom.create(404)); // not found
       }
       // for each visit in results, add the screenshot url
-      reply(addScreenshots(results));
+      reply(visitsView.render(results));
     }
 
     // if there's a visitId provided, then we want a specific page
@@ -73,13 +62,13 @@ var visitsController = {
     } else {
       log.info('not extracting page because embedly is disabled');
     }
-    reply({
+    reply(visitsView.render({
       id: visitId,
       url: p.url,
       urlHash: urlHash,
       title: p.title,
       visitedAt: p.visitedAt
-    });
+    }));
   }
 };
 

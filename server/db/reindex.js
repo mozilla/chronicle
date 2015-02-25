@@ -52,7 +52,7 @@ var job = function(params) {
     results.forEach(function(result) {
       // bulk API is a little funny, two parts:
       // 1. action description
-      esParams.push({ index: { _index: 'chronicle', _type: 'userPages', _id: result.id } });
+      esParams.push({ index: { _index: 'chronicle', _type: 'user_pages', _id: result.id } });
       // 2. document to index
       esParams.push(result);
     });
@@ -126,11 +126,11 @@ function start(cb) {
   isRunning = true;
   elasticsearch.query('deleteByQuery', {
     index: 'chronicle',
-    type: 'userPages',
+    type: 'user_pages',
     body: { query: { match_all: {} } }
   })
   .done(function() {
-    log.info('reindex job deleted userPages, now starting to reindex');
+    log.info('reindex job deleted user_pages, now starting to reindex');
     job({
       done: cb,
       startTime: new Date().toJSON(),
@@ -141,7 +141,7 @@ function start(cb) {
       retryWait: config.get('db_reindex_retryWait')
     });
   }, function(err) {
-    var msg = 'reindex job could not delete userPages, aborting';
+    var msg = 'reindex job could not delete user_pages, aborting';
     log.critical(err);
     return cb(msg);
   });
