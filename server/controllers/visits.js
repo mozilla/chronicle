@@ -40,35 +40,49 @@ var visitsController = {
   },
   // moving this into visits (plural) because we're going to support multiple 
   // uploads from this same endpoint
-  // TODO handle multiple uploads :-)
   post: function(request, reply) {
     var p = request.payload;
     var userId = request.auth.credentials;
-    var visitId = p.visitId || uuid.v4();
-    var urlHash = crypto.createHash('sha1').update(p.url).digest('hex').toString();
-    var o = {
+
+    var created = visitsController._create(userId, p.url, p.title, p.visitedAt, p.visitId);
+    reply(visitsView.render(created));
+  },
+  bulk: function(request, reply) {
+    var priority = request.payload.priority;
+    var userId = request.auth.credentials;
+    var bulkVisits = request.payload.visits;
+    if (!Array.isArray(bulkVisits)) { bulkVisits = [bulkVisits]; }
+    var bulkResponse = [];
+    var visit;
+    bulkVisits.forEach(function(v) {
+      visit = visitsController._create(userId, v.url, v.title, v.visitedAt, v.visitId, priority);
+      bulkResponse.push(visit);
+    });
+    reply(bulkResponse);
+  },
+  _create: function(userId, url, title, visitedAt, visitId, priority) {
+    visitId = visitId || uuid.v4();
+    priority = priority || 'regular';
+    var urlHash = crypto.createHash('sha1').update(url).digest('hex').toString();
+    var data = {
       userId: userId,
-      visitId: visitId,
-      url: p.url,
+      id: visitId,
+      url: url,
       urlHash: urlHash,
-      title: p.title,
-      visitedAt: p.visitedAt
+      title: title,
+      visitedAt: visitedAt
     };
-    queue.createVisit(o);
+    queue.createVisit({ priority: priority, data: data });
     if (config.get('embedly_enabled')) {
       // extractPage doesn't need all these keys, but the extras won't hurt anything
       // XXX the extractPage job checks if the user_page has been scraped recently
-      queue.extractPage(o);
+      queue.extractPage({ priority: priority, data: data });
     } else {
       log.info('not extracting page because embedly is disabled');
     }
-    reply(visitsView.render({
-      id: visitId,
-      url: p.url,
-      urlHash: urlHash,
-      title: p.title,
-      visitedAt: p.visitedAt
-    }));
+    // return the visit, except for the userId
+    delete data.userId;
+    return data;
   }
 };
 

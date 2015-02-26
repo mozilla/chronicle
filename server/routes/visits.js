@@ -10,6 +10,14 @@ var Joi = require('joi');
 var log = require('../logger')('server.routes.visits');
 var visitsController = require('../controllers/visits');
 
+var visitSchema = Joi.object().contains({
+  url: Joi.string().required(),
+  title: Joi.string().max(128).required(),
+  visitedAt: Joi.date().iso().required(),
+  // client can optionally provide uuid
+  visitId: Joi.string().guid()
+});
+
 var visitsRoutes = [{
   method: 'GET',
   path: '/v1/visits',
@@ -32,12 +40,20 @@ var visitsRoutes = [{
     handler: visitsController.post,
     auth: 'session',
     validate: {
+      payload: Joi.required().includes(visitSchema)
+    },
+    tags: ['visits']
+  }
+}, {
+  method: 'POST',
+  path: '/v1/bulk_visits',
+  config: {
+    handler: visitsController.bulk,
+    auth: 'session',
+    validate: {
       payload: {
-        url: Joi.string().required(),
-        title: Joi.string().max(128).required(),
-        visitedAt: Joi.date().iso().required(),
-        // client can optionally provide uuid
-        visitId: Joi.string().guid()
+        priority: Joi.any().only('high', 'low', 'regular').default('regular'),
+        visits: Joi.required().array().includes(visitSchema).min(1).max(50)
       }
     },
     tags: ['visits']
