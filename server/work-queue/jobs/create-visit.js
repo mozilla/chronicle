@@ -7,16 +7,15 @@
 var visit = require('../../models/visit');
 var log = require('../../logger')('server.work-queue.jobs.create-visit');
 
+// for now, just pass around the queue reference
 module.exports = {
-  // o is an object with keys { userId, visitId, url, urlHash, title, visitedAt }
-  perform: function(o, cb) {
-    log.verbose('job created with params ' + JSON.stringify(o));
-    visit.create(o.userId, o.visitId, o.visitedAt, o.url, o.urlHash, o.title, function (err) {
-      log.verbose('inside the visit.create callback inside the createVisit job!');
-      if (err) {
-        log.warn('failed at visit.create step for visit url ' + o.url + ' :' + err);
-      }
-      cb(err);
+  work: function(queue) {
+    queue.process('createVisit', 10, function(job, done) {
+      var d = job.data;
+      log.info('createVisit.job.running', job.id);
+      visit.create(d.userId, d.visitId, d.visitedAt, d.url, d.urlHash, d.title, function(err) {
+        return done(err);
+      });
     });
   }
 };

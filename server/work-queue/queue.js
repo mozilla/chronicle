@@ -4,121 +4,148 @@
 
 'use strict';
 
-var nr = require('node-resque');
-var Q = require('q');
+
+
+var kue = require('kue');
 
 var config = require('../config');
 var log = require('../logger')('server.work-queue');
-var jobs = require('./jobs');
+var workers = require('./jobs');
 
-var queueReady = Q.defer();
-var workersReady = Q.defer();
+// high-level TODOs:
+// TODO use OOP, ES5 Object.create is fine. Just pick something and get on w/it.
+// TODO use cluster support to fork additional processes:
+//      https://github.com/learnboost/kue#parallel-processing-with-cluster
+// TODO handle resuming dropped jobs across process restarts
 
-var connectionDetails = {
-  host: config.get('db_redis_host'),
-  password: config.get('db_redis_password'),
-  port: config.get('db_redis_port'),
-  database: config.get('db_redis_database')
-};
 
-var queueOpts = { connection: connectionDetails };
-var queue = new nr.queue(queueOpts, jobs, function onQueueReady() {
-  log.info('queue started');
-  // TODO listen for queue events?
-  queueReady.resolve();
+// startup
+
+
+var _queue = kue.createQueue({
+  redis: {
+    host: config.get('db_redis_host'),
+    password: config.get('db_redis_password'),
+    port: config.get('db_redis_port'),
+    db: config.get('db_redis_database')
+  }
 });
 
-var multiWorkerOpts = {
-  connection: connectionDetails,
-  queues: ['chronicle'],
-  minTaskProcessors: 1,
-  maxTaskProcessors: 30,
+
+// shutdown / process mgmt
+
+
+var onUncaughtException = function(err) {
+  log.warn('uncaught exception caught at process level, doh!', err);
 };
-var multiWorker = new nr.multiWorker(multiWorkerOpts, jobs, function() {
-  multiWorker.on('start', function(workerId){
-    log.debug('worker[' + workerId + '] started');
-  });
-  multiWorker.on('end', function(workerId){
-    log.debug('worker[' + workerId + '] ended');
-  });
-  multiWorker.on('cleaning_worker', function(workerId, worker, pid){
-    log.debug('cleaning old worker ' + worker);
-  });
-  multiWorker.on('poll', function(workerId, queue){
-    log.verbose('worker[' + workerId + '] polling ' + queue);
-  });
-  multiWorker.on('job', function(workerId, queue, job){
-    log.info('worker[' + workerId + '] working job ' + queue + ' ' + JSON.stringify(job));
-  });
-  multiWorker.on('reEnqueue', function(workerId, queue, job, plugin){
-    log.verbose('worker[' + workerId + '] reEnqueue job (' + plugin + ') ' +
-      queue + ' ' + JSON.stringify(job));
-  });
-  multiWorker.on('success', function(workerId, queue, job, result){
-    // TODO do something with result?
-    log.info('worker[' + workerId + '] job success ' + queue);
-    log.verbose('worker[' + workerId + '] job success ' + queue + ' ' +
-      JSON.stringify(job) + ' >> ' + result);
-  });
-  multiWorker.on('failure', function(workerId, queue, job, failure){
-    log.warn('worker failed, job will be retried in 10 seconds');
-    log.verbose('worker[' + workerId + '] job failure ' + queue + ' ' +
-      JSON.stringify(job) + ' >> ' + failure);
-    
-    // TODO retry on failure
-  });
-  multiWorker.on('error', function(workerId, queue, job, error){
-    log.warn('worker errored');
-    log.verbose('worker[' + workerId + '] error ' + queue + ' ' +
-      JSON.stringify(job) + ' >> ' + error);
-    // TODO retry on failure
-  });
-  multiWorker.on('pause', function(workerId){
-    log.verbose('worker[' + workerId + '] paused');
-  });
 
-  // multiWorker emitters
-  multiWorker.on('internalError', function(error){
-    log.warn('multiworker error: ' + error);
+var onShutdown = function(signal) {
+  log.info('signal ' + signal + ' received, queue exiting when all jobs complete...');
+  _queue.shutdown(function(err) {
+    log.info('all jobs complete, queue exiting');
   });
-  multiWorker.on('multiWorkerAction', function(verb, delay){
-    log.verbose('*** checked for worker status: ' + verb +
-      ' (event loop delay: ' + delay + 'ms)');
-  });
-  multiWorker.start();
-  log.verbose('queue workers are ready');
-  workersReady.resolve();
-});
+};
 
-// TODO add reject handler when we listen for queue/worker startup failures
-//Q.all([queueReady.promise, workersReady.promise]).then(function() {
-// TODO: be fancy, loop over jobs
-// TODO figure out the callback contract between queue and worker
-// (not between queue and queue caller, those should be fire-and-forget)
-module.exports = {
-  createVisit: function(o) {
-    log.verbose('createVisit queue method invoked, o is ' + JSON.stringify(o));
-    queue.enqueue('chronicle', 'createVisit', o, function(err, data) {
+process.on('uncaughtException', onUncaughtException);
+process.once('SIGINT', onShutdown.bind('SIGINT'));
+process.once('SIGTERM', onShutdown.bind('SIGTERM'));
+process.once('exit', onShutdown.bind('exit'));
+
+
+// job management
+
+
+var _removeJob = function(id) {
+  // TODO check if it's an id or a job, don't get the job twice
+  kue.Job.get(id, function(err, job) {
+    if (err) { return; }
+    job.remove(function(err) {
       if (err) {
-        log.warn('createVisit job failed: ' + err);
+        log.warn('error removing job ' + job.id, err);
+        // TODO: add to a cleanup queue? what possible errors could occur here?
       }
-      log.verbose('createVisit job succeeded: ' + data);
+      log.info('removed job ' + job.id);
     });
+  });
+};
+
+var onJobComplete = function(id, result) {
+  log.info('queue.job.completed', {id: id});
+  _removeJob(id);
+};
+
+var onJobFailed = function(id) {
+  log.warn('queue.job.failed', {id: id});
+  kue.Job.get(id, function(err, job) {
+    if (err) { return; }
+    log.verbose('queue.job.failed.err', {id: id, err: job.error});
+    _removeJob(id);
+  });
+};
+
+var onJobError = function(id, err) {
+  log.warn('queue.job.error', {id: id});
+  kue.Job.get(id, function(err, job) {
+    if (err) { return; }
+    log.verbose('queue.job.error.err', {id: id, err: job.error});
+    _removeJob(id);
+  });
+};
+
+var onJobRetry = function(id) {
+  log.info('queue.job.retrying', {id: id});
+  kue.Job.get(id, function(err, job) {
+    if (err) { return; }
+    log.verbose('queue.job.retry.err', {id: id, err: job.error});
+  });
+};
+
+var onJobEnqueued = function(id) {
+  log.info('queue.job.enqueued', {id: id});
+};
+
+var onJobProgress = function(id, completed, total) {
+  log.info('queue.job.progress', {id: id, completed: completed, total: total});
+};
+
+_queue.on('job complete', onJobComplete);
+_queue.on('job failed', onJobFailed);
+_queue.on('job error', onJobError);
+_queue.on('job failed attempt', onJobRetry);
+_queue.on('job enqueue', onJobEnqueued);
+_queue.on('job progress', onJobProgress);
+
+
+// job creation
+
+
+// TODO allow job creation to set priorities; we're setting priority here for the moment
+// opts := job data object
+var exported = {
+  enqueue: function(job, data, priority) {
+    log.debug(job + '.called');
+    _queue.create(job, data)
+      .priority(priority)
+      .save();
   },
-  extractPage: function(o) {
-    log.verbose('extractPage queue method invoked, o is ' + JSON.stringify(o));
-    queue.enqueue('chronicle', 'extractPage', o, function(err, data) {
-      if (err) {
-        log.warn('createVisit job failed: ' + err);
-      }
-      log.verbose('createVisit job succeeded: ' + data);
-    });
+  createVisit: function(opts) {
+    exported.enqueue('createVisit', opts, 'high');
+  },
+  extractPage: function(opts) {
+    exported.enqueue('extractPage', opts, 'medium');
+  },
+  sendWelcomeEmail: function(opts) {
+    exported.enqueue('sendWelcomeEmail', opts, 'low');
   }
 };
-//});
 
-process.on('SIGINT', function () {
-  log.warn('process exiting, shutting down workers');
-  multiWorker.stop();
-  process.exit();
-});
+
+// job processing
+
+
+// let's start with 10 workers per job (TODO put this in a config somewhere)
+workers.createVisit.work(_queue);
+workers.extractPage.work(_queue);
+workers.sendWelcomeEmail.work(_queue);
+
+module.exports = exported;
