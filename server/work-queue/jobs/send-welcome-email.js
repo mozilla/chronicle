@@ -25,24 +25,24 @@ if (config.get('env') !== 'local') {
 }
 
 module.exports = {
-  // o is an object with keys { email }
-  perform: function(o, cb) {
-    var toEmail = o.email;
-    log.verbose('job created with params ' + JSON.stringify(o));
-
-    transporter.sendMail({
-      from: config.get('email_fromEmail'),
-      to: toEmail,
-      subject: 'Welcome to Chronicle',
-      text: 'Welcome to Chronicle, ' + toEmail + '!',
-      html: 'Welcome to chronicle, <strong>' + toEmail + '</strong>!'
-    }, function (err, info) {
-      if (err) {
-        log.error('Unable to send email: ' + err);
-        return cb(err);
-      }
-      log.verbose('welcome email sent: ' + info.response);
-      cb();
+  work: function(queue) {
+    queue.process('sendWelcomeEmail', function(job, done) {
+      var toEmail = job.data.email;
+      transporter.sendMail({
+        from: config.get('email_fromEmail'),
+        to: toEmail,
+        subject: 'Welcome to Chronicle',
+        text: 'Welcome to Chronicle, ' + toEmail + '!',
+        html: 'Welcome to chronicle, <strong>' + toEmail + '</strong>!'
+      }, function (err, info) {
+        if (err) {
+          var msg = 'unable to send email';
+          log.error(msg, err);
+          return done(new Error(msg));
+        }
+        log.verbose('welcome email sent');
+        done();
+      });
     });
   }
 };

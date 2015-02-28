@@ -7,45 +7,48 @@
 var log = require('../../logger')('server.work-queue.jobs.extract-page');
 var userPage = require('../../models/user-page');
 var embedly = require('../../embedly');
-var config = require('../../config');
+var embedlyEnabled = require('../../config').get('embedly_enabled');
 
 module.exports = {
-  // o is an object with keys { userId, url, urlHash, title }
-  perform: function(o, cb) {
-    log.verbose('job created with params ' + JSON.stringify(o));
-    if (!config.get('embedly_enabled')) {
-      log.info('embedly disabled; extract-page job returning immediately');
-      return cb();
-    }
-    // check if userPage exists in the db already
-    userPage.hasMetadata(o.userId, o.urlHash, function(err, pageExists) {
-      if (err) {
-        log.warn('failed to check if page has metadata: ' + err);
-        return cb(err);
-      } else if (pageExists) {
-        log.info('page already has metadata, not scraping url ' + o.url);
-        // TODO does node-resque expect an error here? probably not?
-        return cb(null);
+  work: function(queue) {
+    queue.process('extractPage', 10, function(job, done) {
+      var d = job.data;
+      if (!embedlyEnabled) {
+        var msg = 'embedly disabled; extract-page job returning immediately';
+        log.warn(msg);
+        return done(new Error(msg));
       }
-      embedly.extract(o.url, function(err, data) {
+      // check if userPage exists in the db already
+      userPage.hasMetadata(d.userId, d.urlHash, function(err, pageExists) {
         if (err) {
-          log.warn('failed at embedly.extract step for url ' + o.url + ': ' + err);
-          // we should retry on failure. leave that to the queue.
-          return cb(err);
+          var msg = 'failed to check if page has metadata';
+          log.warn(msg, err);
+          return done(new Error(msg));
+        } else if (pageExists) {
+          log.info('page already has metadata, no need to scrape it', d.url);
+          return done();
         }
-        log.verbose('succeeded at embedly.extract step for url ' + o.url + ': ' + JSON.stringify(data));
-        // the visit creation job has probably created a record in the user_page table.
-        // if not, update will lazily create it.
-        userPage.update(o.userId, o.url, o.urlHash, o.title, data, function (err) {
+        embedly.extract(d.url, function(err, extracted) {
           if (err) {
-            log.warn('failed at userPage.update step for url ' + o.url + ': ' + err);
-          } else {
-            log.verbose('succeeded for url ' + o.url);
+            var msg = 'failed at embedly.extract step';
+            log.warn(msg, d.url);
+            // we should retry on failure. leave that to the queue.
+            return done(new Error(msg));
           }
-          cb(err);
+          log.verbose('succeeded at embedly.extract step', d.url);
+          // the visit creation job has probably created a record in the user_page table.
+          // if not, update will lazily create it.
+          userPage.update(d.userId, d.url, d.urlHash, d.title, extracted, function (err) {
+            var msg;
+            if (err) {
+              msg = 'failed at userPage.update step';
+              log.warn(msg, d.url);
+              done(new Error(msg));
+            }
+            done();
+          });
         });
       });
     });
   }
 };
-
