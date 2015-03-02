@@ -44,7 +44,7 @@ var visitsController = {
     var p = request.payload;
     var userId = request.auth.credentials;
 
-    var created = visitsController._create(userId, p.url, p.title, p.visitedAt, p.visitId);
+    var created = visitsController._create(userId, p.url, p.title, p.visitedAt, p.visitId, p.priority);
     reply(visitsView.render(created));
   },
   bulk: function(request, reply) {
@@ -62,7 +62,6 @@ var visitsController = {
   },
   _create: function(userId, url, title, visitedAt, visitId, priority) {
     visitId = visitId || uuid.v4();
-    priority = priority || 'regular';
     var urlHash = crypto.createHash('sha1').update(url).digest('hex').toString();
     var data = {
       userId: userId,

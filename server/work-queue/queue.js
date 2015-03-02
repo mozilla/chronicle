@@ -120,7 +120,9 @@ _queue.on('job progress', onJobProgress);
 
 
 // TODO allow job creation to set priorities; we're setting priority here for the moment
-// opts := job data object
+// opts := { priority, data }
+// priority := 'low' | 'normal' | 'medium' | 'high' | 'critical'
+// data := data passed to the worker to run the job
 var exported = {
   enqueue: function(job, data, priority) {
     log.debug(job + '.called');
@@ -129,13 +131,13 @@ var exported = {
       .save();
   },
   createVisit: function(opts) {
-    exported.enqueue('createVisit', opts, 'high');
+    exported.enqueue('createVisit', opts.data, opts.priority || 'high');
   },
   extractPage: function(opts) {
-    exported.enqueue('extractPage', opts, 'medium');
+    exported.enqueue('extractPage', opts.data, opts.priority || 'medium');
   },
   sendWelcomeEmail: function(opts) {
-    exported.enqueue('sendWelcomeEmail', opts, 'low');
+    exported.enqueue('sendWelcomeEmail', opts.data, opts.priority || 'low');
   }
 };
 
