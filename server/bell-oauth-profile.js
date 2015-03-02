@@ -56,8 +56,11 @@ function profile (credentials, params, get, profileCb) {
           }
           log.verbose('created new user ' + data.email);
           credentials.profile = {userId: data.uid, isNewUser: true, isAllowed: true};
-          // FIX: This doesn't appear to be here. Disabling for now.
-          //queue.sendWelcomeEmail({email: data.email});
+          // sticking with the default priority for now
+          queue.sendWelcomeEmail({
+            priority: 'low',
+            data: {email: data.email}
+          });
           return profileCb(credentials);
         });
       }
